@@ -12,6 +12,136 @@ part of 'file.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+/// @nodoc
+mixin _$UniversalFile {
+
+ dynamic get data; UniversalFileType get type;
+/// Create a copy of UniversalFile
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UniversalFileCopyWith<UniversalFile> get copyWith => _$UniversalFileCopyWithImpl<UniversalFile>(this as UniversalFile, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UniversalFile&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.type, type) || other.type == type));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data),type);
+
+@override
+String toString() {
+  return 'UniversalFile(data: $data, type: $type)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UniversalFileCopyWith<$Res>  {
+  factory $UniversalFileCopyWith(UniversalFile value, $Res Function(UniversalFile) _then) = _$UniversalFileCopyWithImpl;
+@useResult
+$Res call({
+ dynamic data, UniversalFileType type
+});
+
+
+
+
+}
+/// @nodoc
+class _$UniversalFileCopyWithImpl<$Res>
+    implements $UniversalFileCopyWith<$Res> {
+  _$UniversalFileCopyWithImpl(this._self, this._then);
+
+  final UniversalFile _self;
+  final $Res Function(UniversalFile) _then;
+
+/// Create a copy of UniversalFile
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,Object? type = null,}) {
+  return _then(_self.copyWith(
+data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as dynamic,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as UniversalFileType,
+  ));
+}
+
+}
+
+
+/// @nodoc
+
+
+class _UniversalFile extends UniversalFile {
+  const _UniversalFile({required this.data, required this.type}): super._();
+  
+
+@override final  dynamic data;
+@override final  UniversalFileType type;
+
+/// Create a copy of UniversalFile
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UniversalFileCopyWith<_UniversalFile> get copyWith => __$UniversalFileCopyWithImpl<_UniversalFile>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UniversalFile&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.type, type) || other.type == type));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data),type);
+
+@override
+String toString() {
+  return 'UniversalFile(data: $data, type: $type)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UniversalFileCopyWith<$Res> implements $UniversalFileCopyWith<$Res> {
+  factory _$UniversalFileCopyWith(_UniversalFile value, $Res Function(_UniversalFile) _then) = __$UniversalFileCopyWithImpl;
+@override @useResult
+$Res call({
+ dynamic data, UniversalFileType type
+});
+
+
+
+
+}
+/// @nodoc
+class __$UniversalFileCopyWithImpl<$Res>
+    implements _$UniversalFileCopyWith<$Res> {
+  __$UniversalFileCopyWithImpl(this._self, this._then);
+
+  final _UniversalFile _self;
+  final $Res Function(_UniversalFile) _then;
+
+/// Create a copy of UniversalFile
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? data = freezed,Object? type = null,}) {
+  return _then(_UniversalFile(
+data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as dynamic,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as UniversalFileType,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$SnCloudFile {

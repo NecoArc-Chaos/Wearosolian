@@ -37,16 +37,33 @@ class PostComposeScreen extends HookConsumerWidget {
     }, [publishers]);
 
     // Contains the XFile, ByteData, or SnCloudFile
-    final attachments = useState<List<dynamic>>([]);
+    final attachments = useState<List<UniversalFile>>([]);
     final contentController = useTextEditingController();
+    final titleController = useTextEditingController();
+    final descriptionController = useTextEditingController();
 
     final submitting = useState(false);
 
-    Future<void> pickAttachment() async {
+    Future<void> pickPhotoMedia() async {
       final result = await ref
           .watch(imagePickerProvider)
-          .pickMultipleMedia(requestFullMetadata: true);
-      attachments.value = [...attachments.value, ...result];
+          .pickMultiImage(requestFullMetadata: true);
+      attachments.value = [
+        ...attachments.value,
+        ...result.map(
+          (e) => UniversalFile(data: e, type: UniversalFileType.image),
+        ),
+      ];
+    }
+
+    Future<void> pickVideoMedia() async {
+      final result = await ref
+          .watch(imagePickerProvider)
+          .pickVideo(source: ImageSource.gallery);
+      attachments.value = [
+        ...attachments.value,
+        UniversalFile(data: result, type: UniversalFileType.video),
+      ];
     }
 
     final attachmentProgress = useState<Map<int, double>>({});
@@ -64,35 +81,47 @@ class PostComposeScreen extends HookConsumerWidget {
         },
       );
       if (atk == null) throw ArgumentError('Access token is null');
-      attachmentProgress.value = {...attachmentProgress.value, index: 0};
-      final cloudFile =
-          await putMediaToCloud(
-            fileData: attachment,
-            atk: atk,
-            baseUrl: baseUrl,
-            filename: attachment.name ?? 'Post media',
-            mimetype: attachment.mimeType ?? 'image/jpeg',
-            onProgress: (progress, estimate) {
-              attachmentProgress.value = {
-                ...attachmentProgress.value,
-                index: progress,
-              };
-            },
-          ).future;
-      if (cloudFile == null) {
-        throw ArgumentError('Failed to upload the file...');
+      try {
+        attachmentProgress.value = {...attachmentProgress.value, index: 0};
+        final cloudFile =
+            await putMediaToCloud(
+              fileData: attachment,
+              atk: atk,
+              baseUrl: baseUrl,
+              filename: attachment.data.name ?? 'Post media',
+              mimetype:
+                  attachment.data.mimeType ??
+                  switch (attachment.type) {
+                    UniversalFileType.image => 'image/unknown',
+                    UniversalFileType.video => 'video/unknown',
+                    UniversalFileType.audio => 'audio/unknown',
+                    UniversalFileType.file => 'application/octet-stream',
+                  },
+              onProgress: (progress, estimate) {
+                attachmentProgress.value = {
+                  ...attachmentProgress.value,
+                  index: progress,
+                };
+              },
+            ).future;
+        if (cloudFile == null) {
+          throw ArgumentError('Failed to upload the file...');
+        }
+        final clone = List.of(attachments.value);
+        clone[index] = UniversalFile(data: cloudFile, type: attachment.type);
+        attachments.value = clone;
+      } catch (err) {
+        showErrorAlert(err);
+      } finally {
+        attachmentProgress.value = attachmentProgress.value..remove(index);
       }
-      final clone = List.of(attachments.value);
-      clone[index] = cloudFile;
-      attachments.value = clone;
-      attachmentProgress.value = attachmentProgress.value..remove(index);
     }
 
     Future<void> deleteAttachment(int index) async {
       final attachment = attachments.value[index];
-      if (attachment is SnCloudFile) {
+      if (attachment.isOnCloud) {
         final client = ref.watch(apiClientProvider);
-        await client.delete('/files/${attachment.id}');
+        await client.delete('/files/${attachment.data.id}');
       }
       final clone = List.of(attachments.value);
       clone.removeAt(index);
@@ -100,17 +129,13 @@ class PostComposeScreen extends HookConsumerWidget {
     }
 
     Future<void> performAction() async {
-      if (!contentController.text.isNotEmpty) {
-        return;
-      }
-
       try {
         submitting.value = true;
 
         await Future.wait(
           attachments.value
-              .where((e) => e is! SnCloudFile)
-              .map((e) => uploadAttachment(e)),
+              .where((e) => e.isOnDevice)
+              .map((e) => uploadAttachment(e.data)),
         );
 
         final client = ref.watch(apiClientProvider);
@@ -120,8 +145,8 @@ class PostComposeScreen extends HookConsumerWidget {
             'content': contentController.text,
             'attachments':
                 attachments.value
-                    .whereType<SnCloudFile>()
-                    .map((e) => e.id)
+                    .where((e) => e.isOnCloud)
+                    .map((e) => e.data.id)
                     .toList(),
           },
         );
@@ -141,7 +166,17 @@ class PostComposeScreen extends HookConsumerWidget {
         actions: [
           IconButton(
             onPressed: submitting.value ? null : performAction,
-            icon: const Icon(LucideIcons.upload),
+            icon:
+                submitting.value
+                    ? SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      ),
+                    ).center()
+                    : const Icon(LucideIcons.upload),
           ),
           const Gap(8),
         ],
@@ -163,6 +198,27 @@ class PostComposeScreen extends HookConsumerWidget {
                     padding: EdgeInsets.symmetric(vertical: 16),
                     child: Column(
                       children: [
+                        TextField(
+                          controller: titleController,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Title',
+                          ),
+                          style: TextStyle(fontSize: 20),
+                          onTapOutside:
+                              (_) =>
+                                  FocusManager.instance.primaryFocus?.unfocus(),
+                        ),
+                        TextField(
+                          controller: descriptionController,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Description',
+                          ),
+                          style: TextStyle(fontSize: 18),
+                          onTapOutside:
+                              (_) =>
+                                  FocusManager.instance.primaryFocus?.unfocus(),
+                        ),
+                        const Gap(12),
                         TextField(
                           controller: contentController,
                           decoration: InputDecoration.collapsed(
@@ -215,8 +271,13 @@ class PostComposeScreen extends HookConsumerWidget {
             child: Row(
               children: [
                 IconButton(
-                  onPressed: pickAttachment,
+                  onPressed: pickPhotoMedia,
                   icon: const Icon(LucideIcons.imagePlus),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                IconButton(
+                  onPressed: pickVideoMedia,
+                  icon: const Icon(LucideIcons.fileVideo2),
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ],
@@ -233,13 +294,13 @@ class PostComposeScreen extends HookConsumerWidget {
 }
 
 class _AttachmentPreview extends StatelessWidget {
-  final dynamic item;
+  final UniversalFile item;
   final double? progress;
   final Function(int)? onMove;
   final Function? onDelete;
   final Function? onRequestUpload;
   const _AttachmentPreview({
-    this.item,
+    required this.item,
     this.progress,
     this.onRequestUpload,
     this.onMove,
@@ -259,20 +320,30 @@ class _AttachmentPreview extends StatelessWidget {
               color: Theme.of(context).colorScheme.surfaceContainerHigh,
               child: Builder(
                 builder: (context) {
-                  if (item is SnCloudFile) {
-                    return CloudFileWidget(item: item);
-                  } else if (item is XFile) {
-                    if (item.mimeType?.startsWith('image') ?? false) {
-                      return Image.file(File(item.path));
+                  if (item.isOnCloud) {
+                    return CloudFileWidget(item: item.data);
+                  } else if (item.data is XFile) {
+                    if (item.type == UniversalFileType.image) {
+                      return Image.file(File(item.data.path));
                     } else {
                       return Center(
                         child: Text(
-                          'Preview is not supported for ${item.mimeType}',
+                          'Preview is not supported for ${item.type}',
+                          textAlign: TextAlign.center,
                         ),
                       );
                     }
                   } else if (item is List<int> || item is Uint8List) {
-                    return Image.memory(item);
+                    if (item.type == UniversalFileType.image) {
+                      return Image.memory(item.data);
+                    } else {
+                      return Center(
+                        child: Text(
+                          'Preview is not supported for ${item.type}',
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
                   }
                   return Placeholder();
                 },
@@ -287,10 +358,7 @@ class _AttachmentPreview extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        'Uploading...',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      Text('Uploading', style: TextStyle(color: Colors.white)),
                       Gap(4),
                       Center(child: LinearProgressIndicator(value: progress)),
                     ],

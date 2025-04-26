@@ -3,6 +3,21 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'file.freezed.dart';
 part 'file.g.dart';
 
+enum UniversalFileType { image, video, audio, file }
+
+@freezed
+abstract class UniversalFile with _$UniversalFile {
+  const UniversalFile._();
+
+  const factory UniversalFile({
+    required dynamic data,
+    required UniversalFileType type,
+  }) = _UniversalFile;
+
+  bool get isOnCloud => data is SnCloudFile;
+  bool get isOnDevice => !isOnCloud;
+}
+
 @freezed
 abstract class SnCloudFile with _$SnCloudFile {
   const factory SnCloudFile({
