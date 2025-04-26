@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 class UniversalImage extends StatelessWidget {
   final String uri;
   final String? blurHash;
-  const UniversalImage({super.key, required this.uri, this.blurHash});
+  final BoxFit fit;
+  const UniversalImage({
+    super.key,
+    required this.uri,
+    this.blurHash,
+    this.fit = BoxFit.cover,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +21,13 @@ class UniversalImage extends StatelessWidget {
         element.src = uri;
         element.style.width = '100%';
         element.style.height = '100%';
+        element.style.objectFit = switch (fit) {
+          BoxFit.cover || BoxFit.fitWidth || BoxFit.fitHeight => 'cover',
+          BoxFit.fill => 'fill',
+          BoxFit.contain => 'contain',
+          BoxFit.none => 'none',
+          _ => 'cover',
+        };
       },
     );
   }
