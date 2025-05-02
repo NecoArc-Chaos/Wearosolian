@@ -15,7 +15,7 @@ import 'package:island/pods/websocket.dart';
 import 'package:island/services/notify.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -156,7 +156,7 @@ class _LoginCheckScreen extends HookConsumerWidget {
           alignment: Alignment.centerLeft,
           child: CircleAvatar(
             radius: 26,
-            child: const Icon(LucideIcons.squareAsterisk, size: 28),
+            child: const Icon(Symbols.asterisk, size: 28),
           ).padding(bottom: 8),
         ),
         Text(
@@ -191,7 +191,7 @@ class _LoginCheckScreen extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('next').tr(),
-                  const Icon(LucideIcons.chevronRight),
+                  const Icon(Symbols.chevron_right),
                 ],
               ),
             ),
@@ -256,7 +256,7 @@ class _LoginPickerScreen extends HookConsumerWidget {
           alignment: Alignment.centerLeft,
           child: CircleAvatar(
             radius: 26,
-            child: const Icon(LucideIcons.lock, size: 28),
+            child: const Icon(Symbols.lock, size: 28),
           ).padding(bottom: 8),
         ),
         Text(
@@ -274,7 +274,7 @@ class _LoginPickerScreen extends HookConsumerWidget {
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
-                        secondary: const Icon(LucideIcons.shieldQuestion),
+                        secondary: const Icon(Symbols.question_mark),
                         title: Text('unknown').tr(),
                         enabled: !ticket!.blacklistFactors.contains(x.id),
                         value: factorPicked.value == x.id,
@@ -304,7 +304,7 @@ class _LoginPickerScreen extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('next'.tr()),
-                  const Icon(LucideIcons.chevronRight),
+                  const Icon(Symbols.chevron_right),
                 ],
               ),
             ),
@@ -403,7 +403,7 @@ class _LoginLookupScreen extends HookConsumerWidget {
           alignment: Alignment.centerLeft,
           child: CircleAvatar(
             radius: 26,
-            child: const Icon(LucideIcons.logIn, size: 28),
+            child: const Icon(Symbols.login, size: 28),
           ).padding(bottom: 8),
         ),
         Text(
@@ -439,7 +439,7 @@ class _LoginLookupScreen extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('next').tr(),
-                  const Icon(LucideIcons.chevronRight),
+                  const Icon(Symbols.chevron_right),
                 ],
               ),
             ),
@@ -471,7 +471,7 @@ class _LoginLookupScreen extends HookConsumerWidget {
                         children: [
                           Text('termAcceptLink'.tr()),
                           const Gap(4),
-                          const Icon(LucideIcons.externalLink, size: 14),
+                          const Icon(Symbols.launch, size: 14),
                         ],
                       ),
                       onTap: () {

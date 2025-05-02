@@ -3,8 +3,10 @@ import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,7 +21,7 @@ import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:island/widgets/post/publishers_modal.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:styled_widget/styled_widget.dart';
 
@@ -82,13 +84,18 @@ class PostComposeScreen extends HookConsumerWidget {
               .toList() ??
           [],
     );
-    final contentController = useTextEditingController(
-      text: originalPost?.content,
-    );
     final titleController = useTextEditingController(text: originalPost?.title);
     final descriptionController = useTextEditingController(
       text: originalPost?.description,
     );
+    final contentController = useMemoized(() => QuillController.basic());
+
+    useEffect(() {
+      if (originalPost?.content != null) {
+        contentController.document = Document.fromJson(originalPost!.content!);
+      }
+      return null;
+    }, [originalPost]);
 
     final submitting = useState(false);
 
@@ -192,7 +199,7 @@ class PostComposeScreen extends HookConsumerWidget {
         await client.request(
           originalPost == null ? '/posts' : '/posts/${originalPost!.id}',
           data: {
-            'content': contentController.text,
+            'content': contentController.document.toDelta().toJson(),
             'attachments':
                 attachments.value
                     .where((e) => e.isOnCloud)
@@ -231,8 +238,8 @@ class PostComposeScreen extends HookConsumerWidget {
                       ),
                     ).center()
                     : originalPost != null
-                    ? const Icon(LucideIcons.edit)
-                    : const Icon(LucideIcons.upload),
+                    ? const Icon(Symbols.edit)
+                    : const Icon(Symbols.upload),
           ),
           const Gap(8),
         ],
@@ -269,7 +276,7 @@ class PostComposeScreen extends HookConsumerWidget {
                           decoration: InputDecoration.collapsed(
                             hintText: 'Title',
                           ),
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 16),
                           onTapOutside:
                               (_) =>
                                   FocusManager.instance.primaryFocus?.unfocus(),
@@ -279,21 +286,17 @@ class PostComposeScreen extends HookConsumerWidget {
                           decoration: InputDecoration.collapsed(
                             hintText: 'Description',
                           ),
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 16),
                           onTapOutside:
                               (_) =>
                                   FocusManager.instance.primaryFocus?.unfocus(),
                         ),
                         const Gap(12),
-                        TextField(
+                        QuillEditor.basic(
                           controller: contentController,
-                          decoration: InputDecoration.collapsed(
-                            hintText: 'What\'s happened?!',
+                          config: QuillEditorConfig(
+                            placeholder: 'postPlaceholder'.tr(),
                           ),
-                          maxLines: null,
-                          onTapOutside:
-                              (_) =>
-                                  FocusManager.instance.primaryFocus?.unfocus(),
                         ),
                         const Gap(8),
                         Column(
@@ -334,17 +337,29 @@ class PostComposeScreen extends HookConsumerWidget {
           ),
           Material(
             elevation: 2,
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(
-                  onPressed: pickPhotoMedia,
-                  icon: const Icon(LucideIcons.imagePlus),
-                  color: Theme.of(context).colorScheme.primary,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: QuillSimpleToolbar(
+                    controller: contentController,
+                    config: QuillSimpleToolbarConfig(showFontFamily: false),
+                  ),
                 ),
-                IconButton(
-                  onPressed: pickVideoMedia,
-                  icon: const Icon(LucideIcons.fileVideo2),
-                  color: Theme.of(context).colorScheme.primary,
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: pickPhotoMedia,
+                      icon: const Icon(Symbols.add_a_photo),
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    IconButton(
+                      onPressed: pickVideoMedia,
+                      icon: const Icon(Symbols.videocam),
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ],
                 ),
               ],
             ).padding(
@@ -447,7 +462,7 @@ class _AttachmentPreview extends StatelessWidget {
                         InkWell(
                           borderRadius: BorderRadius.circular(8),
                           child: const Icon(
-                            LucideIcons.trash,
+                            Symbols.delete,
                             size: 14,
                             color: Colors.white,
                           ).padding(horizontal: 8, vertical: 6),
@@ -466,7 +481,7 @@ class _AttachmentPreview extends StatelessWidget {
                         InkWell(
                           borderRadius: BorderRadius.circular(8),
                           child: const Icon(
-                            LucideIcons.arrowUp,
+                            Symbols.keyboard_arrow_up,
                             size: 14,
                             color: Colors.white,
                           ).padding(horizontal: 8, vertical: 6),
@@ -477,7 +492,7 @@ class _AttachmentPreview extends StatelessWidget {
                         InkWell(
                           borderRadius: BorderRadius.circular(8),
                           child: const Icon(
-                            LucideIcons.arrowDown,
+                            Symbols.keyboard_arrow_down,
                             size: 14,
                             color: Colors.white,
                           ).padding(horizontal: 8, vertical: 6),
@@ -510,7 +525,7 @@ class _AttachmentPreview extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    LucideIcons.cloud,
+                                    Symbols.cloud,
                                     size: 16,
                                     color: Colors.white,
                                   ),
@@ -525,7 +540,7 @@ class _AttachmentPreview extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    LucideIcons.cloudOff,
+                                    Symbols.cloud_off,
                                     size: 16,
                                     color: Colors.white,
                                   ),

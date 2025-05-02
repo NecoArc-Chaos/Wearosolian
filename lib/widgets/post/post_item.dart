@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/models/post.dart';
 import 'package:island/pods/network.dart';
@@ -11,8 +12,8 @@ import 'package:island/route.gr.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/content/cloud_file_collection.dart';
 import 'package:island/widgets/content/cloud_files.dart';
-import 'package:island/widgets/content/markdown.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:island/widgets/quill_content.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:super_context_menu/super_context_menu.dart';
 
@@ -47,7 +48,7 @@ class PostItem extends HookConsumerWidget {
             if (isAuthor)
               MenuAction(
                 title: 'edit'.tr(),
-                image: MenuImage.icon(LucideIcons.edit),
+                image: MenuImage.icon(Symbols.edit),
                 callback: () {
                   context.router.push(PostEditRoute(id: item.id)).then((value) {
                     if (value != null) {
@@ -59,7 +60,7 @@ class PostItem extends HookConsumerWidget {
             if (isAuthor)
               MenuAction(
                 title: 'delete'.tr(),
-                image: MenuImage.icon(LucideIcons.trash),
+                image: MenuImage.icon(Symbols.delete),
                 callback: () {
                   showConfirmAlert(
                     'deletePostHint'.tr(),
@@ -83,7 +84,7 @@ class PostItem extends HookConsumerWidget {
             if (isAuthor) MenuSeparator(),
             MenuAction(
               title: 'copyLink'.tr(),
-              image: MenuImage.icon(LucideIcons.link),
+              image: MenuImage.icon(Symbols.link),
               callback: () {
                 Clipboard.setData(
                   ClipboardData(text: 'https://solsynth.dev/posts/${item.id}'),
@@ -111,8 +112,10 @@ class PostItem extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(item.publisher.nick).bold(),
-                          if (item.content.isNotEmpty)
-                            MarkdownTextContent(content: item.content),
+                          if (item.content?.isNotEmpty ?? false)
+                            QuillContent(
+                              document: Document.fromJson(item.content!),
+                            ),
                         ],
                       ),
                       onTap: () {

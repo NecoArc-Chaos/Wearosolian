@@ -14,7 +14,7 @@ abstract class SnPost with _$SnPost {
     required DateTime? editedAt,
     required DateTime publishedAt,
     required int visibility,
-    required String content,
+    required List<dynamic>? content,
     required int type,
     required Map<String, dynamic>? meta,
     required int viewsUnique,

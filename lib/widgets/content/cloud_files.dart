@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:island/models/file.dart';
 import 'package:island/pods/config.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 import 'image.dart';
@@ -56,7 +56,7 @@ class ProfilePictureWidget extends ConsumerWidget {
         color: Theme.of(context).colorScheme.primaryContainer,
         child:
             item == null
-                ? Icon(LucideIcons.userCircle, size: radius).center()
+                ? Icon(Symbols.account_circle, size: radius).center()
                 : CloudFileWidget(item: item!),
       ),
     );

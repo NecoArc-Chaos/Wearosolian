@@ -8,7 +8,7 @@ import 'package:island/screens/account/me/publishers.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:island/widgets/post/publishers_modal.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:styled_widget/styled_widget.dart';
 
@@ -106,7 +106,7 @@ class PostQuickReply extends HookConsumerWidget {
                           height: 28,
                           child: CircularProgressIndicator(strokeWidth: 3),
                         )
-                        : Icon(LucideIcons.send, size: 20),
+                        : Icon(Symbols.send, size: 20),
                 color: Theme.of(context).colorScheme.primary,
                 onPressed: submitting.value ? null : performAction,
               ),

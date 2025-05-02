@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:island/route.gr.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 @RoutePage()
 class TabsScreen extends StatelessWidget {
@@ -23,11 +23,11 @@ class TabsScreen extends StatelessWidget {
             destinations: [
               NavigationDestination(
                 label: 'Explore',
-                icon: const Icon(LucideIcons.compass),
+                icon: const Icon(Symbols.explore),
               ),
               NavigationDestination(
                 label: 'Account',
-                icon: const Icon(LucideIcons.userCircle),
+                icon: const Icon(Symbols.account_circle),
               ),
             ],
           ),

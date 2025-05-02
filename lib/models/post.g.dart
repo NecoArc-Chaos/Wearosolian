@@ -17,7 +17,7 @@ _SnPost _$SnPostFromJson(Map<String, dynamic> json) => _SnPost(
           : DateTime.parse(json['edited_at'] as String),
   publishedAt: DateTime.parse(json['published_at'] as String),
   visibility: (json['visibility'] as num).toInt(),
-  content: json['content'] as String,
+  content: json['content'] as List<dynamic>?,
   type: (json['type'] as num).toInt(),
   meta: json['meta'] as Map<String, dynamic>?,
   viewsUnique: (json['views_unique'] as num).toInt(),

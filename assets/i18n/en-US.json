@@ -47,6 +47,7 @@
   "postCreateAccountNext": "What's next?",
   "postCreateAccountNext1": "Go to your email inbox and receive the account activation email.",
   "postCreateAccountNext2": "Log in to your account and start exploring the Solar Network!",
+  "postPlaceholder": "What's on your mind?",
   "publishersEmpty": "No publishers yet",
   "publishersEmptyDescription": "You can need to create a publisher to start publishing your posts."
 }

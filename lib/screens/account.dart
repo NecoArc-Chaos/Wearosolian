@@ -7,7 +7,7 @@ import 'package:island/pods/userinfo.dart';
 import 'package:island/route.gr.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:island/widgets/content/cloud_files.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 @RoutePage()
@@ -76,8 +76,8 @@ class AccountScreen extends HookConsumerWidget {
             const Gap(8),
             ListTile(
               minTileHeight: 48,
-              leading: const Icon(LucideIcons.bookOpen),
-              trailing: const Icon(LucideIcons.chevronRight),
+              leading: const Icon(Symbols.public),
+              trailing: const Icon(Symbols.chevron_right),
               contentPadding: EdgeInsets.symmetric(horizontal: 24),
               title: Text('managedPublisher').tr(),
               onTap: () {
@@ -86,8 +86,8 @@ class AccountScreen extends HookConsumerWidget {
             ),
             ListTile(
               minTileHeight: 48,
-              leading: const Icon(LucideIcons.edit),
-              trailing: const Icon(LucideIcons.chevronRight),
+              leading: const Icon(Symbols.edit),
+              trailing: const Icon(Symbols.chevron_right),
               contentPadding: EdgeInsets.symmetric(horizontal: 24),
               title: Text('updateYourProfile').tr(),
               onTap: () {
@@ -97,8 +97,8 @@ class AccountScreen extends HookConsumerWidget {
             const Divider(height: 1).padding(vertical: 4),
             ListTile(
               minTileHeight: 48,
-              leading: const Icon(LucideIcons.logOut),
-              trailing: const Icon(LucideIcons.chevronRight),
+              leading: const Icon(Symbols.logout),
+              trailing: const Icon(Symbols.chevron_right),
               contentPadding: EdgeInsets.symmetric(horizontal: 24),
               title: Text('logout').tr(),
               onTap: () {
@@ -123,8 +123,8 @@ class _UnauthorizedAccountScreen extends StatelessWidget {
       body: Column(
         children: <Widget>[
           ListTile(
-            leading: const Icon(LucideIcons.userPlus),
-            trailing: const Icon(LucideIcons.chevronRight),
+            leading: const Icon(Symbols.person_add),
+            trailing: const Icon(Symbols.chevron_right),
             title: Text('createAccount').tr(),
             subtitle: Text('New to here? We got you covered!'),
             contentPadding: EdgeInsets.symmetric(horizontal: 24),
@@ -133,8 +133,8 @@ class _UnauthorizedAccountScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(LucideIcons.logIn),
-            trailing: const Icon(LucideIcons.chevronRight),
+            leading: const Icon(Symbols.login),
+            trailing: const Icon(Symbols.chevron_right),
             subtitle: Text('Existing user? We\'re welcome you back!'),
             contentPadding: EdgeInsets.symmetric(horizontal: 24),
             title: Text('login').tr(),

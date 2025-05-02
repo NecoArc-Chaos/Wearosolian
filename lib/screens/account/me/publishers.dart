@@ -15,7 +15,7 @@ import 'package:island/services/file.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:island/widgets/content/cloud_files.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:styled_widget/styled_widget.dart';
 
@@ -50,10 +50,10 @@ class ManagedPublisherScreen extends HookConsumerWidget {
               (value) => Column(
                 children: [
                   ListTile(
-                    leading: const Icon(LucideIcons.plus),
+                    leading: const Icon(Symbols.add),
                     title: Text('Create a publisher').tr(),
                     subtitle: Text('To create posts, collections, etc.'),
-                    trailing: const Icon(LucideIcons.chevronRight),
+                    trailing: const Icon(Symbols.chevron_right),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                     onTap: () {
                       context.router.push(NewPublisherRoute());
@@ -79,7 +79,7 @@ class ManagedPublisherScreen extends HookConsumerWidget {
                               IconButton(
                                 padding: EdgeInsets.zero,
                                 visualDensity: VisualDensity.compact,
-                                icon: Icon(LucideIcons.trash, size: 16),
+                                icon: Icon(Symbols.delete, size: 16),
                                 onPressed: () {
                                   showConfirmAlert(
                                     'deletePublisherHint'.tr(),
@@ -102,7 +102,7 @@ class ManagedPublisherScreen extends HookConsumerWidget {
                               IconButton(
                                 padding: EdgeInsets.zero,
                                 visualDensity: VisualDensity.compact,
-                                icon: Icon(LucideIcons.edit, size: 16),
+                                icon: Icon(Symbols.edit, size: 16),
                                 onPressed: () {
                                   context.router
                                       .push(
@@ -354,12 +354,12 @@ class EditPublisherScreen extends HookConsumerWidget {
                         background.value = user.value!.profile.background;
                       },
                       label: Text('syncPublisher'.tr()),
-                      icon: const Icon(LucideIcons.refreshCcw),
+                      icon: const Icon(Symbols.link),
                     ),
                     TextButton.icon(
                       onPressed: submitting.value ? null : performAction,
                       label: Text('saveChanges'.tr()),
-                      icon: const Icon(LucideIcons.save),
+                      icon: const Icon(Symbols.save),
                     ),
                   ],
                 ),

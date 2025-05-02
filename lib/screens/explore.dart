@@ -5,7 +5,7 @@ import 'package:island/route.gr.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:island/models/post.dart';
 import 'package:island/widgets/post/post_item.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 import 'package:dio/dio.dart';
 import 'package:island/pods/network.dart';
@@ -28,7 +28,7 @@ class ExploreScreen extends ConsumerWidget {
             }
           });
         },
-        child: const Icon(LucideIcons.pencil),
+        child: const Icon(Symbols.edit),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: postAsync.when(
