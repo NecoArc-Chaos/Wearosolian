@@ -90,5 +90,7 @@
   "permissionMember": "Member",
   "reply": "Reply",
   "forward": "Forward",
-  "edited": "Edited"
+  "edited": "Edited",
+  "addVideo": "Add video",
+  "addPhoto": "Add photo"
 }

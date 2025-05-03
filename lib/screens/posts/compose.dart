@@ -308,7 +308,7 @@ class PostComposeScreen extends HookConsumerWidget {
                               idx < attachments.value.length;
                               idx++
                             )
-                              _AttachmentPreview(
+                              AttachmentPreview(
                                 item: attachments.value[idx],
                                 progress: attachmentProgress.value[idx],
                                 onRequestUpload: () => uploadAttachment(idx),
@@ -374,13 +374,14 @@ class PostComposeScreen extends HookConsumerWidget {
   }
 }
 
-class _AttachmentPreview extends StatelessWidget {
+class AttachmentPreview extends StatelessWidget {
   final UniversalFile item;
   final double? progress;
   final Function(int)? onMove;
   final Function? onDelete;
   final Function? onRequestUpload;
-  const _AttachmentPreview({
+  const AttachmentPreview({
+    super.key,
     required this.item,
     this.progress,
     this.onRequestUpload,

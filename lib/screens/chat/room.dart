@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:island/database/message.dart';
 import 'package:island/database/message_repository.dart';
 import 'package:island/models/chat.dart';
@@ -14,7 +15,9 @@ import 'package:island/pods/message.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/pods/websocket.dart';
 import 'package:island/route.gr.dart';
+import 'package:island/screens/posts/compose.dart';
 import 'package:island/widgets/alert.dart';
+import 'package:island/widgets/content/cloud_file_collection.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -387,6 +390,30 @@ class ChatRoomScreen extends HookConsumerWidget {
 
     final attachments = useState<List<UniversalFile>>([]);
 
+    Future<void> pickPhotoMedia() async {
+      final result = await ref
+          .watch(imagePickerProvider)
+          .pickMultiImage(requestFullMetadata: true);
+      if (result.isEmpty) return;
+      attachments.value = [
+        ...attachments.value,
+        ...result.map(
+          (e) => UniversalFile(data: e, type: UniversalFileType.image),
+        ),
+      ];
+    }
+
+    Future<void> pickVideoMedia() async {
+      final result = await ref
+          .watch(imagePickerProvider)
+          .pickVideo(source: ImageSource.gallery);
+      if (result == null) return;
+      attachments.value = [
+        ...attachments.value,
+        UniversalFile(data: result, type: UniversalFileType.video),
+      ];
+    }
+
     void sendMessage() {
       if (messageController.text.trim().isNotEmpty) {
         messagesNotifier.sendMessage(
@@ -397,6 +424,10 @@ class ChatRoomScreen extends HookConsumerWidget {
           replyingTo: messageReplyingTo.value,
         );
         messageController.clear();
+        messageEditingTo.value = null;
+        messageReplyingTo.value = null;
+        messageForwardingTo.value = null;
+        attachments.value = [];
       }
     }
 
@@ -531,6 +562,7 @@ class ChatRoomScreen extends HookConsumerWidget {
                   onSend: sendMessage,
                   onClear: () {
                     if (messageEditingTo.value != null) {
+                      attachments.value.clear();
                       messageController.clear();
                     }
                     messageEditingTo.value = null;
@@ -540,6 +572,36 @@ class ChatRoomScreen extends HookConsumerWidget {
                   messageEditingTo: messageEditingTo.value,
                   messageReplyingTo: messageReplyingTo.value,
                   messageForwardingTo: messageForwardingTo.value,
+                  onPickFile: (bool isVideo) {
+                    if (isVideo) {
+                      pickPhotoMedia();
+                    } else {
+                      pickVideoMedia();
+                    }
+                  },
+                  attachments: attachments.value,
+                  onUploadAttachment: (_) {
+                    // not going to do anything, only upload when send the message
+                  },
+                  onDeleteAttachment: (index) async {
+                    final attachment = attachments.value[index];
+                    if (attachment.isOnCloud) {
+                      final client = ref.watch(apiClientProvider);
+                      await client.delete('/files/${attachment.data.id}');
+                    }
+                    final clone = List.of(attachments.value);
+                    clone.removeAt(index);
+                    attachments.value = clone;
+                  },
+                  onMoveAttachment: (idx, delta) {
+                    if (idx + delta < 0 ||
+                        idx + delta >= attachments.value.length) {
+                      return;
+                    }
+                    final clone = List.of(attachments.value);
+                    clone.insert(idx + delta, clone.removeAt(idx));
+                    attachments.value = clone;
+                  },
                 ),
             error: (_, __) => const SizedBox.shrink(),
             loading: () => const SizedBox.shrink(),
@@ -555,18 +617,28 @@ class _ChatInput extends StatelessWidget {
   final SnChat chatRoom;
   final VoidCallback onSend;
   final VoidCallback onClear;
+  final Function(bool isVideo) onPickFile;
   final SnChatMessage? messageReplyingTo;
   final SnChatMessage? messageForwardingTo;
   final SnChatMessage? messageEditingTo;
+  final List<UniversalFile> attachments;
+  final Function(int) onUploadAttachment;
+  final Function(int) onDeleteAttachment;
+  final Function(int, int) onMoveAttachment;
 
   const _ChatInput({
     required this.messageController,
     required this.chatRoom,
     required this.onSend,
     required this.onClear,
+    required this.onPickFile,
     required this.messageReplyingTo,
     required this.messageForwardingTo,
     required this.messageEditingTo,
+    required this.attachments,
+    required this.onUploadAttachment,
+    required this.onDeleteAttachment,
+    required this.onMoveAttachment,
   });
 
   @override
@@ -576,6 +648,24 @@ class _ChatInput extends StatelessWidget {
       color: Theme.of(context).colorScheme.surface,
       child: Column(
         children: [
+          if (attachments.isNotEmpty)
+            SizedBox(
+              height: 280,
+              child: ListView.separated(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                scrollDirection: Axis.horizontal,
+                itemCount: attachments.length,
+                itemBuilder: (context, idx) {
+                  return AttachmentPreview(
+                    item: attachments[idx],
+                    onRequestUpload: () => onUploadAttachment(idx),
+                    onDelete: () => onDeleteAttachment(idx),
+                    onMove: (delta) => onMoveAttachment(idx, delta),
+                  );
+                },
+                separatorBuilder: (_, __) => const Gap(8),
+              ),
+            ),
           if (messageReplyingTo != null ||
               messageForwardingTo != null ||
               messageEditingTo != null)
@@ -614,7 +704,9 @@ class _ChatInput extends StatelessWidget {
                     icon: const Icon(Icons.close, size: 20),
                     onPressed: onClear,
                     padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
+                    style: ButtonStyle(
+                      minimumSize: WidgetStatePropertyAll(Size(28, 28)),
+                    ),
                   ),
                 ],
               ),
@@ -623,6 +715,32 @@ class _ChatInput extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
             child: Row(
               children: [
+                PopupMenuButton(
+                  icon: const Icon(Symbols.photo_library),
+                  itemBuilder:
+                      (context) => [
+                        PopupMenuItem(
+                          onTap: () => onPickFile(true),
+                          child: Row(
+                            spacing: 12,
+                            children: [
+                              const Icon(Symbols.photo),
+                              Text('addPhoto').tr(),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          onTap: () => onPickFile(true),
+                          child: Row(
+                            spacing: 12,
+                            children: [
+                              const Icon(Symbols.video_call),
+                              Text('addVideo').tr(),
+                            ],
+                          ),
+                        ),
+                      ],
+                ),
                 Expanded(
                   child: TextField(
                     controller: messageController,
@@ -773,6 +891,10 @@ class _MessageBubble extends HookConsumerWidget {
                         message.toRemoteMessage().content ?? '',
                         style: TextStyle(color: textColor),
                       ),
+                      if (message.toRemoteMessage().attachments.isNotEmpty)
+                        CloudFileList(
+                          files: message.toRemoteMessage().attachments,
+                        ).padding(top: 4),
                       const Gap(4),
                       Row(
                         spacing: 4,
