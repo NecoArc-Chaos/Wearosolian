@@ -84,19 +84,7 @@ _SnChatMessage _$SnChatMessageFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       repliedMessageId: json['replied_message_id'] as String?,
-      repliedMessage:
-          json['replied_message'] == null
-              ? null
-              : SnChatMessage.fromJson(
-                json['replied_message'] as Map<String, dynamic>,
-              ),
       forwardedMessageId: json['forwarded_message_id'] as String?,
-      forwardedMessage:
-          json['forwarded_message'] == null
-              ? null
-              : SnChatMessage.fromJson(
-                json['forwarded_message'] as Map<String, dynamic>,
-              ),
       senderId: json['sender_id'] as String,
       sender: SnChatMember.fromJson(json['sender'] as Map<String, dynamic>),
       chatRoomId: (json['chat_room_id'] as num).toInt(),
@@ -116,9 +104,7 @@ Map<String, dynamic> _$SnChatMessageToJson(_SnChatMessage instance) =>
       'attachments': instance.attachments.map((e) => e.toJson()).toList(),
       'reactions': instance.reactions.map((e) => e.toJson()).toList(),
       'replied_message_id': instance.repliedMessageId,
-      'replied_message': instance.repliedMessage?.toJson(),
       'forwarded_message_id': instance.forwardedMessageId,
-      'forwarded_message': instance.forwardedMessage?.toJson(),
       'sender_id': instance.senderId,
       'sender': instance.sender.toJson(),
       'chat_room_id': instance.chatRoomId,

@@ -9,6 +9,7 @@ import 'package:island/database/message.dart';
 import 'package:island/database/message_repository.dart';
 import 'package:island/models/chat.dart';
 import 'package:island/models/file.dart';
+import 'package:island/pods/config.dart';
 import 'package:island/pods/message.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/pods/websocket.dart';
@@ -17,6 +18,7 @@ import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:styled_widget/styled_widget.dart';
+import 'package:super_context_menu/super_context_menu.dart';
 import 'package:uuid/uuid.dart';
 import 'chat.dart';
 
@@ -94,7 +96,13 @@ class MessagesNotifier
     }
   }
 
-  Future<void> sendMessage(String content) async {
+  Future<void> sendMessage(
+    String content,
+    List<UniversalFile> attachments, {
+    SnChatMessage? replyingTo,
+    SnChatMessage? forwardingTo,
+    SnChatMessage? editingTo,
+  }) async {
     try {
       final repository = await _ref.read(
         messageRepositoryProvider(_roomId).future,
@@ -102,7 +110,28 @@ class MessagesNotifier
 
       final nonce = const Uuid().v4();
 
-      final messageTask = repository.sendMessage(_roomId, content, nonce);
+      final baseUrl = _ref.read(serverUrlProvider);
+      final atk = await getFreshAtk(
+        _ref.watch(tokenPairProvider),
+        baseUrl,
+        onRefreshed: (atk, rtk) {
+          setTokenPair(_ref.watch(sharedPreferencesProvider), atk, rtk);
+          _ref.invalidate(tokenPairProvider);
+        },
+      );
+      if (atk == null) throw Exception("Unauthorized");
+
+      final messageTask = repository.sendMessage(
+        atk,
+        baseUrl,
+        _roomId,
+        content,
+        nonce,
+        attachments: attachments,
+        replyingTo: replyingTo,
+        forwardingTo: forwardingTo,
+        editingTo: editingTo,
+      );
       final pendingMessage = repository.pendingMessages.values.firstWhereOrNull(
         (m) => m.roomId == _roomId && m.nonce == nonce,
       );
@@ -288,6 +317,18 @@ class MessagesNotifier
       showErrorAlert(err);
     }
   }
+
+  Future<LocalChatMessage?> fetchMessageById(String messageId) async {
+    try {
+      final repository = await _ref.read(
+        messageRepositoryProvider(_roomId).future,
+      );
+      return await repository.getMessageById(messageId);
+    } catch (err) {
+      showErrorAlert(err);
+      return null;
+    }
+  }
 }
 
 @RoutePage()
@@ -305,6 +346,10 @@ class ChatRoomScreen extends HookConsumerWidget {
 
     final messageController = useTextEditingController();
     final scrollController = useScrollController();
+
+    final messageReplyingTo = useState<SnChatMessage?>(null);
+    final messageForwardingTo = useState<SnChatMessage?>(null);
+    final messageEditingTo = useState<SnChatMessage?>(null);
 
     // Add scroll listener for pagination
     useEffect(() {
@@ -340,9 +385,17 @@ class ChatRoomScreen extends HookConsumerWidget {
       return () => subscription.cancel();
     }, [ws, chatRoom]);
 
+    final attachments = useState<List<UniversalFile>>([]);
+
     void sendMessage() {
       if (messageController.text.trim().isNotEmpty) {
-        messagesNotifier.sendMessage(messageController.text.trim());
+        messagesNotifier.sendMessage(
+          messageController.text.trim(),
+          attachments.value,
+          editingTo: messageEditingTo.value,
+          forwardingTo: messageForwardingTo.value,
+          replyingTo: messageReplyingTo.value,
+        );
         messageController.clear();
       }
     }
@@ -410,11 +463,29 @@ class ChatRoomScreen extends HookConsumerWidget {
                                       message: message,
                                       isCurrentUser:
                                           identity?.id == message.senderId,
+                                      onAction: (action) {
+                                        switch (action) {
+                                          case _MessageBubbleAction.delete:
+                                            messagesNotifier.deleteMessage(
+                                              message.id,
+                                            );
+                                          case _MessageBubbleAction.edit:
+                                            messageEditingTo.value =
+                                                message.toRemoteMessage();
+                                          case _MessageBubbleAction.forward:
+                                            messageForwardingTo.value =
+                                                message.toRemoteMessage();
+                                          case _MessageBubbleAction.reply:
+                                            messageReplyingTo.value =
+                                                message.toRemoteMessage();
+                                        }
+                                      },
                                     ),
                                 loading:
                                     () => _MessageBubble(
                                       message: message,
                                       isCurrentUser: false,
+                                      onAction: null,
                                     ),
                                 error: (_, __) => const SizedBox.shrink(),
                               );
@@ -442,6 +513,17 @@ class ChatRoomScreen extends HookConsumerWidget {
                   messageController: messageController,
                   chatRoom: room!,
                   onSend: sendMessage,
+                  onClear: () {
+                    if (messageEditingTo.value != null) {
+                      messageController.clear();
+                    }
+                    messageEditingTo.value = null;
+                    messageReplyingTo.value = null;
+                    messageForwardingTo.value = null;
+                  },
+                  messageEditingTo: messageEditingTo.value,
+                  messageReplyingTo: messageReplyingTo.value,
+                  messageForwardingTo: messageForwardingTo.value,
                 ),
             error: (_, __) => const SizedBox.shrink(),
             loading: () => const SizedBox.shrink(),
@@ -456,11 +538,19 @@ class _ChatInput extends StatelessWidget {
   final TextEditingController messageController;
   final SnChat chatRoom;
   final VoidCallback onSend;
+  final VoidCallback onClear;
+  final SnChatMessage? messageReplyingTo;
+  final SnChatMessage? messageForwardingTo;
+  final SnChatMessage? messageEditingTo;
 
   const _ChatInput({
     required this.messageController,
     required this.chatRoom,
     required this.onSend,
+    required this.onClear,
+    required this.messageReplyingTo,
+    required this.messageForwardingTo,
+    required this.messageEditingTo,
   });
 
   @override
@@ -468,109 +558,238 @@ class _ChatInput extends StatelessWidget {
     return Material(
       elevation: 8,
       color: Theme.of(context).colorScheme.surface,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: messageController,
-                decoration: InputDecoration(
-                  hintText: 'chatMessageHint'.tr(args: [chatRoom.name]),
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
+      child: Column(
+        children: [
+          if (messageReplyingTo != null ||
+              messageForwardingTo != null ||
+              messageEditingTo != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
+              child: Row(
+                children: [
+                  Icon(
+                    messageReplyingTo != null
+                        ? Symbols.reply
+                        : messageForwardingTo != null
+                        ? Symbols.forward
+                        : Symbols.edit,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                ),
-                maxLines: null,
-                onTapOutside:
-                    (_) => FocusManager.instance.primaryFocus?.unfocus(),
-                onSubmitted: (_) => onSend(),
+                  const Gap(8),
+                  Expanded(
+                    child: Text(
+                      messageReplyingTo != null
+                          ? 'Replying to ${messageReplyingTo?.sender.account.nick}'
+                          : messageForwardingTo != null
+                          ? 'Forwarding message'
+                          : 'Editing message',
+                      style: Theme.of(context).textTheme.bodySmall,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    onPressed: onClear,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.send),
-              color: Theme.of(context).colorScheme.primary,
-              onPressed: onSend,
-            ),
-          ],
-        ).padding(bottom: MediaQuery.of(context).padding.bottom),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: messageController,
+                    decoration: InputDecoration(
+                      hintText: 'chatMessageHint'.tr(args: [chatRoom.name]),
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                    ),
+                    maxLines: null,
+                    onTapOutside:
+                        (_) => FocusManager.instance.primaryFocus?.unfocus(),
+                    onSubmitted: (_) => onSend(),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  color: Theme.of(context).colorScheme.primary,
+                  onPressed: onSend,
+                ),
+              ],
+            ).padding(bottom: MediaQuery.of(context).padding.bottom),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _MessageBubble extends StatelessWidget {
+class _MessageBubbleAction {
+  static const String edit = "edit";
+  static const String delete = "delete";
+  static const String reply = "reply";
+  static const String forward = "forward";
+}
+
+class _MessageBubble extends HookConsumerWidget {
   final LocalChatMessage message;
   final bool isCurrentUser;
+  final Function(String action)? onAction;
 
-  const _MessageBubble({required this.message, required this.isCurrentUser});
+  const _MessageBubble({
+    required this.message,
+    required this.isCurrentUser,
+    required this.onAction,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: Row(
-        mainAxisAlignment:
-            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          if (!isCurrentUser)
-            ProfilePictureWidget(
-              fileId:
-                  message.toRemoteMessage().sender.account.profile.pictureId,
-              radius: 18,
-            ),
-          const Gap(8),
-          Flexible(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color:
-                    isCurrentUser
-                        ? Theme.of(context).colorScheme.primary.withOpacity(0.8)
-                        : Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(16),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final messagesNotifier = ref.watch(
+      messagesProvider(message.roomId).notifier,
+    );
+
+    final textColor = isCurrentUser ? Colors.white : Colors.black;
+
+    return ContextMenuWidget(
+      menuProvider: (_) {
+        if (onAction == null) return Menu(children: []);
+        return Menu(
+          children: [
+            if (isCurrentUser)
+              MenuAction(
+                title: 'edit'.tr(),
+                image: MenuImage.icon(Symbols.edit),
+                callback: () {
+                  onAction!.call(_MessageBubbleAction.edit);
+                },
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message.toRemoteMessage().content ?? '',
-                    style: TextStyle(
-                      color: isCurrentUser ? Colors.white : Colors.black,
-                    ),
+            if (isCurrentUser)
+              MenuAction(
+                title: 'delete'.tr(),
+                image: MenuImage.icon(Symbols.delete),
+                callback: () {
+                  onAction!.call(_MessageBubbleAction.delete);
+                },
+              ),
+            if (isCurrentUser) MenuSeparator(),
+            MenuAction(
+              title: 'reply'.tr(),
+              image: MenuImage.icon(Symbols.reply),
+              callback: () {
+                onAction!.call(_MessageBubbleAction.reply);
+              },
+            ),
+            MenuAction(
+              title: 'forward'.tr(),
+              image: MenuImage.icon(Symbols.forward),
+              callback: () {
+                onAction!.call(_MessageBubbleAction.forward);
+              },
+            ),
+          ],
+        );
+      },
+      child: Material(
+        color: Theme.of(context).colorScheme.surface,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          child: Row(
+            mainAxisAlignment:
+                isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              if (!isCurrentUser)
+                ProfilePictureWidget(
+                  fileId:
+                      message
+                          .toRemoteMessage()
+                          .sender
+                          .account
+                          .profile
+                          .pictureId,
+                  radius: 18,
+                ),
+              const Gap(8),
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
                   ),
-                  const Gap(4),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+                  decoration: BoxDecoration(
+                    color:
+                        isCurrentUser
+                            ? Theme.of(
+                              context,
+                            ).colorScheme.primary.withOpacity(0.8)
+                            : Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        DateFormat.Hm().format(message.createdAt.toLocal()),
-                        style: TextStyle(
-                          fontSize: 10,
-                          color:
-                              isCurrentUser ? Colors.white70 : Colors.black54,
+                      if (message.toRemoteMessage().repliedMessageId != null)
+                        _MessageQuoteWidget(
+                          message: message,
+                          textColor: textColor,
+                          isReply: true,
                         ),
+                      if (message.toRemoteMessage().forwardedMessageId != null)
+                        _MessageQuoteWidget(
+                          message: message,
+                          textColor: textColor,
+                          isReply: false,
+                        ),
+                      Text(
+                        message.toRemoteMessage().content ?? '',
+                        style: TextStyle(color: textColor),
                       ),
                       const Gap(4),
-                      if (isCurrentUser)
-                        _buildStatusIcon(context, message.status),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            DateFormat.Hm().format(message.createdAt.toLocal()),
+                            style: TextStyle(fontSize: 10, color: textColor),
+                          ),
+                          const Gap(4),
+                          if (isCurrentUser)
+                            _buildStatusIcon(context, message.status),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+              const Gap(8),
+              if (isCurrentUser)
+                ProfilePictureWidget(
+                  fileId:
+                      message
+                          .toRemoteMessage()
+                          .sender
+                          .account
+                          .profile
+                          .pictureId,
+                  radius: 18,
+                ),
+            ],
           ),
-          const Gap(8),
-          if (isCurrentUser)
-            ProfilePictureWidget(
-              fileId:
-                  message.toRemoteMessage().sender.account.profile.pictureId,
-              radius: 18,
-            ),
-        ],
+        ),
       ),
     );
   }
@@ -598,5 +817,75 @@ class _MessageBubble extends StatelessWidget {
               ),
         );
     }
+  }
+}
+
+class _MessageQuoteWidget extends HookConsumerWidget {
+  final LocalChatMessage message;
+  final Color textColor;
+  final bool isReply;
+
+  const _MessageQuoteWidget({
+    Key? key,
+    required this.message,
+    required this.textColor,
+    required this.isReply,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final messagesNotifier = ref.watch(
+      messagesProvider(message.roomId).notifier,
+    );
+
+    return FutureBuilder<LocalChatMessage?>(
+      future: messagesNotifier.fetchMessageById(
+        isReply
+            ? message.toRemoteMessage().repliedMessageId!
+            : message.toRemoteMessage().forwardedMessageId!,
+      ),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+              color: Theme.of(context).colorScheme.surface.withOpacity(0.2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (isReply)
+                    Row(
+                      spacing: 4,
+                      children: [
+                        Icon(Symbols.reply, size: 16, color: textColor),
+                        Text(
+                          'Replying to ${snapshot.data!.toRemoteMessage().sender.account.nick}',
+                        ).textColor(textColor).bold(),
+                      ],
+                    )
+                  else
+                    Row(
+                      spacing: 4,
+                      children: [
+                        Icon(Symbols.forward, size: 16, color: textColor),
+                        Text(
+                          'Forwarded from ${snapshot.data!.toRemoteMessage().sender.account.nick}',
+                        ).textColor(textColor).bold(),
+                      ],
+                    ),
+                  Text(
+                    snapshot.data!.toRemoteMessage().content ?? "",
+                    style: TextStyle(color: textColor),
+                  ),
+                ],
+              ),
+            ),
+          ).padding(bottom: 4);
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+    );
   }
 }

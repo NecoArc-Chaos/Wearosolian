@@ -3,6 +3,8 @@ import 'package:island/database/drift_db.dart';
 import 'package:island/database/message.dart';
 import 'package:island/models/chat.dart';
 import 'package:island/models/file.dart';
+import 'package:island/pods/network.dart';
+import 'package:island/services/file.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -169,11 +171,16 @@ class MessageRepository {
   }
 
   Future<LocalChatMessage> sendMessage(
+    String atk,
+    String baseUrl,
     int roomId,
     String content,
     String nonce, {
-    List<SnCloudFile>? attachments,
+    required List<UniversalFile> attachments,
     Map<String, dynamic>? meta,
+    SnChatMessage? replyingTo,
+    SnChatMessage? forwardingTo,
+    SnChatMessage? editingTo,
   }) async {
     // Generate a unique nonce for this message
     final nonce = const Uuid().v4();
@@ -200,15 +207,44 @@ class MessageRepository {
     await _database.saveMessage(_database.messageToCompanion(localMessage));
 
     try {
+      var cloudAttachments = List.empty(growable: true);
+      // Upload files
+      for (var idx = 0; idx < attachments.length; idx++) {
+        final cloudFile =
+            await putMediaToCloud(
+              fileData: attachments[idx].data,
+              atk: atk,
+              baseUrl: baseUrl,
+              filename: attachments[idx].data.name ?? 'Post media',
+              mimetype:
+                  attachments[idx].data.mimeType ??
+                  switch (attachments[idx].type) {
+                    UniversalFileType.image => 'image/unknown',
+                    UniversalFileType.video => 'video/unknown',
+                    UniversalFileType.audio => 'audio/unknown',
+                    UniversalFileType.file => 'application/octet-stream',
+                  },
+            ).future;
+        if (cloudFile == null) {
+          throw ArgumentError('Failed to upload the file...');
+        }
+        cloudAttachments.add(cloudFile);
+      }
+
       // Send to server
-      final response = await _apiClient.post(
-        '/chat/$roomId/messages',
+      final response = await _apiClient.request(
+        editingTo == null
+            ? '/chat/$roomId/messages'
+            : '/chat/$roomId/messages/${editingTo.id}',
         data: {
           'content': content,
-          'attachments_id': attachments,
+          'attachments_id': cloudAttachments.map((e) => e.id).toList(),
+          'replied_message_id': replyingTo?.id,
+          'forwarded_message_id': forwardingTo?.id,
           'meta': meta,
           'nonce': nonce,
         },
+        options: Options(method: editingTo == null ? 'POST' : 'PATCH'),
       );
 
       // Update with server response
@@ -377,6 +413,35 @@ class MessageRepository {
       pendingMessages.remove(messageId);
       await _database.deleteMessage(messageId);
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<LocalChatMessage?> getMessageById(String messageId) async {
+    try {
+      // Attempt to get the message from the local database
+      final localMessage =
+          await (_database.select(_database.chatMessages)
+            ..where((tbl) => tbl.id.equals(messageId))).getSingleOrNull();
+      if (localMessage != null) {
+        return _database.companionToMessage(localMessage);
+      }
+
+      // If not found locally, fetch from the server
+      final response = await _apiClient.get(
+        '/chat/${room.id}/messages/$messageId',
+      );
+      final remoteMessage = SnChatMessage.fromJson(response.data);
+      final message = LocalChatMessage.fromRemoteMessage(
+        remoteMessage,
+        MessageStatus.sent,
+      );
+
+      // Save the fetched message to the local database
+      await _database.saveMessage(_database.messageToCompanion(message));
+      return message;
+    } catch (e) {
+      // Handle errors
       rethrow;
     }
   }

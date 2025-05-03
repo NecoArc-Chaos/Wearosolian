@@ -87,5 +87,7 @@
   },
   "permissionOwner": "Owner",
   "permissionModerator": "Moderator",
-  "permissionMember": "Member"
+  "permissionMember": "Member",
+  "reply": "Reply",
+  "forward": "Forward"
 }
