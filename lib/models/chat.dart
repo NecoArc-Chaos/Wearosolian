@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:island/models/file.dart';
 import 'package:island/models/realm.dart';
+import 'package:island/models/user.dart';
 
 part 'chat.freezed.dart';
 part 'chat.g.dart';
@@ -13,7 +14,9 @@ abstract class SnChat with _$SnChat {
     required String description,
     required int type,
     required bool isPublic,
+    required String? pictureId,
     required SnCloudFile? picture,
+    required String? backgroundId,
     required SnCloudFile? background,
     required int? realmId,
     required SnRealm? realm,
@@ -79,6 +82,7 @@ abstract class SnChatMember with _$SnChatMember {
     required String id,
     required int chatRoomId,
     required int accountId,
+    required SnAccount account,
     required String? nick,
     required int role,
     required int notify,

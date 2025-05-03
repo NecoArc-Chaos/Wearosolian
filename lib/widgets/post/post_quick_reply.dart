@@ -66,7 +66,7 @@ class PostQuickReply extends HookConsumerWidget {
             children: [
               GestureDetector(
                 child: ProfilePictureWidget(
-                  item: currentPublisher.value?.picture,
+                  fileId: currentPublisher.value?.pictureId,
                   radius: 16,
                 ),
                 onTap: () {

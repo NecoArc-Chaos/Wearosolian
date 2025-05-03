@@ -85,10 +85,12 @@ _SnPublisher _$SnPublisherFromJson(Map<String, dynamic> json) => _SnPublisher(
   name: json['name'] as String,
   nick: json['nick'] as String,
   bio: json['bio'] as String,
+  pictureId: json['picture_id'] as String?,
   picture:
       json['picture'] == null
           ? null
           : SnCloudFile.fromJson(json['picture'] as Map<String, dynamic>),
+  backgroundId: json['background_id'] as String?,
   background:
       json['background'] == null
           ? null
@@ -109,7 +111,9 @@ Map<String, dynamic> _$SnPublisherToJson(_SnPublisher instance) =>
       'name': instance.name,
       'nick': instance.nick,
       'bio': instance.bio,
+      'picture_id': instance.pictureId,
       'picture': instance.picture?.toJson(),
+      'background_id': instance.backgroundId,
       'background': instance.background?.toJson(),
       'account_id': instance.accountId,
       'created_at': instance.createdAt.toIso8601String(),

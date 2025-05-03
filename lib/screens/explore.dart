@@ -21,6 +21,7 @@ class ExploreScreen extends ConsumerWidget {
     return AppScaffold(
       appBar: AppBar(title: const Text('Explore')),
       floatingActionButton: FloatingActionButton(
+        key: Key("explore-page-fab"),
         onPressed: () {
           context.router.push(PostComposeRoute()).then((value) {
             if (value != null) {

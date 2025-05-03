@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:island/models/file.dart';
@@ -42,18 +43,21 @@ class CloudFileWidget extends ConsumerWidget {
 }
 
 class ProfilePictureWidget extends ConsumerWidget {
-  final SnCloudFile? item;
+  final String? fileId;
   final double radius;
   final IconData? fallbackIcon;
   const ProfilePictureWidget({
     super.key,
-    required this.item,
+    required this.fileId,
     this.radius = 20,
     this.fallbackIcon,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final serverUrl = ref.watch(serverUrlProvider);
+    final uri = '$serverUrl/files/$fileId';
+
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(radius)),
       child: Container(
@@ -61,12 +65,12 @@ class ProfilePictureWidget extends ConsumerWidget {
         height: radius * 2,
         color: Theme.of(context).colorScheme.primaryContainer,
         child:
-            item == null
+            fileId == null
                 ? Icon(
                   fallbackIcon ?? Symbols.account_circle,
                   size: radius,
                 ).center()
-                : CloudFileWidget(item: item!),
+                : CachedNetworkImage(imageUrl: uri, fit: BoxFit.cover),
       ),
     );
   }

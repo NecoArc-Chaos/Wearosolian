@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,11 +13,12 @@ import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:styled_widget/styled_widget.dart';
+import 'package:uuid/uuid.dart';
 import 'chat.dart';
 
 final messageRepositoryProvider = FutureProvider.family<MessageRepository, int>(
   (ref, roomId) async {
-    final room = ref.watch(chatroomProvider(roomId)).value;
+    final room = await ref.watch(chatroomProvider(roomId).future);
     final apiClient = ref.watch(apiClientProvider);
     final database = ref.watch(databaseProvider);
     return MessageRepository(room!, apiClient, database);
@@ -90,11 +92,33 @@ class MessagesNotifier
       final repository = await _ref.read(
         messageRepositoryProvider(_roomId).future,
       );
-      final message = await repository.sendMessage(_roomId, content);
 
-      // Add the new message to the list
-      final currentMessages = state.value ?? [];
-      state = AsyncValue.data([message, ...currentMessages]);
+      final nonce = const Uuid().v4();
+
+      final messageTask = repository.sendMessage(_roomId, content, nonce);
+      final pendingMessage = repository.pendingMessages.values.firstWhereOrNull(
+        (m) => m.roomId == _roomId && m.nonce == nonce,
+      );
+      if (pendingMessage != null) {
+        final currentMessages = state.value ?? [];
+        state = AsyncValue.data([pendingMessage, ...currentMessages]);
+      }
+
+      final message = await messageTask;
+
+      final updatedMessages = state.value ?? [];
+      if (pendingMessage != null) {
+        final index = updatedMessages.indexWhere(
+          (m) => m.id == pendingMessage.id,
+        );
+        if (index >= 0) {
+          final newList = [...updatedMessages];
+          newList[index] = message;
+          state = AsyncValue.data(newList);
+        }
+      } else {
+        state = AsyncValue.data([message, ...updatedMessages]);
+      }
     } catch (err) {
       showErrorAlert(err);
     }
@@ -163,7 +187,7 @@ class ChatRoomScreen extends HookConsumerWidget {
                     child:
                         room?.picture != null
                             ? ProfilePictureWidget(
-                              item: room?.picture,
+                              fileId: room?.pictureId,
                               fallbackIcon: Symbols.chat,
                             )
                             : CircleAvatar(
@@ -293,9 +317,10 @@ class MessageBubble extends StatelessWidget {
             isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (!isCurrentUser)
-            CircleAvatar(
+            ProfilePictureWidget(
+              fileId:
+                  message.toRemoteMessage().sender.account.profile.pictureId,
               radius: 16,
-              child: Text(message.senderId[0].toUpperCase()),
             ),
           const Gap(8),
           Flexible(
@@ -322,7 +347,7 @@ class MessageBubble extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        DateFormat.Hm().format(message.createdAt),
+                        DateFormat.Hm().format(message.createdAt.toLocal()),
                         style: TextStyle(
                           fontSize: 10,
                           color:

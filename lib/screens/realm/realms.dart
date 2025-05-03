@@ -39,6 +39,7 @@ class RealmListScreen extends HookConsumerWidget {
     return AppScaffold(
       appBar: AppBar(title: const Text('realms').tr()),
       floatingActionButton: FloatingActionButton(
+        key: Key("realms-page-fab"),
         child: const Icon(Symbols.add),
         onPressed: () {
           context.router.push(NewRealmRoute());
@@ -58,7 +59,7 @@ class RealmListScreen extends HookConsumerWidget {
                       itemBuilder: (context, item) {
                         return ListTile(
                           leading: ProfilePictureWidget(
-                            item: value[item].picture,
+                            fileId: value[item].pictureId,
                             fallbackIcon: Symbols.group,
                           ),
                           title: Text(value[item].name),
@@ -98,7 +99,9 @@ class RealmListScreen extends HookConsumerWidget {
                                       )
                                       .then((value) {
                                         if (value != null) {
-                                          ref.invalidate(realmsJoinedProvider);
+                                          ref.refresh(
+                                            realmsJoinedProvider.future,
+                                          );
                                         }
                                       });
                                 },
@@ -280,7 +283,7 @@ class EditRealmScreen extends HookConsumerWidget {
                   bottom: -32,
                   child: GestureDetector(
                     child: ProfilePictureWidget(
-                      item: picture.value,
+                      fileId: picture.value?.id,
                       radius: 40,
                       fallbackIcon: Symbols.group,
                     ),

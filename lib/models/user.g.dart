@@ -41,10 +41,12 @@ _SnAccountProfile _$SnAccountProfileFromJson(Map<String, dynamic> json) =>
       middleName: json['middle_name'] as String?,
       lastName: json['last_name'] as String?,
       bio: json['bio'] as String?,
+      pictureId: json['picture_id'] as String?,
       picture:
           json['picture'] == null
               ? null
               : SnCloudFile.fromJson(json['picture'] as Map<String, dynamic>),
+      backgroundId: json['background_id'] as String?,
       background:
           json['background'] == null
               ? null
@@ -66,7 +68,9 @@ Map<String, dynamic> _$SnAccountProfileToJson(_SnAccountProfile instance) =>
       'middle_name': instance.middleName,
       'last_name': instance.lastName,
       'bio': instance.bio,
+      'picture_id': instance.pictureId,
       'picture': instance.picture?.toJson(),
+      'background_id': instance.backgroundId,
       'background': instance.background?.toJson(),
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),

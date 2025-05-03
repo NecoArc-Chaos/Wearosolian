@@ -12,7 +12,7 @@ class MessageRepository {
 
   SnChatMember? _identity;
 
-  final Map<String, LocalChatMessage> _pendingMessages = {};
+  final Map<String, LocalChatMessage> pendingMessages = {};
 
   MessageRepository(this.room, this._apiClient, this._database) {
     initialize();
@@ -84,7 +84,7 @@ class MessageRepository {
 
     // Combine with pending messages
     final pendingForRoom =
-        _pendingMessages.values.where((msg) => msg.roomId == roomId).toList();
+        pendingMessages.values.where((msg) => msg.roomId == roomId).toList();
 
     // Sort by timestamp descending (newest first)
     final allMessages = [...pendingForRoom, ...dbLocalMessages];
@@ -127,7 +127,7 @@ class MessageRepository {
     for (final message in messages) {
       await _database.saveMessage(_database.messageToCompanion(message));
       if (message.nonce != null) {
-        _pendingMessages.removeWhere(
+        pendingMessages.removeWhere(
           (_, pendingMsg) => pendingMsg.nonce == message.nonce,
         );
       }
@@ -138,11 +138,12 @@ class MessageRepository {
 
   Future<LocalChatMessage> sendMessage(
     int roomId,
-    String content, {
+    String content,
+    String nonce, {
     List<SnCloudFile>? attachments,
     Map<String, dynamic>? meta,
   }) async {
-    if (!initialized) {
+    if (!initialized || _identity == null) {
       throw UnsupportedError(
         "The message repository is not ready for send message.",
       );
@@ -169,7 +170,7 @@ class MessageRepository {
     );
 
     // Store in memory and database
-    _pendingMessages[localMessage.id] = localMessage;
+    pendingMessages[localMessage.id] = localMessage;
     await _database.saveMessage(_database.messageToCompanion(localMessage));
 
     try {
@@ -192,7 +193,7 @@ class MessageRepository {
       );
 
       // Remove from pending and update in database
-      _pendingMessages.remove(localMessage.id);
+      pendingMessages.remove(localMessage.id);
       await _database.deleteMessage(localMessage.id);
       await _database.saveMessage(_database.messageToCompanion(updatedMessage));
 
@@ -200,7 +201,7 @@ class MessageRepository {
     } catch (e) {
       // Update status to failed
       localMessage.status = MessageStatus.failed;
-      _pendingMessages[localMessage.id] = localMessage;
+      pendingMessages[localMessage.id] = localMessage;
       await _database.updateMessageStatus(
         localMessage.id,
         MessageStatus.failed,
@@ -210,14 +211,14 @@ class MessageRepository {
   }
 
   Future<LocalChatMessage> retryMessage(String pendingMessageId) async {
-    final message = _pendingMessages[pendingMessageId];
+    final message = pendingMessages[pendingMessageId];
     if (message == null) {
       throw Exception('Message not found');
     }
 
     // Update status back to pending
     message.status = MessageStatus.pending;
-    _pendingMessages[pendingMessageId] = message;
+    pendingMessages[pendingMessageId] = message;
     await _database.updateMessageStatus(
       pendingMessageId,
       MessageStatus.pending,
@@ -244,7 +245,7 @@ class MessageRepository {
       );
 
       // Remove from pending and update in database
-      _pendingMessages.remove(pendingMessageId);
+      pendingMessages.remove(pendingMessageId);
       await _database.deleteMessage(pendingMessageId);
       await _database.saveMessage(_database.messageToCompanion(updatedMessage));
 
@@ -252,7 +253,7 @@ class MessageRepository {
     } catch (e) {
       // Update status to failed
       message.status = MessageStatus.failed;
-      _pendingMessages[pendingMessageId] = message;
+      pendingMessages[pendingMessageId] = message;
       await _database.updateMessageStatus(
         pendingMessageId,
         MessageStatus.failed,

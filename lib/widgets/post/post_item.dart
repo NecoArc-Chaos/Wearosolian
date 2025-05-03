@@ -105,7 +105,7 @@ class PostItem extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 12,
                 children: [
-                  ProfilePictureWidget(item: item.publisher.picture),
+                  ProfilePictureWidget(fileId: item.publisher.pictureId),
                   Expanded(
                     child: GestureDetector(
                       child: Column(

@@ -12,10 +12,12 @@ _SnChat _$SnChatFromJson(Map<String, dynamic> json) => _SnChat(
   description: json['description'] as String,
   type: (json['type'] as num).toInt(),
   isPublic: json['is_public'] as bool,
+  pictureId: json['picture_id'] as String?,
   picture:
       json['picture'] == null
           ? null
           : SnCloudFile.fromJson(json['picture'] as Map<String, dynamic>),
+  backgroundId: json['background_id'] as String?,
   background:
       json['background'] == null
           ? null
@@ -39,7 +41,9 @@ Map<String, dynamic> _$SnChatToJson(_SnChat instance) => <String, dynamic>{
   'description': instance.description,
   'type': instance.type,
   'is_public': instance.isPublic,
+  'picture_id': instance.pictureId,
   'picture': instance.picture?.toJson(),
+  'background_id': instance.backgroundId,
   'background': instance.background?.toJson(),
   'realm_id': instance.realmId,
   'realm': instance.realm?.toJson(),
@@ -160,6 +164,7 @@ _SnChatMember _$SnChatMemberFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       chatRoomId: (json['chat_room_id'] as num).toInt(),
       accountId: (json['account_id'] as num).toInt(),
+      account: SnAccount.fromJson(json['account'] as Map<String, dynamic>),
       nick: json['nick'] as String?,
       role: (json['role'] as num).toInt(),
       notify: (json['notify'] as num).toInt(),
@@ -178,6 +183,7 @@ Map<String, dynamic> _$SnChatMemberToJson(_SnChatMember instance) =>
       'id': instance.id,
       'chat_room_id': instance.chatRoomId,
       'account_id': instance.accountId,
+      'account': instance.account.toJson(),
       'nick': instance.nick,
       'role': instance.role,
       'notify': instance.notify,

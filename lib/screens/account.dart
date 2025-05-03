@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:island/pods/message.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/pods/userinfo.dart';
 import 'package:island/route.gr.dart';
@@ -51,7 +52,7 @@ class AccountScreen extends HookConsumerWidget {
                     spacing: 16,
                     children: [
                       ProfilePictureWidget(
-                        item: user.value!.profile.picture,
+                        fileId: user.value!.profile.pictureId,
                         radius: 24,
                       ),
                       Column(
@@ -108,6 +109,17 @@ class AccountScreen extends HookConsumerWidget {
                 onTap: () async {
                   final tk = ref.watch(tokenPairProvider);
                   Clipboard.setData(ClipboardData(text: tk!.accessToken));
+                },
+              ),
+            if (kDebugMode)
+              ListTile(
+                minTileHeight: 48,
+                leading: const Icon(Symbols.delete),
+                trailing: const Icon(Symbols.chevron_right),
+                contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                title: Text('Reset database'),
+                onTap: () async {
+                  resetDatabase(ref);
                 },
               ),
             const Divider(height: 1).padding(vertical: 8),

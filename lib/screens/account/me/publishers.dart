@@ -69,7 +69,7 @@ class ManagedPublisherScreen extends HookConsumerWidget {
                       itemBuilder: (context, item) {
                         return ListTile(
                           leading: ProfilePictureWidget(
-                            item: value[item].picture,
+                            fileId: value[item].pictureId,
                           ),
                           title: Text(value[item].nick),
                           subtitle: Text('@${value[item].name}'),
@@ -299,7 +299,7 @@ class EditPublisherScreen extends HookConsumerWidget {
                   bottom: -32,
                   child: GestureDetector(
                     child: ProfilePictureWidget(
-                      item: picture.value,
+                      fileId: picture.value?.id,
                       radius: 40,
                     ),
                     onTap: () {

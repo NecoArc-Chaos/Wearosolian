@@ -75,7 +75,7 @@ class AppDatabase extends _$AppDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'island_chat.sqlite'));
+    final file = File(p.join(dbFolder.path, 'solar_network_data.sqlite'));
     return NativeDatabase(file);
   });
 }

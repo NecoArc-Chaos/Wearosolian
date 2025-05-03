@@ -38,6 +38,7 @@ class ChatListScreen extends HookConsumerWidget {
     return AppScaffold(
       appBar: AppBar(title: Text('chat').tr()),
       floatingActionButton: FloatingActionButton(
+        key: Key("chat-page-fab"),
         onPressed: () {
           context.pushRoute(NewChatRoute());
         },
@@ -61,7 +62,7 @@ class ChatListScreen extends HookConsumerWidget {
                             ? CircleAvatar(
                               child: Text(item.name[0].toUpperCase()),
                             )
-                            : ProfilePictureWidget(item: item.picture),
+                            : ProfilePictureWidget(fileId: item.pictureId),
                     title: Text(item.name),
                     subtitle: Text(item.description),
                     onTap: () {
@@ -225,7 +226,7 @@ class EditChatScreen extends HookConsumerWidget {
                   bottom: -32,
                   child: GestureDetector(
                     child: ProfilePictureWidget(
-                      item: picture.value,
+                      fileId: picture.value?.id,
                       radius: 40,
                       fallbackIcon: Symbols.group,
                     ),

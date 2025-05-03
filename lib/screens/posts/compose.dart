@@ -254,7 +254,7 @@ class PostComposeScreen extends HookConsumerWidget {
               children: [
                 GestureDetector(
                   child: ProfilePictureWidget(
-                    item: currentPublisher.value?.picture,
+                    fileId: currentPublisher.value?.pictureId,
                     radius: 24,
                   ),
                   onTap: () {

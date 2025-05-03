@@ -21,7 +21,6 @@ class UserInfoNotifier extends StateNotifier<AsyncValue<SnAccount?>> {
       final user = SnAccount.fromJson(response.data);
       state = AsyncValue.data(user);
     } catch (error, stackTrace) {
-      print('Failed to fetch user: $error');
       state = AsyncValue.error(error, stackTrace);
     }
   }
