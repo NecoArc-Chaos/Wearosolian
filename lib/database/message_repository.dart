@@ -3,6 +3,7 @@ import 'package:island/database/drift_db.dart';
 import 'package:island/database/message.dart';
 import 'package:island/models/chat.dart';
 import 'package:island/models/file.dart';
+import 'package:island/widgets/alert.dart';
 import 'package:uuid/uuid.dart';
 
 class MessageRepository {
@@ -15,9 +16,56 @@ class MessageRepository {
 
   MessageRepository(this.room, this.identity, this._apiClient, this._database);
 
+  Future<LocalChatMessage?> getLastMessages() async {
+    final dbMessages = await _database.getMessagesForRoom(
+      room.id,
+      offset: 0,
+      limit: 1,
+    );
+
+    if (dbMessages.isEmpty) {
+      return null;
+    }
+
+    return _database.companionToMessage(dbMessages.first);
+  }
+
+  Future<bool> syncMessages() async {
+    final lastMessage = await getLastMessages();
+    if (lastMessage == null) return false;
+    try {
+      final resp = await _apiClient.post(
+        '/chat/${room.id}/sync',
+        data: {
+          'last_sync_timestamp':
+              lastMessage.toRemoteMessage().updatedAt.millisecondsSinceEpoch,
+        },
+      );
+
+      final response = MessageSyncResponse.fromJson(resp.data);
+      for (final change in response.changes) {
+        switch (change.action) {
+          case MessageChangeAction.create:
+            await receiveMessage(change.message!);
+            break;
+          case MessageChangeAction.update:
+            await receiveMessageUpdate(change.message!);
+            break;
+          case MessageChangeAction.delete:
+            await receiveMessageDeletion(change.messageId.toString());
+            break;
+        }
+      }
+    } catch (err) {
+      showErrorAlert(err);
+    }
+    return true;
+  }
+
   Future<List<LocalChatMessage>> listMessages({
     int offset = 0,
     int take = 20,
+    bool synced = false,
   }) async {
     try {
       final localMessages = await _getCachedMessages(
@@ -26,8 +74,9 @@ class MessageRepository {
         take: take,
       );
 
-      if (offset == 0) {
-        // Always fetch latest messages in background if we're loading the first page
+      // If it already synced with the remote, skip this
+      if (offset == 0 && !synced) {
+        // Fetch latest messages
         _fetchAndCacheMessages(room.id, offset: offset, take: take);
 
         if (localMessages.isNotEmpty) {
@@ -235,6 +284,99 @@ class MessageRepository {
         pendingMessageId,
         MessageStatus.failed,
       );
+      rethrow;
+    }
+  }
+
+  Future<LocalChatMessage> receiveMessage(SnChatMessage remoteMessage) async {
+    final localMessage = LocalChatMessage.fromRemoteMessage(
+      remoteMessage,
+      MessageStatus.sent,
+    );
+
+    if (remoteMessage.nonce != null) {
+      pendingMessages.removeWhere(
+        (_, pendingMsg) => pendingMsg.nonce == remoteMessage.nonce,
+      );
+    }
+
+    await _database.saveMessage(_database.messageToCompanion(localMessage));
+    return localMessage;
+  }
+
+  Future<LocalChatMessage> receiveMessageUpdate(
+    SnChatMessage remoteMessage,
+  ) async {
+    final localMessage = LocalChatMessage.fromRemoteMessage(
+      remoteMessage,
+      MessageStatus.sent,
+    );
+
+    await _database.updateMessage(_database.messageToCompanion(localMessage));
+    return localMessage;
+  }
+
+  Future<void> receiveMessageDeletion(String messageId) async {
+    // Remove from pending messages if exists
+    pendingMessages.remove(messageId);
+
+    // Delete from local database
+    await _database.deleteMessage(messageId);
+  }
+
+  Future<LocalChatMessage> updateMessage(
+    String messageId,
+    String content, {
+    List<SnCloudFile>? attachments,
+    Map<String, dynamic>? meta,
+  }) async {
+    final message = pendingMessages[messageId];
+    if (message != null) {
+      // Update pending message
+      final rmMessage = message.toRemoteMessage();
+      final updatedRemoteMessage = rmMessage.copyWith(
+        content: content,
+        meta: meta ?? rmMessage.meta,
+      );
+      final updatedLocalMessage = LocalChatMessage.fromRemoteMessage(
+        updatedRemoteMessage,
+        MessageStatus.pending,
+      );
+      pendingMessages[messageId] = updatedLocalMessage;
+      await _database.updateMessage(
+        _database.messageToCompanion(updatedLocalMessage),
+      );
+      return message;
+    }
+
+    try {
+      // Update on server
+      final response = await _apiClient.put(
+        '/chat/${room.id}/messages/$messageId',
+        data: {'content': content, 'attachments': attachments, 'meta': meta},
+      );
+
+      // Update local copy
+      final remoteMessage = SnChatMessage.fromJson(response.data);
+      final updatedMessage = LocalChatMessage.fromRemoteMessage(
+        remoteMessage,
+        MessageStatus.sent,
+      );
+      await _database.updateMessage(
+        _database.messageToCompanion(updatedMessage),
+      );
+      return updatedMessage;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteMessage(String messageId) async {
+    try {
+      await _apiClient.delete('/chat/${room.id}/messages/$messageId');
+      pendingMessages.remove(messageId);
+      await _database.deleteMessage(messageId);
+    } catch (e) {
       rethrow;
     }
   }

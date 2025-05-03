@@ -33,6 +33,11 @@ class AppDatabase extends _$AppDatabase {
     return into(chatMessages).insert(message, mode: InsertMode.insertOrReplace);
   }
 
+  Future<int> updateMessage(ChatMessagesCompanion message) {
+    return (update(chatMessages)
+      ..where((m) => m.id.equals(message.id.value))).write(message);
+  }
+
   Future<int> updateMessageStatus(String id, MessageStatus status) {
     return (update(chatMessages)..where(
       (m) => m.id.equals(id),

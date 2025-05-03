@@ -7,8 +7,11 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/database/message.dart';
 import 'package:island/database/message_repository.dart';
+import 'package:island/models/chat.dart';
+import 'package:island/models/file.dart';
 import 'package:island/pods/message.dart';
 import 'package:island/pods/network.dart';
+import 'package:island/pods/websocket.dart';
 import 'package:island/route.gr.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/content/cloud_files.dart';
@@ -52,9 +55,11 @@ class MessagesNotifier
       final repository = await _ref.read(
         messageRepositoryProvider(_roomId).future,
       );
+      final synced = await repository.syncMessages();
       final messages = await repository.listMessages(
         offset: 0,
         take: _pageSize,
+        synced: synced,
       );
       state = AsyncValue.data(messages);
       _currentPage = 0;
@@ -145,6 +150,144 @@ class MessagesNotifier
       showErrorAlert(err);
     }
   }
+
+  Future<void> receiveMessage(SnChatMessage remoteMessage) async {
+    try {
+      final repository = await _ref.read(
+        messageRepositoryProvider(_roomId).future,
+      );
+
+      // Skip if this message is not for this room
+      if (remoteMessage.chatRoomId != _roomId) return;
+
+      final localMessage = await repository.receiveMessage(remoteMessage);
+
+      // Add the new message to the state
+      final currentMessages = state.value ?? [];
+
+      // Check if the message already exists (by id or nonce)
+      final existingIndex = currentMessages.indexWhere(
+        (m) =>
+            m.id == localMessage.id ||
+            (localMessage.nonce != null && m.nonce == localMessage.nonce),
+      );
+
+      if (existingIndex >= 0) {
+        // Replace existing message
+        final newList = [...currentMessages];
+        newList[existingIndex] = localMessage;
+        state = AsyncValue.data(newList);
+      } else {
+        // Add new message at the beginning (newest first)
+        state = AsyncValue.data([localMessage, ...currentMessages]);
+      }
+    } catch (err) {
+      showErrorAlert(err);
+    }
+  }
+
+  Future<void> receiveMessageUpdate(SnChatMessage remoteMessage) async {
+    try {
+      final repository = await _ref.read(
+        messageRepositoryProvider(_roomId).future,
+      );
+
+      // Skip if this message is not for this room
+      if (remoteMessage.chatRoomId != _roomId) return;
+
+      final updatedMessage = await repository.receiveMessageUpdate(
+        remoteMessage,
+      );
+
+      // Update the message in the list
+      final currentMessages = state.value ?? [];
+      final index = currentMessages.indexWhere(
+        (m) => m.id == updatedMessage.id,
+      );
+
+      if (index >= 0) {
+        final newList = [...currentMessages];
+        newList[index] = updatedMessage;
+        state = AsyncValue.data(newList);
+      }
+    } catch (err) {
+      showErrorAlert(err);
+    }
+  }
+
+  Future<void> receiveMessageDeletion(String messageId) async {
+    try {
+      final repository = await _ref.read(
+        messageRepositoryProvider(_roomId).future,
+      );
+
+      await repository.receiveMessageDeletion(messageId);
+
+      // Remove the message from the list
+      final currentMessages = state.value ?? [];
+      final filteredMessages =
+          currentMessages.where((m) => m.id != messageId).toList();
+
+      if (filteredMessages.length != currentMessages.length) {
+        state = AsyncValue.data(filteredMessages);
+      }
+    } catch (err) {
+      showErrorAlert(err);
+    }
+  }
+
+  Future<void> updateMessage(
+    String messageId,
+    String content, {
+    List<SnCloudFile>? attachments,
+    Map<String, dynamic>? meta,
+  }) async {
+    try {
+      final repository = await _ref.read(
+        messageRepositoryProvider(_roomId).future,
+      );
+
+      final updatedMessage = await repository.updateMessage(
+        messageId,
+        content,
+        attachments: attachments,
+        meta: meta,
+      );
+
+      // Update the message in the list
+      final currentMessages = state.value ?? [];
+      final index = currentMessages.indexWhere((m) => m.id == messageId);
+
+      if (index >= 0) {
+        final newList = [...currentMessages];
+        newList[index] = updatedMessage;
+        state = AsyncValue.data(newList);
+      }
+    } catch (err) {
+      showErrorAlert(err);
+    }
+  }
+
+  Future<void> deleteMessage(String messageId) async {
+    try {
+      final repository = await _ref.read(
+        messageRepositoryProvider(_roomId).future,
+      );
+
+      await repository.deleteMessage(messageId);
+
+      // Remove the message from the list
+      final currentMessages = state.value ?? [];
+      final filteredMessages =
+          currentMessages.where((m) => m.id != messageId).toList();
+
+      if (filteredMessages.length != currentMessages.length) {
+        state = AsyncValue.data(filteredMessages);
+      }
+    } catch (err) {
+      showErrorAlert(err);
+    }
+  }
 }
 
 @RoutePage()
@@ -158,7 +301,7 @@ class ChatRoomScreen extends HookConsumerWidget {
     final chatIdentity = ref.watch(chatroomIdentityProvider(id));
     final messages = ref.watch(messagesProvider(id));
     final messagesNotifier = ref.read(messagesProvider(id).notifier);
-    final messagesRepo = ref.watch(messageRepositoryProvider(id));
+    final ws = ref.watch(websocketProvider);
 
     final messageController = useTextEditingController();
     final scrollController = useScrollController();
@@ -175,6 +318,34 @@ class ChatRoomScreen extends HookConsumerWidget {
       scrollController.addListener(onScroll);
       return () => scrollController.removeListener(onScroll);
     }, [scrollController]);
+
+    // Add websocket listener
+    // Add websocket listener for new messages
+    useEffect(() {
+      void onMessage(WebSocketPacket pkt) {
+        if (!pkt.type.startsWith('messages')) return;
+        final message = SnChatMessage.fromJson(pkt.data!);
+        if (message.chatRoomId != chatRoom.value?.id) return;
+        switch (pkt.type) {
+          case 'messages.new':
+            messagesNotifier.receiveMessage(message);
+          case 'messages.update':
+            messagesNotifier.receiveMessageUpdate(message);
+          case 'messages.delete':
+            messagesNotifier.receiveMessageDeletion(message.id);
+        }
+      }
+
+      final subscription = ws.dataStream.listen(onMessage);
+      return () => subscription.cancel();
+    }, [ws, chatRoom]);
+
+    void sendMessage() {
+      if (messageController.text.trim().isNotEmpty) {
+        messagesNotifier.sendMessage(messageController.text.trim());
+        messageController.clear();
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -235,13 +406,13 @@ class ChatRoomScreen extends HookConsumerWidget {
                               return chatIdentity.when(
                                 skipError: true,
                                 data:
-                                    (identity) => MessageBubble(
+                                    (identity) => _MessageBubble(
                                       message: message,
                                       isCurrentUser:
                                           identity?.id == message.senderId,
                                     ),
                                 loading:
-                                    () => MessageBubble(
+                                    () => _MessageBubble(
                                       message: message,
                                       isCurrentUser: false,
                                     ),
@@ -265,58 +436,15 @@ class ChatRoomScreen extends HookConsumerWidget {
                   ),
             ),
           ),
-          Material(
-            elevation: 2,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  IconButton(icon: const Icon(Icons.add), onPressed: () {}),
-                  Expanded(
-                    child: TextField(
-                      controller: messageController,
-                      decoration: InputDecoration(
-                        hintText: 'chatMessageHint'.tr(
-                          args: [chatRoom.value?.name ?? 'unknown'.tr()],
-                        ),
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                      ),
-                      maxLines: null,
-                      onTapOutside:
-                          (_) => FocusManager.instance.primaryFocus?.unfocus(),
-                    ),
-                  ),
-                  const Gap(8),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {
-                      if (messageController.text.trim().isNotEmpty) {
-                        messagesNotifier.sendMessage(
-                          messageController.text.trim(),
-                        );
-                        messageController.clear();
-                      }
-                    },
-                  ),
-                ],
-              ).padding(bottom: MediaQuery.of(context).padding.bottom),
-            ),
+          chatRoom.when(
+            data:
+                (room) => _ChatInput(
+                  messageController: messageController,
+                  chatRoom: room!,
+                  onSend: sendMessage,
+                ),
+            error: (_, __) => const SizedBox.shrink(),
+            loading: () => const SizedBox.shrink(),
           ),
         ],
       ),
@@ -324,15 +452,61 @@ class ChatRoomScreen extends HookConsumerWidget {
   }
 }
 
-class MessageBubble extends StatelessWidget {
+class _ChatInput extends StatelessWidget {
+  final TextEditingController messageController;
+  final SnChat chatRoom;
+  final VoidCallback onSend;
+
+  const _ChatInput({
+    required this.messageController,
+    required this.chatRoom,
+    required this.onSend,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 8,
+      color: Theme.of(context).colorScheme.surface,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: messageController,
+                decoration: InputDecoration(
+                  hintText: 'chatMessageHint'.tr(args: [chatRoom.name]),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                ),
+                maxLines: null,
+                onTapOutside:
+                    (_) => FocusManager.instance.primaryFocus?.unfocus(),
+                onSubmitted: (_) => onSend(),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.send),
+              color: Theme.of(context).colorScheme.primary,
+              onPressed: onSend,
+            ),
+          ],
+        ).padding(bottom: MediaQuery.of(context).padding.bottom),
+      ),
+    );
+  }
+}
+
+class _MessageBubble extends StatelessWidget {
   final LocalChatMessage message;
   final bool isCurrentUser;
 
-  const MessageBubble({
-    super.key,
-    required this.message,
-    required this.isCurrentUser,
-  });
+  const _MessageBubble({required this.message, required this.isCurrentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +520,7 @@ class MessageBubble extends StatelessWidget {
             ProfilePictureWidget(
               fileId:
                   message.toRemoteMessage().sender.account.profile.pictureId,
-              radius: 16,
+              radius: 18,
             ),
           const Gap(8),
           Flexible(
@@ -394,7 +568,7 @@ class MessageBubble extends StatelessWidget {
             ProfilePictureWidget(
               fileId:
                   message.toRemoteMessage().sender.account.profile.pictureId,
-              radius: 16,
+              radius: 18,
             ),
         ],
       ),

@@ -916,4 +916,312 @@ $SnAccountCopyWith<$Res> get account {
 }
 }
 
+
+/// @nodoc
+mixin _$MessageChange {
+
+ String get messageId; String get action; SnChatMessage? get message; DateTime get timestamp;
+/// Create a copy of MessageChange
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageChangeCopyWith<MessageChange> get copyWith => _$MessageChangeCopyWithImpl<MessageChange>(this as MessageChange, _$identity);
+
+  /// Serializes this MessageChange to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageChange&&(identical(other.messageId, messageId) || other.messageId == messageId)&&(identical(other.action, action) || other.action == action)&&(identical(other.message, message) || other.message == message)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,messageId,action,message,timestamp);
+
+@override
+String toString() {
+  return 'MessageChange(messageId: $messageId, action: $action, message: $message, timestamp: $timestamp)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MessageChangeCopyWith<$Res>  {
+  factory $MessageChangeCopyWith(MessageChange value, $Res Function(MessageChange) _then) = _$MessageChangeCopyWithImpl;
+@useResult
+$Res call({
+ String messageId, String action, SnChatMessage? message, DateTime timestamp
+});
+
+
+$SnChatMessageCopyWith<$Res>? get message;
+
+}
+/// @nodoc
+class _$MessageChangeCopyWithImpl<$Res>
+    implements $MessageChangeCopyWith<$Res> {
+  _$MessageChangeCopyWithImpl(this._self, this._then);
+
+  final MessageChange _self;
+  final $Res Function(MessageChange) _then;
+
+/// Create a copy of MessageChange
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? messageId = null,Object? action = null,Object? message = freezed,Object? timestamp = null,}) {
+  return _then(_self.copyWith(
+messageId: null == messageId ? _self.messageId : messageId // ignore: cast_nullable_to_non_nullable
+as String,action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
+as String,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as SnChatMessage?,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+/// Create a copy of MessageChange
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnChatMessageCopyWith<$Res>? get message {
+    if (_self.message == null) {
+    return null;
+  }
+
+  return $SnChatMessageCopyWith<$Res>(_self.message!, (value) {
+    return _then(_self.copyWith(message: value));
+  });
+}
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _MessageChange implements MessageChange {
+  const _MessageChange({required this.messageId, required this.action, this.message, required this.timestamp});
+  factory _MessageChange.fromJson(Map<String, dynamic> json) => _$MessageChangeFromJson(json);
+
+@override final  String messageId;
+@override final  String action;
+@override final  SnChatMessage? message;
+@override final  DateTime timestamp;
+
+/// Create a copy of MessageChange
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MessageChangeCopyWith<_MessageChange> get copyWith => __$MessageChangeCopyWithImpl<_MessageChange>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$MessageChangeToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageChange&&(identical(other.messageId, messageId) || other.messageId == messageId)&&(identical(other.action, action) || other.action == action)&&(identical(other.message, message) || other.message == message)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,messageId,action,message,timestamp);
+
+@override
+String toString() {
+  return 'MessageChange(messageId: $messageId, action: $action, message: $message, timestamp: $timestamp)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MessageChangeCopyWith<$Res> implements $MessageChangeCopyWith<$Res> {
+  factory _$MessageChangeCopyWith(_MessageChange value, $Res Function(_MessageChange) _then) = __$MessageChangeCopyWithImpl;
+@override @useResult
+$Res call({
+ String messageId, String action, SnChatMessage? message, DateTime timestamp
+});
+
+
+@override $SnChatMessageCopyWith<$Res>? get message;
+
+}
+/// @nodoc
+class __$MessageChangeCopyWithImpl<$Res>
+    implements _$MessageChangeCopyWith<$Res> {
+  __$MessageChangeCopyWithImpl(this._self, this._then);
+
+  final _MessageChange _self;
+  final $Res Function(_MessageChange) _then;
+
+/// Create a copy of MessageChange
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? messageId = null,Object? action = null,Object? message = freezed,Object? timestamp = null,}) {
+  return _then(_MessageChange(
+messageId: null == messageId ? _self.messageId : messageId // ignore: cast_nullable_to_non_nullable
+as String,action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
+as String,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as SnChatMessage?,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+/// Create a copy of MessageChange
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnChatMessageCopyWith<$Res>? get message {
+    if (_self.message == null) {
+    return null;
+  }
+
+  return $SnChatMessageCopyWith<$Res>(_self.message!, (value) {
+    return _then(_self.copyWith(message: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$MessageSyncResponse {
+
+ List<MessageChange> get changes; DateTime get currentTimestamp;
+/// Create a copy of MessageSyncResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageSyncResponseCopyWith<MessageSyncResponse> get copyWith => _$MessageSyncResponseCopyWithImpl<MessageSyncResponse>(this as MessageSyncResponse, _$identity);
+
+  /// Serializes this MessageSyncResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageSyncResponse&&const DeepCollectionEquality().equals(other.changes, changes)&&(identical(other.currentTimestamp, currentTimestamp) || other.currentTimestamp == currentTimestamp));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(changes),currentTimestamp);
+
+@override
+String toString() {
+  return 'MessageSyncResponse(changes: $changes, currentTimestamp: $currentTimestamp)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MessageSyncResponseCopyWith<$Res>  {
+  factory $MessageSyncResponseCopyWith(MessageSyncResponse value, $Res Function(MessageSyncResponse) _then) = _$MessageSyncResponseCopyWithImpl;
+@useResult
+$Res call({
+ List<MessageChange> changes, DateTime currentTimestamp
+});
+
+
+
+
+}
+/// @nodoc
+class _$MessageSyncResponseCopyWithImpl<$Res>
+    implements $MessageSyncResponseCopyWith<$Res> {
+  _$MessageSyncResponseCopyWithImpl(this._self, this._then);
+
+  final MessageSyncResponse _self;
+  final $Res Function(MessageSyncResponse) _then;
+
+/// Create a copy of MessageSyncResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? changes = null,Object? currentTimestamp = null,}) {
+  return _then(_self.copyWith(
+changes: null == changes ? _self.changes : changes // ignore: cast_nullable_to_non_nullable
+as List<MessageChange>,currentTimestamp: null == currentTimestamp ? _self.currentTimestamp : currentTimestamp // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _MessageSyncResponse implements MessageSyncResponse {
+  const _MessageSyncResponse({final  List<MessageChange> changes = const [], required this.currentTimestamp}): _changes = changes;
+  factory _MessageSyncResponse.fromJson(Map<String, dynamic> json) => _$MessageSyncResponseFromJson(json);
+
+ final  List<MessageChange> _changes;
+@override@JsonKey() List<MessageChange> get changes {
+  if (_changes is EqualUnmodifiableListView) return _changes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_changes);
+}
+
+@override final  DateTime currentTimestamp;
+
+/// Create a copy of MessageSyncResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MessageSyncResponseCopyWith<_MessageSyncResponse> get copyWith => __$MessageSyncResponseCopyWithImpl<_MessageSyncResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$MessageSyncResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageSyncResponse&&const DeepCollectionEquality().equals(other._changes, _changes)&&(identical(other.currentTimestamp, currentTimestamp) || other.currentTimestamp == currentTimestamp));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_changes),currentTimestamp);
+
+@override
+String toString() {
+  return 'MessageSyncResponse(changes: $changes, currentTimestamp: $currentTimestamp)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MessageSyncResponseCopyWith<$Res> implements $MessageSyncResponseCopyWith<$Res> {
+  factory _$MessageSyncResponseCopyWith(_MessageSyncResponse value, $Res Function(_MessageSyncResponse) _then) = __$MessageSyncResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ List<MessageChange> changes, DateTime currentTimestamp
+});
+
+
+
+
+}
+/// @nodoc
+class __$MessageSyncResponseCopyWithImpl<$Res>
+    implements _$MessageSyncResponseCopyWith<$Res> {
+  __$MessageSyncResponseCopyWithImpl(this._self, this._then);
+
+  final _MessageSyncResponse _self;
+  final $Res Function(_MessageSyncResponse) _then;
+
+/// Create a copy of MessageSyncResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? changes = null,Object? currentTimestamp = null,}) {
+  return _then(_MessageSyncResponse(
+changes: null == changes ? _self._changes : changes // ignore: cast_nullable_to_non_nullable
+as List<MessageChange>,currentTimestamp: null == currentTimestamp ? _self.currentTimestamp : currentTimestamp // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+
+}
+
 // dart format on

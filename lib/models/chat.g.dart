@@ -195,3 +195,39 @@ Map<String, dynamic> _$SnChatMemberToJson(_SnChatMember instance) =>
       'joined_at': instance.joinedAt?.toIso8601String(),
       'is_bot': instance.isBot,
     };
+
+_MessageChange _$MessageChangeFromJson(Map<String, dynamic> json) =>
+    _MessageChange(
+      messageId: json['message_id'] as String,
+      action: json['action'] as String,
+      message:
+          json['message'] == null
+              ? null
+              : SnChatMessage.fromJson(json['message'] as Map<String, dynamic>),
+      timestamp: DateTime.parse(json['timestamp'] as String),
+    );
+
+Map<String, dynamic> _$MessageChangeToJson(_MessageChange instance) =>
+    <String, dynamic>{
+      'message_id': instance.messageId,
+      'action': instance.action,
+      'message': instance.message?.toJson(),
+      'timestamp': instance.timestamp.toIso8601String(),
+    };
+
+_MessageSyncResponse _$MessageSyncResponseFromJson(Map<String, dynamic> json) =>
+    _MessageSyncResponse(
+      changes:
+          (json['changes'] as List<dynamic>?)
+              ?.map((e) => MessageChange.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      currentTimestamp: DateTime.parse(json['current_timestamp'] as String),
+    );
+
+Map<String, dynamic> _$MessageSyncResponseToJson(
+  _MessageSyncResponse instance,
+) => <String, dynamic>{
+  'changes': instance.changes.map((e) => e.toJson()).toList(),
+  'current_timestamp': instance.currentTimestamp.toIso8601String(),
+};

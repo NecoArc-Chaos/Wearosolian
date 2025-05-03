@@ -94,3 +94,33 @@ abstract class SnChatMember with _$SnChatMember {
   factory SnChatMember.fromJson(Map<String, dynamic> json) =>
       _$SnChatMemberFromJson(json);
 }
+
+class MessageChangeAction {
+  static const String create = "create";
+  static const String update = "update";
+  static const String delete = "delete";
+}
+
+@freezed
+abstract class MessageChange with _$MessageChange {
+  const factory MessageChange({
+    required String messageId,
+    required String action,
+    SnChatMessage? message,
+    required DateTime timestamp,
+  }) = _MessageChange;
+
+  factory MessageChange.fromJson(Map<String, dynamic> json) =>
+      _$MessageChangeFromJson(json);
+}
+
+@freezed
+abstract class MessageSyncResponse with _$MessageSyncResponse {
+  const factory MessageSyncResponse({
+    @Default([]) List<MessageChange> changes,
+    required DateTime currentTimestamp,
+  }) = _MessageSyncResponse;
+
+  factory MessageSyncResponse.fromJson(Map<String, dynamic> json) =>
+      _$MessageSyncResponseFromJson(json);
+}
