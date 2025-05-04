@@ -64,50 +64,11 @@ class RealmListScreen extends HookConsumerWidget {
                           ),
                           title: Text(value[item].name),
                           subtitle: Text(value[item].description),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                visualDensity: VisualDensity.compact,
-                                icon: Icon(Symbols.delete),
-                                onPressed: () {
-                                  showConfirmAlert(
-                                    'deleteRealmHint'.tr(),
-                                    'deleteRealm'.tr(args: [value[item].name]),
-                                  ).then((confirm) {
-                                    if (confirm) {
-                                      final client = ref.watch(
-                                        apiClientProvider,
-                                      );
-                                      client.delete(
-                                        '/realms/${value[item].slug}',
-                                      );
-                                      ref.invalidate(publishersManagedProvider);
-                                    }
-                                  });
-                                },
-                              ),
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                visualDensity: VisualDensity.compact,
-                                icon: Icon(Symbols.edit),
-                                onPressed: () {
-                                  context.router
-                                      .push(
-                                        EditRealmRoute(slug: value[item].slug),
-                                      )
-                                      .then((value) {
-                                        if (value != null) {
-                                          ref.refresh(
-                                            realmsJoinedProvider.future,
-                                          );
-                                        }
-                                      });
-                                },
-                              ),
-                            ],
-                          ),
+                          onTap: () {
+                            context.router.push(
+                              RealmDetailRoute(slug: value[item].slug),
+                            );
+                          },
                           contentPadding: EdgeInsets.only(left: 16, right: 14),
                         );
                       },

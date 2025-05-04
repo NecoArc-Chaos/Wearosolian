@@ -33,6 +33,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: PostDetailRoute.page, path: '/posts/:id'),
     AutoRoute(page: PostEditRoute.page, path: '/posts/:id/edit'),
     AutoRoute(page: NewRealmRoute.page, path: '/realms/new'),
+    AutoRoute(page: RealmDetailRoute.page, path: '/realms/:slug'),
     AutoRoute(page: EditRealmRoute.page, path: '/realms/:slug/edit'),
     AutoRoute(page: NewChatRoute.page, path: '/chat/new'),
     AutoRoute(page: EditChatRoute.page, path: '/chat/:id/edit'),

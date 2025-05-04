@@ -3,34 +3,41 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:island/models/chat.dart';
+import 'package:island/models/realm.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/route.gr.dart';
-import 'package:island/screens/chat/chat.dart';
+import 'package:island/screens/realm/realms.dart';
 import 'package:island/widgets/account/account_picker.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:styled_widget/styled_widget.dart';
 
-part 'room_detail.freezed.dart';
+part 'detail.g.dart';
+
+@riverpod
+Future<SnRealmMember?> realmIdentity(Ref ref, String realmSlug) async {
+  final apiClient = ref.watch(apiClientProvider);
+  final response = await apiClient.get('/realms/$realmSlug/members/me');
+  return SnRealmMember.fromJson(response.data);
+}
 
 @RoutePage()
-class ChatDetailScreen extends HookConsumerWidget {
-  final int id;
-  const ChatDetailScreen({super.key, @PathParam("id") required this.id});
+class RealmDetailScreen extends HookConsumerWidget {
+  final String slug;
+  const RealmDetailScreen({super.key, @PathParam("slug") required this.slug});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final roomState = ref.watch(chatroomProvider(id));
-    final roomIdentity = ref.watch(chatroomIdentityProvider(id));
+    final realmState = ref.watch(realmProvider(slug));
+    final realmIdentity = ref.watch(realmIdentityProvider(slug));
 
-    final isModerator = roomIdentity.when(
+    final isModerator = realmIdentity.when(
       loading: () => false,
       error: (error, _) => false,
       data: (identity) => (identity?.role ?? 0) >= 50,
@@ -42,12 +49,12 @@ class ChatDetailScreen extends HookConsumerWidget {
       offset: Offset(1.0, 1.0),
     );
 
-    return Scaffold(
-      body: roomState.when(
+    return AppScaffold(
+      body: realmState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
         data:
-            (currentRoom) => CustomScrollView(
+            (realm) => CustomScrollView(
               slivers: [
                 SliverAppBar(
                   expandedHeight: 180,
@@ -55,36 +62,14 @@ class ChatDetailScreen extends HookConsumerWidget {
                   leading: PageBackButton(shadows: [iconShadow]),
                   flexibleSpace: FlexibleSpaceBar(
                     background:
-                        currentRoom!.type == 1 &&
-                                currentRoom
-                                        .members!
-                                        .first
-                                        .account
-                                        .profile
-                                        .backgroundId !=
-                                    null
-                            ? CloudImageWidget(
-                              fileId:
-                                  currentRoom
-                                      .members!
-                                      .first
-                                      .account
-                                      .profile
-                                      .backgroundId!,
-                            )
-                            : currentRoom.backgroundId != null
-                            ? CloudImageWidget(
-                              fileId: currentRoom.backgroundId!,
-                              fit: BoxFit.cover,
-                            )
+                        realm!.backgroundId != null
+                            ? CloudImageWidget(fileId: realm.backgroundId!)
                             : Container(
                               color:
                                   Theme.of(context).appBarTheme.backgroundColor,
                             ),
                     title: Text(
-                      currentRoom.type == 1
-                          ? currentRoom.members!.first.account.nick
-                          : currentRoom.name,
+                      realm.name,
                       style: TextStyle(
                         color: Theme.of(context).appBarTheme.foregroundColor,
                         shadows: [iconShadow],
@@ -98,12 +83,13 @@ class ChatDetailScreen extends HookConsumerWidget {
                         showCupertinoModalBottomSheet(
                           context: context,
                           builder:
-                              (context) => _ChatMemberListSheet(roomId: id),
+                              (context) =>
+                                  _RealmMemberListSheet(realmSlug: slug),
                         );
                       },
                     ),
                     if (isModerator)
-                      _ChatRoomActionMenu(id: id, iconShadow: iconShadow),
+                      _RealmActionMenu(realmSlug: slug, iconShadow: iconShadow),
                     const Gap(8),
                   ],
                 ),
@@ -114,7 +100,7 @@ class ChatDetailScreen extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          currentRoom.description,
+                          realm.description,
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],
@@ -128,11 +114,11 @@ class ChatDetailScreen extends HookConsumerWidget {
   }
 }
 
-class _ChatRoomActionMenu extends HookConsumerWidget {
-  final int id;
+class _RealmActionMenu extends HookConsumerWidget {
+  final String realmSlug;
   final Shadow iconShadow;
 
-  const _ChatRoomActionMenu({required this.id, required this.iconShadow});
+  const _RealmActionMenu({required this.realmSlug, required this.iconShadow});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -142,7 +128,7 @@ class _ChatRoomActionMenu extends HookConsumerWidget {
           (context) => [
             PopupMenuItem(
               onTap: () {
-                context.router.replace(EditChatRoute(id: id));
+                context.router.replace(EditRealmRoute(slug: realmSlug));
               },
               child: Row(
                 children: [
@@ -151,7 +137,7 @@ class _ChatRoomActionMenu extends HookConsumerWidget {
                     color: Theme.of(context).colorScheme.onSecondaryContainer,
                   ),
                   const Gap(12),
-                  const Text('editChatRoom').tr(),
+                  const Text('editRealm').tr(),
                 ],
               ),
             ),
@@ -161,25 +147,21 @@ class _ChatRoomActionMenu extends HookConsumerWidget {
                   const Icon(Icons.delete, color: Colors.red),
                   const Gap(12),
                   const Text(
-                    'deleteChatRoom',
+                    'deleteRealm',
                     style: TextStyle(color: Colors.red),
                   ).tr(),
                 ],
               ),
               onTap: () {
                 showConfirmAlert(
-                  'deleteChatRoomHint'.tr(),
-                  'deleteChatRoom'.tr(),
+                  'deleteRealmHint'.tr(),
+                  'deleteRealm'.tr(),
                 ).then((confirm) {
                   if (confirm) {
                     final client = ref.watch(apiClientProvider);
-                    client.delete('/chat/$id');
-                    ref.invalidate(chatroomsJoinedProvider);
-                    if (context.mounted) {
-                      context.router.popUntil(
-                        (route) => route is ChatRoomRoute,
-                      );
-                    }
+                    client.delete('/realms/$realmSlug');
+                    ref.invalidate(realmsJoinedProvider);
+                    if (context.mounted) context.router.maybePop(true);
                   }
                 });
               },
@@ -189,31 +171,20 @@ class _ChatRoomActionMenu extends HookConsumerWidget {
   }
 }
 
-@freezed
-abstract class ChatRoomMemberState with _$ChatRoomMemberState {
-  const factory ChatRoomMemberState({
-    required List<SnChatMember> members,
-    required bool isLoading,
-    required int total,
-    String? error,
-  }) = _ChatRoomMemberState;
-}
+final realmMemberStateProvider =
+    StateNotifierProvider.family<RealmMemberNotifier, RealmMemberState, String>(
+      (ref, realmSlug) {
+        final apiClient = ref.watch(apiClientProvider);
+        return RealmMemberNotifier(apiClient, realmSlug);
+      },
+    );
 
-final chatMemberStateProvider =
-    StateNotifierProvider.family<ChatMemberNotifier, ChatRoomMemberState, int>((
-      ref,
-      roomId,
-    ) {
-      final apiClient = ref.watch(apiClientProvider);
-      return ChatMemberNotifier(apiClient, roomId);
-    });
-
-class ChatMemberNotifier extends StateNotifier<ChatRoomMemberState> {
-  final int roomId;
+class RealmMemberNotifier extends StateNotifier<RealmMemberState> {
+  final String realmSlug;
   final Dio _apiClient;
 
-  ChatMemberNotifier(this._apiClient, this.roomId)
-    : super(const ChatRoomMemberState(members: [], isLoading: false, total: 0));
+  RealmMemberNotifier(this._apiClient, this.realmSlug)
+    : super(const RealmMemberState(members: [], isLoading: false, total: 0));
 
   Future<void> loadMore({int offset = 0, int take = 20}) async {
     if (state.isLoading) return;
@@ -223,13 +194,13 @@ class ChatMemberNotifier extends StateNotifier<ChatRoomMemberState> {
 
     try {
       final response = await _apiClient.get(
-        '/chat/$roomId/members',
+        '/realms/$realmSlug/members',
         queryParameters: {'offset': offset, 'take': take},
       );
 
       final total = int.parse(response.headers.value('X-Total') ?? '0');
       final List<dynamic> data = response.data;
-      final members = data.map((e) => SnChatMember.fromJson(e)).toList();
+      final members = data.map((e) => SnRealmMember.fromJson(e)).toList();
 
       state = state.copyWith(
         members: [...state.members, ...members],
@@ -242,18 +213,20 @@ class ChatMemberNotifier extends StateNotifier<ChatRoomMemberState> {
   }
 
   void reset() {
-    state = const ChatRoomMemberState(members: [], isLoading: false, total: 0);
+    state = const RealmMemberState(members: [], isLoading: false, total: 0);
   }
 }
 
-class _ChatMemberListSheet extends HookConsumerWidget {
-  final int roomId;
-  const _ChatMemberListSheet({required this.roomId});
+class _RealmMemberListSheet extends HookConsumerWidget {
+  final String realmSlug;
+  const _RealmMemberListSheet({required this.realmSlug});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final memberState = ref.watch(chatMemberStateProvider(roomId));
-    final memberNotifier = ref.read(chatMemberStateProvider(roomId).notifier);
+    final memberState = ref.watch(realmMemberStateProvider(realmSlug));
+    final memberNotifier = ref.read(
+      realmMemberStateProvider(realmSlug).notifier,
+    );
 
     useEffect(() {
       Future(() {
@@ -271,7 +244,7 @@ class _ChatMemberListSheet extends HookConsumerWidget {
       try {
         final apiClient = ref.watch(apiClientProvider);
         await apiClient.post(
-          '/chat/invites/$roomId',
+          '/realms/invites/$realmSlug',
           data: {'related_user_id': result.id, 'role': 0},
         );
         memberNotifier.reset();
@@ -359,12 +332,12 @@ class _ChatMemberListSheet extends HookConsumerWidget {
                           final member = memberState.members[index];
                           return ListTile(
                             leading: ProfilePictureWidget(
-                              fileId: member.account.profile.pictureId,
+                              fileId: member.account!.profile.pictureId,
                             ),
                             title: Row(
                               spacing: 6,
                               children: [
-                                Flexible(child: Text(member.account.nick)),
+                                Flexible(child: Text(member.account!.nick)),
                                 if (member.joinedAt == null)
                                   const Icon(Symbols.pending_actions, size: 20),
                               ],
@@ -380,7 +353,7 @@ class _ChatMemberListSheet extends HookConsumerWidget {
                                 ).tr(),
                                 Text('·').bold().padding(horizontal: 6),
                                 Expanded(
-                                  child: Text("@${member.account.name}"),
+                                  child: Text("@${member.account!.name}"),
                                 ),
                               ],
                             ),
@@ -391,6 +364,34 @@ class _ChatMemberListSheet extends HookConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class RealmMemberState {
+  final List<SnRealmMember> members;
+  final bool isLoading;
+  final int total;
+  final String? error;
+
+  const RealmMemberState({
+    required this.members,
+    required this.isLoading,
+    required this.total,
+    this.error,
+  });
+
+  RealmMemberState copyWith({
+    List<SnRealmMember>? members,
+    bool? isLoading,
+    int? total,
+    String? error,
+  }) {
+    return RealmMemberState(
+      members: members ?? this.members,
+      isLoading: isLoading ?? this.isLoading,
+      total: total ?? this.total,
+      error: error ?? this.error,
     );
   }
 }

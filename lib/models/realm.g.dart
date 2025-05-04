@@ -55,3 +55,41 @@ Map<String, dynamic> _$SnRealmToJson(_SnRealm instance) => <String, dynamic>{
   'updated_at': instance.updatedAt.toIso8601String(),
   'deleted_at': instance.deletedAt?.toIso8601String(),
 };
+
+_SnRealmMember _$SnRealmMemberFromJson(Map<String, dynamic> json) =>
+    _SnRealmMember(
+      realmId: (json['realm_id'] as num).toInt(),
+      realm:
+          json['realm'] == null
+              ? null
+              : SnRealm.fromJson(json['realm'] as Map<String, dynamic>),
+      accountId: (json['account_id'] as num).toInt(),
+      account:
+          json['account'] == null
+              ? null
+              : SnAccount.fromJson(json['account'] as Map<String, dynamic>),
+      role: (json['role'] as num).toInt(),
+      joinedAt:
+          json['joined_at'] == null
+              ? null
+              : DateTime.parse(json['joined_at'] as String),
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+      deletedAt:
+          json['deleted_at'] == null
+              ? null
+              : DateTime.parse(json['deleted_at'] as String),
+    );
+
+Map<String, dynamic> _$SnRealmMemberToJson(_SnRealmMember instance) =>
+    <String, dynamic>{
+      'realm_id': instance.realmId,
+      'realm': instance.realm?.toJson(),
+      'account_id': instance.accountId,
+      'account': instance.account?.toJson(),
+      'role': instance.role,
+      'joined_at': instance.joinedAt?.toIso8601String(),
+      'created_at': instance.createdAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
+      'deleted_at': instance.deletedAt?.toIso8601String(),
+    };

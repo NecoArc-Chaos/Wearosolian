@@ -63,7 +63,7 @@
   "createRealm": "Create a Realm",
   "createRealmHint": "Meet friends with same interests, build communities, and more.",
   "editRealm": "Edit Realm",
-  "deleteRealm": "Delete Realm {}",
+  "deleteRealm": "Delete Realm",
   "deleteRealmHint": "Are you sure to delete this realm? This will also deleted all the channels, publishers, and posts under this realm.",
   "explore": "Explore",
   "account": "Account",
@@ -74,6 +74,7 @@
   "createChatRoom": "Create a Room",
   "editChatRoom": "Edit Room",
   "deleteChatRoom": "Delete Room",
+  "deleteChatRoomHint": "Are you sure to delete this room? This action cannot be undone.",
   "chat": "Chat",
   "chatMessageHint": "Message in {}",
   "chatDirectMessageHint": "Message to {}",
@@ -81,7 +82,7 @@
   "descriptionNone": "No description yet.",
   "invites": "Invites",
   "invitesEmpty": "No invites yet, such a lonely person...",
-  "chatMembers": {
+  "members": {
     "one": "{} member",
     "other": "{} members"
   },
