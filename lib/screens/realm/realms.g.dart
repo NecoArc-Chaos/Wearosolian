@@ -156,5 +156,24 @@ class _RealmProviderElement extends AutoDisposeFutureProviderElement<SnRealm?>
   String? get identifier => (origin as RealmProvider).identifier;
 }
 
+String _$realmInvitesHash() => r'e265999a03932f8077fb95a619fd8849a215375a';
+
+/// See also [realmInvites].
+@ProviderFor(realmInvites)
+final realmInvitesProvider =
+    AutoDisposeFutureProvider<List<SnRealmMember>>.internal(
+      realmInvites,
+      name: r'realmInvitesProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$realmInvitesHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RealmInvitesRef = AutoDisposeFutureProviderRef<List<SnRealmMember>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

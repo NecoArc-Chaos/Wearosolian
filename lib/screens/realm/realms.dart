@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:island/models/file.dart';
@@ -36,7 +37,22 @@ class RealmListScreen extends HookConsumerWidget {
     final realms = ref.watch(realmsJoinedProvider);
 
     return AppScaffold(
-      appBar: AppBar(title: const Text('realms').tr()),
+      appBar: AppBar(
+        title: const Text('realms').tr(),
+        actions: [
+          IconButton(
+            icon: const Icon(Symbols.email),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => _RealmInviteSheet(),
+              );
+            },
+          ),
+          const Gap(8),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         heroTag: Key("realms-page-fab"),
         child: const Icon(Symbols.add),
@@ -296,6 +312,149 @@ class EditRealmScreen extends HookConsumerWidget {
             ).padding(all: 24),
           ),
         ],
+      ),
+    );
+  }
+}
+
+@riverpod
+Future<List<SnRealmMember>> realmInvites(Ref ref) async {
+  final client = ref.watch(apiClientProvider);
+  final resp = await client.get('/realms/invites');
+  return resp.data
+      .map((e) => SnRealmMember.fromJson(e))
+      .cast<SnRealmMember>()
+      .toList();
+}
+
+class _RealmInviteSheet extends HookConsumerWidget {
+  const _RealmInviteSheet();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final invites = ref.watch(realmInvitesProvider);
+
+    Future<void> acceptInvite(SnRealmMember invite) async {
+      try {
+        final client = ref.read(apiClientProvider);
+        await client.post('/realms/invites/${invite.realm!.id}/accept');
+        ref.invalidate(realmInvitesProvider);
+        ref.invalidate(realmsJoinedProvider);
+      } catch (err) {
+        showErrorAlert(err);
+      }
+    }
+
+    Future<void> declineInvite(SnRealmMember invite) async {
+      try {
+        final client = ref.read(apiClientProvider);
+        await client.post('/realms/invites/${invite.realm!.id}/decline');
+        ref.invalidate(realmInvitesProvider);
+      } catch (err) {
+        showErrorAlert(err);
+      }
+    }
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                top: 16,
+                left: 20,
+                right: 16,
+                bottom: 12,
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    'invites'.tr(),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Symbols.refresh),
+                    style: IconButton.styleFrom(
+                      minimumSize: const Size(36, 36),
+                    ),
+                    onPressed: () {
+                      ref.invalidate(realmInvitesProvider);
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Symbols.close),
+                    onPressed: () => Navigator.pop(context),
+                    style: IconButton.styleFrom(
+                      minimumSize: const Size(36, 36),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: invites.when(
+                data:
+                    (items) =>
+                        items.isEmpty
+                            ? Center(
+                              child:
+                                  Text(
+                                    'invitesEmpty',
+                                    textAlign: TextAlign.center,
+                                  ).tr(),
+                            )
+                            : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final invite = items[index];
+                                return ListTile(
+                                  leading: ProfilePictureWidget(
+                                    fileId: invite.realm!.pictureId,
+                                    radius: 24,
+                                    fallbackIcon: Symbols.group,
+                                  ),
+                                  title: Text(invite.realm!.name),
+                                  subtitle:
+                                      Text(
+                                        invite.role >= 100
+                                            ? 'permissionOwner'
+                                            : invite.role >= 50
+                                            ? 'permissionModerator'
+                                            : 'permissionMember',
+                                      ).tr(),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Symbols.check),
+                                        onPressed: () => acceptInvite(invite),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Symbols.close),
+                                        onPressed: () => declineInvite(invite),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(child: Text('Error: $error')),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
