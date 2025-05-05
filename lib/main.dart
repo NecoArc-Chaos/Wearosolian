@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:croppy/croppy.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -100,6 +101,7 @@ class IslandApp extends HookConsumerWidget {
       supportedLocales: context.supportedLocales,
       localizationsDelegates: [
         ...context.localizationDelegates,
+        CroppyLocalizations.delegate,
       ], // this contains the cupertino one
       locale: context.locale,
       builder: (context, child) {

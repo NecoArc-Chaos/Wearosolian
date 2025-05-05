@@ -29,6 +29,7 @@ class AppRouter extends RootStackRouter {
       page: EditPublisherRoute.page,
       path: '/account/me/publishers/:id/edit',
     ),
+    AutoRoute(page: AccountProfileRoute.page, path: '/account/:name'),
     AutoRoute(page: PostComposeRoute.page, path: '/posts/compose'),
     AutoRoute(page: PostDetailRoute.page, path: '/posts/:id'),
     AutoRoute(page: PostEditRoute.page, path: '/posts/:id/edit'),

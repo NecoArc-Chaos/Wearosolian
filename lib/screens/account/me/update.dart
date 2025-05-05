@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:croppy/croppy.dart' hide cropImage;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -25,10 +26,23 @@ class UpdateProfileScreen extends HookConsumerWidget {
     final submitting = useState(false);
 
     void updateProfilePicture(String position) async {
-      final result = await ref
+      var result = await ref
           .read(imagePickerProvider)
           .pickImage(source: ImageSource.gallery);
       if (result == null) return;
+      if (!context.mounted) return;
+      result = await cropImage(
+        context,
+        image: result,
+        allowedAspectRatios: [
+          if (position == 'background')
+            CropAspectRatio(height: 7, width: 16)
+          else
+            CropAspectRatio(height: 1, width: 1),
+        ],
+      );
+      if (result == null) return;
+      if (!context.mounted) return;
 
       submitting.value = true;
       try {

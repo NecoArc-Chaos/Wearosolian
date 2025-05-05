@@ -1,10 +1,42 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
+import 'dart:ui';
 
+import 'package:croppy/croppy.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:island/models/file.dart';
 import 'package:tus_client_dart/tus_client_dart.dart';
+
+Future<XFile?> cropImage(
+  BuildContext context, {
+  required XFile image,
+  List<CropAspectRatio?>? allowedAspectRatios,
+}) async {
+  final result = await showMaterialImageCropper(
+    context,
+    imageProvider:
+        kIsWeb ? NetworkImage(image.path) : FileImage(File(image.path)),
+    showLoadingIndicatorOnSubmit: true,
+    allowedAspectRatios: allowedAspectRatios,
+  );
+  if (result == null) return null; // Cancelled operation
+  final croppedFile = result.uiImage;
+  final croppedBytes = await croppedFile.toByteData(
+    format: ImageByteFormat.png,
+  );
+  if (croppedBytes == null) {
+    return image;
+  }
+  croppedFile.dispose();
+  return XFile.fromData(
+    croppedBytes.buffer.asUint8List(),
+    path: image.path,
+    mimeType: image.mimeType,
+  );
+}
 
 Completer<SnCloudFile?> putMediaToCloud({
   required dynamic fileData, // Can be XFile or List<int> (Uint8List)

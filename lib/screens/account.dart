@@ -31,54 +31,61 @@ class AccountScreen extends HookConsumerWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (user.value?.profile.background != null)
-                    ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8),
-                      ),
-                      child: AspectRatio(
-                        aspectRatio: 16 / 7,
-                        child: CloudFileWidget(
-                          item: user.value!.profile.background!,
-                          fit: BoxFit.cover,
+            GestureDetector(
+              child: Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (user.value?.profile.background != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8),
+                        ),
+                        child: AspectRatio(
+                          aspectRatio: 16 / 7,
+                          child: CloudFileWidget(
+                            item: user.value!.profile.background!,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 16,
-                    children: [
-                      ProfilePictureWidget(
-                        fileId: user.value?.profile.pictureId,
-                        radius: 24,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            spacing: 4,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Text(user.value!.nick).bold().fontSize(16),
-                              Text('@${user.value!.name}'),
-                            ],
-                          ),
-                          Text(
-                            user.value!.profile.bio ?? 'No description yet.',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ).padding(horizontal: 16, vertical: 16),
-                ],
-              ),
-            ).padding(horizontal: 8),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 16,
+                      children: [
+                        ProfilePictureWidget(
+                          fileId: user.value?.profile.pictureId,
+                          radius: 24,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              spacing: 4,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(user.value!.nick).bold().fontSize(16),
+                                Text('@${user.value!.name}'),
+                              ],
+                            ),
+                            Text(
+                              user.value!.profile.bio ?? 'No description yet.',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ).padding(horizontal: 16, vertical: 16),
+                  ],
+                ),
+              ).padding(horizontal: 8),
+              onTap: () {
+                context.router.push(
+                  AccountProfileRoute(name: user.value!.name),
+                );
+              },
+            ),
             const Gap(8),
             ListTile(
               minTileHeight: 48,
