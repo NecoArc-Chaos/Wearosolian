@@ -9,6 +9,7 @@ import 'package:island/pods/message.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/pods/userinfo.dart';
 import 'package:island/route.gr.dart';
+import 'package:island/widgets/account/status.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -31,68 +32,105 @@ class AccountScreen extends HookConsumerWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            GestureDetector(
-              child: Card(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (user.value?.profile.background != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8),
-                        ),
-                        child: AspectRatio(
-                          aspectRatio: 16 / 7,
-                          child: CloudFileWidget(
-                            item: user.value!.profile.background!,
-                            fit: BoxFit.cover,
-                          ),
+            Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (user.value?.profile.background != null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8),
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: 16 / 7,
+                        child: CloudFileWidget(
+                          item: user.value!.profile.background!,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 16,
-                      children: [
-                        ProfilePictureWidget(
+                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 16,
+                    children: [
+                      GestureDetector(
+                        child: ProfilePictureWidget(
                           fileId: user.value?.profile.pictureId,
                           radius: 24,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              spacing: 4,
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text(user.value!.nick).bold().fontSize(16),
-                                Text('@${user.value!.name}'),
-                              ],
-                            ),
-                            Text(
-                              user.value!.profile.bio ?? 'No description yet.',
-                            ),
-                          ],
-                        ),
-                      ],
-                    ).padding(horizontal: 16, vertical: 16),
-                  ],
+                        onTap: () {
+                          context.router.push(
+                            AccountProfileRoute(name: user.value!.name),
+                          );
+                        },
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            spacing: 4,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              Text(user.value!.nick).bold().fontSize(16),
+                              Text('@${user.value!.name}'),
+                            ],
+                          ),
+                          Text(
+                            user.value!.profile.bio ?? 'No description yet.',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ).padding(horizontal: 16, top: 16),
+                  AccountStatusCreationWidget(uname: user.value!.name),
+                ],
+              ),
+            ).padding(horizontal: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Symbols.draw, size: 28).padding(bottom: 8),
+                          Text('creatorHub').tr().fontSize(16).bold(),
+                          Text('creatorHubDescription').tr(),
+                        ],
+                      ).padding(horizontal: 16, vertical: 12),
+                      onTap: () {},
+                    ),
+                  ),
                 ),
-              ).padding(horizontal: 8),
-              onTap: () {
-                context.router.push(
-                  AccountProfileRoute(name: user.value!.name),
-                );
-              },
-            ),
+                Expanded(
+                  child: Card(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Symbols.code, size: 28).padding(bottom: 8),
+                          Text('developerPortal').tr().fontSize(16).bold(),
+                          Text('developerPortalDescription').tr(),
+                        ],
+                      ).padding(horizontal: 16, vertical: 12),
+                      onTap: () {},
+                    ),
+                  ),
+                ),
+              ],
+            ).padding(horizontal: 8),
             const Gap(8),
             ListTile(
               minTileHeight: 48,
               leading: const Icon(Symbols.public),
               trailing: const Icon(Symbols.chevron_right),
               contentPadding: EdgeInsets.symmetric(horizontal: 24),
-              title: Text('managedPublisher').tr(),
+              title: Text('publishers').tr(),
               onTap: () {
                 context.router.push(ManagedPublisherRoute());
               },

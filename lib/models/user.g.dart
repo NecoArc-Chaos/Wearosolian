@@ -76,3 +76,41 @@ Map<String, dynamic> _$SnAccountProfileToJson(_SnAccountProfile instance) =>
       'updated_at': instance.updatedAt.toIso8601String(),
       'deleted_at': instance.deletedAt?.toIso8601String(),
     };
+
+_SnAccountStatus _$SnAccountStatusFromJson(Map<String, dynamic> json) =>
+    _SnAccountStatus(
+      id: json['id'] as String,
+      attitude: (json['attitude'] as num).toInt(),
+      isOnline: json['is_online'] as bool,
+      isInvisible: json['is_invisible'] as bool,
+      isNotDisturb: json['is_not_disturb'] as bool,
+      isCustomized: json['is_customized'] as bool,
+      label: json['label'] as String? ?? "",
+      clearedAt:
+          json['cleared_at'] == null
+              ? null
+              : DateTime.parse(json['cleared_at'] as String),
+      accountId: (json['account_id'] as num).toInt(),
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+      deletedAt:
+          json['deleted_at'] == null
+              ? null
+              : DateTime.parse(json['deleted_at'] as String),
+    );
+
+Map<String, dynamic> _$SnAccountStatusToJson(_SnAccountStatus instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'attitude': instance.attitude,
+      'is_online': instance.isOnline,
+      'is_invisible': instance.isInvisible,
+      'is_not_disturb': instance.isNotDisturb,
+      'is_customized': instance.isCustomized,
+      'label': instance.label,
+      'cleared_at': instance.clearedAt?.toIso8601String(),
+      'account_id': instance.accountId,
+      'created_at': instance.createdAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
+      'deleted_at': instance.deletedAt?.toIso8601String(),
+    };

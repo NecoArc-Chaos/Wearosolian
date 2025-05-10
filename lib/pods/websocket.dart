@@ -59,6 +59,7 @@ class WebSocketService {
         Uri.parse(url),
         headers: {'Authorization': 'Bearer $atk'},
       );
+      // TODO Fix the atk is expired when reconnecting
       await _channel!.ready;
       _statusStreamController.sink.add(WebSocketState.connected());
       _channel!.stream.listen(

@@ -42,3 +42,24 @@ abstract class SnAccountProfile with _$SnAccountProfile {
   factory SnAccountProfile.fromJson(Map<String, dynamic> json) =>
       _$SnAccountProfileFromJson(json);
 }
+
+@freezed
+abstract class SnAccountStatus with _$SnAccountStatus {
+  const factory SnAccountStatus({
+    required String id,
+    required int attitude,
+    required bool isOnline,
+    required bool isInvisible,
+    required bool isNotDisturb,
+    required bool isCustomized,
+    @Default("") String label,
+    required DateTime? clearedAt,
+    required int accountId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required DateTime? deletedAt,
+  }) = _SnAccountStatus;
+
+  factory SnAccountStatus.fromJson(Map<String, dynamic> json) =>
+      _$SnAccountStatusFromJson(json);
+}
