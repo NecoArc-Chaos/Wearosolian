@@ -126,3 +126,21 @@ Map<String, dynamic> _$SnPublisherToJson(_SnPublisher instance) =>
       'updated_at': instance.updatedAt.toIso8601String(),
       'deleted_at': instance.deletedAt?.toIso8601String(),
     };
+
+_SnPublisherStats _$SnPublisherStatsFromJson(Map<String, dynamic> json) =>
+    _SnPublisherStats(
+      postsCreated: (json['posts_created'] as num).toInt(),
+      stickerPacksCreated: (json['sticker_packs_created'] as num).toInt(),
+      stickersCreated: (json['stickers_created'] as num).toInt(),
+      upvoteReceived: (json['upvote_received'] as num).toInt(),
+      downvoteReceived: (json['downvote_received'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$SnPublisherStatsToJson(_SnPublisherStats instance) =>
+    <String, dynamic>{
+      'posts_created': instance.postsCreated,
+      'sticker_packs_created': instance.stickerPacksCreated,
+      'stickers_created': instance.stickersCreated,
+      'upvote_received': instance.upvoteReceived,
+      'downvote_received': instance.downvoteReceived,
+    };

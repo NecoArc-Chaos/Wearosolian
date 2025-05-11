@@ -45,5 +45,27 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: EditChatRoute.page, path: '/chat/:id/edit'),
     AutoRoute(page: ChatRoomRoute.page, path: '/chat/:id'),
     AutoRoute(page: ChatDetailRoute.page, path: '/chat/:id/detail'),
+    AutoRoute(page: CreatorHubRoute.page, path: '/creators'),
+    AutoRoute(page: StickersRoute.page, path: '/creators/:name/stickers'),
+    AutoRoute(
+      page: NewStickerPacksRoute.page,
+      path: '/creators/:name/stickers/new',
+    ),
+    AutoRoute(
+      page: EditStickerPacksRoute.page,
+      path: '/creators/:name/stickers/:packId/edit',
+    ),
+    AutoRoute(
+      page: StickerPackDetailRoute.page,
+      path: '/creators/:name/stickers/:packId',
+    ),
+    AutoRoute(
+      page: NewStickersRoute.page,
+      path: '/creators/:name/stickers/new',
+    ),
+    AutoRoute(
+      page: EditStickersRoute.page,
+      path: '/creators/:name/stickers/:id/edit',
+    ),
   ];
 }

@@ -436,8 +436,17 @@ class AttachmentPreview extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Uploading', style: TextStyle(color: Colors.white)),
-                      Gap(4),
+                      if (progress != null)
+                        Text(
+                          '${progress!.toStringAsFixed(2)}%',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      else
+                        Text(
+                          'uploading'.tr(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      Gap(6),
                       Center(child: LinearProgressIndicator(value: progress)),
                     ],
                   ),
@@ -455,100 +464,105 @@ class AttachmentPreview extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          child: const Icon(
-                            Symbols.delete,
-                            size: 14,
-                            color: Colors.white,
-                          ).padding(horizontal: 8, vertical: 6),
-                          onTap: () {
-                            onDelete?.call();
-                          },
-                        ),
-                        SizedBox(
-                          height: 26,
-                          child: const VerticalDivider(
-                            width: 0.3,
-                            color: Colors.white,
-                            thickness: 0.3,
+                        if (onDelete != null)
+                          InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            child: const Icon(
+                              Symbols.delete,
+                              size: 14,
+                              color: Colors.white,
+                            ).padding(horizontal: 8, vertical: 6),
+                            onTap: () {
+                              onDelete?.call();
+                            },
                           ),
-                        ).padding(horizontal: 2),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          child: const Icon(
-                            Symbols.keyboard_arrow_up,
-                            size: 14,
-                            color: Colors.white,
-                          ).padding(horizontal: 8, vertical: 6),
-                          onTap: () {
-                            onMove?.call(-1);
-                          },
-                        ),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          child: const Icon(
-                            Symbols.keyboard_arrow_down,
-                            size: 14,
-                            color: Colors.white,
-                          ).padding(horizontal: 8, vertical: 6),
-                          onTap: () {
-                            onMove?.call(1);
-                          },
-                        ),
+                        if (onDelete != null && onMove != null)
+                          SizedBox(
+                            height: 26,
+                            child: const VerticalDivider(
+                              width: 0.3,
+                              color: Colors.white,
+                              thickness: 0.3,
+                            ),
+                          ).padding(horizontal: 2),
+                        if (onMove != null)
+                          InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            child: const Icon(
+                              Symbols.keyboard_arrow_up,
+                              size: 14,
+                              color: Colors.white,
+                            ).padding(horizontal: 8, vertical: 6),
+                            onTap: () {
+                              onMove?.call(-1);
+                            },
+                          ),
+                        if (onMove != null)
+                          InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            child: const Icon(
+                              Symbols.keyboard_arrow_down,
+                              size: 14,
+                              color: Colors.white,
+                            ).padding(horizontal: 8, vertical: 6),
+                            onTap: () {
+                              onMove?.call(1);
+                            },
+                          ),
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(8),
-                onTap: () => onRequestUpload?.call(),
-                child: ClipRRect(
+            if (onRequestUpload != null)
+              Positioned(
+                top: 8,
+                right: 8,
+                child: InkWell(
                   borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child:
-                        (item.isOnCloud)
-                            ? Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Symbols.cloud,
-                                  size: 16,
-                                  color: Colors.white,
-                                ),
-                                const Gap(8),
-                                Text(
-                                  'On-cloud',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            )
-                            : Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Symbols.cloud_off,
-                                  size: 16,
-                                  color: Colors.white,
-                                ),
-                                const Gap(8),
-                                Text(
-                                  'On-device',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
+                  onTap: () => onRequestUpload?.call(),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      color: Colors.black.withOpacity(0.5),
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child:
+                          (item.isOnCloud)
+                              ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Symbols.cloud,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
+                                  const Gap(8),
+                                  Text(
+                                    'On-cloud',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              )
+                              : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Symbols.cloud_off,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
+                                  const Gap(8),
+                                  Text(
+                                    'On-device',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),

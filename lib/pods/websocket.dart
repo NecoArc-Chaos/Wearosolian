@@ -50,16 +50,31 @@ class WebSocketService {
   Stream<WebSocketPacket> get dataStream => _streamController.stream;
   Stream<WebSocketState> get statusStream => _statusStreamController.stream;
 
-  Future<void> connect(String url, String atk) async {
+  Future<void> connect(String url, String atk, {Ref? ref}) async {
     _lastUrl = url;
     _lastAtk = atk;
+
+    if (ref != null) {
+      final freshAtk = await getFreshAtk(
+        ref.watch(tokenPairProvider),
+        url.replaceFirst('ws', 'http').replaceFirst('/ws', ''),
+        onRefreshed: (atk, rtk) {
+          setTokenPair(ref.watch(sharedPreferencesProvider), atk, rtk);
+          ref.invalidate(tokenPairProvider);
+        },
+      );
+      if (freshAtk != null) {
+        atk = freshAtk;
+        _lastAtk = freshAtk;
+      }
+    }
+
     log('[WebSocket] Trying connecting to $url');
     try {
       _channel = IOWebSocketChannel.connect(
         Uri.parse(url),
         headers: {'Authorization': 'Bearer $atk'},
       );
-      // TODO Fix the atk is expired when reconnecting
       await _channel!.ready;
       _statusStreamController.sink.add(WebSocketState.connected());
       _channel!.stream.listen(
@@ -141,7 +156,11 @@ class WebSocketStateNotifier extends StateNotifier<WebSocketState> {
         state = const WebSocketState.error('Unauthorized');
         return;
       }
-      await service.connect('$baseUrl/ws'.replaceFirst('http', 'ws'), atk);
+      await service.connect(
+        '$baseUrl/ws'.replaceFirst('http', 'ws'),
+        atk,
+        ref: ref,
+      );
       state = const WebSocketState.connected();
       service.statusStream.listen((event) {
         state = event;

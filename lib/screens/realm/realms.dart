@@ -159,6 +159,7 @@ class EditRealmScreen extends HookConsumerWidget {
     }, [realm]);
 
     void setPicture(String position) async {
+      showLoadingModal(context);
       var result = await ref
           .read(imagePickerProvider)
           .pickImage(source: ImageSource.gallery);
@@ -174,7 +175,10 @@ class EditRealmScreen extends HookConsumerWidget {
             CropAspectRatio(height: 1, width: 1),
         ],
       );
-      if (result == null) return;
+      if (result == null) {
+        if (context.mounted) hideLoadingModal(context);
+        return;
+      }
       if (!context.mounted) return;
 
       submitting.value = true;
@@ -209,6 +213,7 @@ class EditRealmScreen extends HookConsumerWidget {
       } catch (err) {
         showErrorAlert(err);
       } finally {
+        if (context.mounted) hideLoadingModal(context);
         submitting.value = false;
       }
     }

@@ -1,0 +1,395 @@
+// dart format width=80
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'sticker.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+// dart format off
+T _$identity<T>(T value) => value;
+
+/// @nodoc
+mixin _$SnSticker {
+
+ String get id; String get slug; String get imageId; SnCloudFile get image; String get packId; SnStickerPack? get pack; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt;
+/// Create a copy of SnSticker
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SnStickerCopyWith<SnSticker> get copyWith => _$SnStickerCopyWithImpl<SnSticker>(this as SnSticker, _$identity);
+
+  /// Serializes this SnSticker to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnSticker&&(identical(other.id, id) || other.id == id)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.imageId, imageId) || other.imageId == imageId)&&(identical(other.image, image) || other.image == image)&&(identical(other.packId, packId) || other.packId == packId)&&(identical(other.pack, pack) || other.pack == pack)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,slug,imageId,image,packId,pack,createdAt,updatedAt,deletedAt);
+
+@override
+String toString() {
+  return 'SnSticker(id: $id, slug: $slug, imageId: $imageId, image: $image, packId: $packId, pack: $pack, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SnStickerCopyWith<$Res>  {
+  factory $SnStickerCopyWith(SnSticker value, $Res Function(SnSticker) _then) = _$SnStickerCopyWithImpl;
+@useResult
+$Res call({
+ String id, String slug, String imageId, SnCloudFile image, String packId, SnStickerPack? pack, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
+});
+
+
+$SnCloudFileCopyWith<$Res> get image;$SnStickerPackCopyWith<$Res>? get pack;
+
+}
+/// @nodoc
+class _$SnStickerCopyWithImpl<$Res>
+    implements $SnStickerCopyWith<$Res> {
+  _$SnStickerCopyWithImpl(this._self, this._then);
+
+  final SnSticker _self;
+  final $Res Function(SnSticker) _then;
+
+/// Create a copy of SnSticker
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? slug = null,Object? imageId = null,Object? image = null,Object? packId = null,Object? pack = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,slug: null == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
+as String,imageId: null == imageId ? _self.imageId : imageId // ignore: cast_nullable_to_non_nullable
+as String,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as SnCloudFile,packId: null == packId ? _self.packId : packId // ignore: cast_nullable_to_non_nullable
+as String,pack: freezed == pack ? _self.pack : pack // ignore: cast_nullable_to_non_nullable
+as SnStickerPack?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+/// Create a copy of SnSticker
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnCloudFileCopyWith<$Res> get image {
+  
+  return $SnCloudFileCopyWith<$Res>(_self.image, (value) {
+    return _then(_self.copyWith(image: value));
+  });
+}/// Create a copy of SnSticker
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnStickerPackCopyWith<$Res>? get pack {
+    if (_self.pack == null) {
+    return null;
+  }
+
+  return $SnStickerPackCopyWith<$Res>(_self.pack!, (value) {
+    return _then(_self.copyWith(pack: value));
+  });
+}
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _SnSticker implements SnSticker {
+  const _SnSticker({required this.id, required this.slug, required this.imageId, required this.image, required this.packId, required this.pack, required this.createdAt, required this.updatedAt, required this.deletedAt});
+  factory _SnSticker.fromJson(Map<String, dynamic> json) => _$SnStickerFromJson(json);
+
+@override final  String id;
+@override final  String slug;
+@override final  String imageId;
+@override final  SnCloudFile image;
+@override final  String packId;
+@override final  SnStickerPack? pack;
+@override final  DateTime createdAt;
+@override final  DateTime updatedAt;
+@override final  DateTime? deletedAt;
+
+/// Create a copy of SnSticker
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SnStickerCopyWith<_SnSticker> get copyWith => __$SnStickerCopyWithImpl<_SnSticker>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SnStickerToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnSticker&&(identical(other.id, id) || other.id == id)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.imageId, imageId) || other.imageId == imageId)&&(identical(other.image, image) || other.image == image)&&(identical(other.packId, packId) || other.packId == packId)&&(identical(other.pack, pack) || other.pack == pack)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,slug,imageId,image,packId,pack,createdAt,updatedAt,deletedAt);
+
+@override
+String toString() {
+  return 'SnSticker(id: $id, slug: $slug, imageId: $imageId, image: $image, packId: $packId, pack: $pack, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SnStickerCopyWith<$Res> implements $SnStickerCopyWith<$Res> {
+  factory _$SnStickerCopyWith(_SnSticker value, $Res Function(_SnSticker) _then) = __$SnStickerCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String slug, String imageId, SnCloudFile image, String packId, SnStickerPack? pack, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
+});
+
+
+@override $SnCloudFileCopyWith<$Res> get image;@override $SnStickerPackCopyWith<$Res>? get pack;
+
+}
+/// @nodoc
+class __$SnStickerCopyWithImpl<$Res>
+    implements _$SnStickerCopyWith<$Res> {
+  __$SnStickerCopyWithImpl(this._self, this._then);
+
+  final _SnSticker _self;
+  final $Res Function(_SnSticker) _then;
+
+/// Create a copy of SnSticker
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? slug = null,Object? imageId = null,Object? image = null,Object? packId = null,Object? pack = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+  return _then(_SnSticker(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,slug: null == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
+as String,imageId: null == imageId ? _self.imageId : imageId // ignore: cast_nullable_to_non_nullable
+as String,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as SnCloudFile,packId: null == packId ? _self.packId : packId // ignore: cast_nullable_to_non_nullable
+as String,pack: freezed == pack ? _self.pack : pack // ignore: cast_nullable_to_non_nullable
+as SnStickerPack?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+/// Create a copy of SnSticker
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnCloudFileCopyWith<$Res> get image {
+  
+  return $SnCloudFileCopyWith<$Res>(_self.image, (value) {
+    return _then(_self.copyWith(image: value));
+  });
+}/// Create a copy of SnSticker
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnStickerPackCopyWith<$Res>? get pack {
+    if (_self.pack == null) {
+    return null;
+  }
+
+  return $SnStickerPackCopyWith<$Res>(_self.pack!, (value) {
+    return _then(_self.copyWith(pack: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$SnStickerPack {
+
+ String get id; String get name; String get description; String get prefix; int get publisherId; SnPublisher? get publisher; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt;
+/// Create a copy of SnStickerPack
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SnStickerPackCopyWith<SnStickerPack> get copyWith => _$SnStickerPackCopyWithImpl<SnStickerPack>(this as SnStickerPack, _$identity);
+
+  /// Serializes this SnStickerPack to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnStickerPack&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.prefix, prefix) || other.prefix == prefix)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,name,description,prefix,publisherId,publisher,createdAt,updatedAt,deletedAt);
+
+@override
+String toString() {
+  return 'SnStickerPack(id: $id, name: $name, description: $description, prefix: $prefix, publisherId: $publisherId, publisher: $publisher, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SnStickerPackCopyWith<$Res>  {
+  factory $SnStickerPackCopyWith(SnStickerPack value, $Res Function(SnStickerPack) _then) = _$SnStickerPackCopyWithImpl;
+@useResult
+$Res call({
+ String id, String name, String description, String prefix, int publisherId, SnPublisher? publisher, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
+});
+
+
+$SnPublisherCopyWith<$Res>? get publisher;
+
+}
+/// @nodoc
+class _$SnStickerPackCopyWithImpl<$Res>
+    implements $SnStickerPackCopyWith<$Res> {
+  _$SnStickerPackCopyWithImpl(this._self, this._then);
+
+  final SnStickerPack _self;
+  final $Res Function(SnStickerPack) _then;
+
+/// Create a copy of SnStickerPack
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = null,Object? prefix = null,Object? publisherId = null,Object? publisher = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,prefix: null == prefix ? _self.prefix : prefix // ignore: cast_nullable_to_non_nullable
+as String,publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
+as int,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
+as SnPublisher?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+/// Create a copy of SnStickerPack
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnPublisherCopyWith<$Res>? get publisher {
+    if (_self.publisher == null) {
+    return null;
+  }
+
+  return $SnPublisherCopyWith<$Res>(_self.publisher!, (value) {
+    return _then(_self.copyWith(publisher: value));
+  });
+}
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _SnStickerPack implements SnStickerPack {
+  const _SnStickerPack({required this.id, required this.name, required this.description, required this.prefix, required this.publisherId, required this.publisher, required this.createdAt, required this.updatedAt, required this.deletedAt});
+  factory _SnStickerPack.fromJson(Map<String, dynamic> json) => _$SnStickerPackFromJson(json);
+
+@override final  String id;
+@override final  String name;
+@override final  String description;
+@override final  String prefix;
+@override final  int publisherId;
+@override final  SnPublisher? publisher;
+@override final  DateTime createdAt;
+@override final  DateTime updatedAt;
+@override final  DateTime? deletedAt;
+
+/// Create a copy of SnStickerPack
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SnStickerPackCopyWith<_SnStickerPack> get copyWith => __$SnStickerPackCopyWithImpl<_SnStickerPack>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SnStickerPackToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnStickerPack&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.prefix, prefix) || other.prefix == prefix)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,name,description,prefix,publisherId,publisher,createdAt,updatedAt,deletedAt);
+
+@override
+String toString() {
+  return 'SnStickerPack(id: $id, name: $name, description: $description, prefix: $prefix, publisherId: $publisherId, publisher: $publisher, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SnStickerPackCopyWith<$Res> implements $SnStickerPackCopyWith<$Res> {
+  factory _$SnStickerPackCopyWith(_SnStickerPack value, $Res Function(_SnStickerPack) _then) = __$SnStickerPackCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String name, String description, String prefix, int publisherId, SnPublisher? publisher, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
+});
+
+
+@override $SnPublisherCopyWith<$Res>? get publisher;
+
+}
+/// @nodoc
+class __$SnStickerPackCopyWithImpl<$Res>
+    implements _$SnStickerPackCopyWith<$Res> {
+  __$SnStickerPackCopyWithImpl(this._self, this._then);
+
+  final _SnStickerPack _self;
+  final $Res Function(_SnStickerPack) _then;
+
+/// Create a copy of SnStickerPack
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? description = null,Object? prefix = null,Object? publisherId = null,Object? publisher = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+  return _then(_SnStickerPack(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,prefix: null == prefix ? _self.prefix : prefix // ignore: cast_nullable_to_non_nullable
+as String,publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
+as int,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
+as SnPublisher?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+/// Create a copy of SnStickerPack
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnPublisherCopyWith<$Res>? get publisher {
+    if (_self.publisher == null) {
+    return null;
+  }
+
+  return $SnPublisherCopyWith<$Res>(_self.publisher!, (value) {
+    return _then(_self.copyWith(publisher: value));
+  });
+}
+}
+
+// dart format on

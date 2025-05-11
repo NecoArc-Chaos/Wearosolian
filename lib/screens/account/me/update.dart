@@ -26,6 +26,7 @@ class UpdateProfileScreen extends HookConsumerWidget {
     final submitting = useState(false);
 
     void updateProfilePicture(String position) async {
+      showLoadingModal(context);
       var result = await ref
           .read(imagePickerProvider)
           .pickImage(source: ImageSource.gallery);
@@ -41,7 +42,10 @@ class UpdateProfileScreen extends HookConsumerWidget {
             CropAspectRatio(height: 1, width: 1),
         ],
       );
-      if (result == null) return;
+      if (result == null) {
+        if (context.mounted) hideLoadingModal(context);
+        return;
+      }
       if (!context.mounted) return;
 
       submitting.value = true;
@@ -78,6 +82,7 @@ class UpdateProfileScreen extends HookConsumerWidget {
         showErrorAlert(err);
       } finally {
         submitting.value = false;
+        if (context.mounted) hideLoadingModal(context);
       }
     }
 

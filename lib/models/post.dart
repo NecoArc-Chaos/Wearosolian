@@ -65,6 +65,20 @@ abstract class SnPublisher with _$SnPublisher {
 }
 
 @freezed
+abstract class SnPublisherStats with _$SnPublisherStats {
+  const factory SnPublisherStats({
+    required int postsCreated,
+    required int stickerPacksCreated,
+    required int stickersCreated,
+    required int upvoteReceived,
+    required int downvoteReceived,
+  }) = _SnPublisherStats;
+
+  factory SnPublisherStats.fromJson(Map<String, dynamic> json) =>
+      _$SnPublisherStatsFromJson(json);
+}
+
+@freezed
 abstract class ReactInfo with _$ReactInfo {
   const factory ReactInfo({required String icon, required int attitude}) =
       _ReactInfo;

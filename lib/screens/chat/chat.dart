@@ -245,11 +245,16 @@ class EditChatScreen extends HookConsumerWidget {
     }, [chat]);
 
     void setPicture(String position) async {
+      showLoadingModal(context);
       var result = await ref
           .read(imagePickerProvider)
           .pickImage(source: ImageSource.gallery);
-      if (result == null) return;
+      if (result == null) {
+        if (context.mounted) hideLoadingModal(context);
+        return;
+      }
       if (!context.mounted) return;
+
       result = await cropImage(
         context,
         image: result,
@@ -295,6 +300,7 @@ class EditChatScreen extends HookConsumerWidget {
       } catch (err) {
         showErrorAlert(err);
       } finally {
+        if (context.mounted) hideLoadingModal(context);
         submitting.value = false;
       }
     }

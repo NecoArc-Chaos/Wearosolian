@@ -28,7 +28,7 @@ class AccountScreen extends HookConsumerWidget {
     }
 
     return AppScaffold(
-      appBar: AppBar(title: const Text('Account')),
+      appBar: AppBar(title: const Text('account').tr()),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -102,9 +102,11 @@ class AccountScreen extends HookConsumerWidget {
                           Text('creatorHubDescription').tr(),
                         ],
                       ).padding(horizontal: 16, vertical: 12),
-                      onTap: () {},
+                      onTap: () {
+                        context.router.push(CreatorHubRoute());
+                      },
                     ),
-                  ),
+                  ).height(140),
                 ),
                 Expanded(
                   child: Card(
@@ -120,7 +122,7 @@ class AccountScreen extends HookConsumerWidget {
                       ).padding(horizontal: 16, vertical: 12),
                       onTap: () {},
                     ),
-                  ),
+                  ).height(140),
                 ),
               ],
             ).padding(horizontal: 8),

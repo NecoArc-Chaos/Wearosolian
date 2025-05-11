@@ -511,6 +511,151 @@ $SnCloudFileCopyWith<$Res>? get background {
 }
 }
 
+
+/// @nodoc
+mixin _$SnPublisherStats {
+
+ int get postsCreated; int get stickerPacksCreated; int get stickersCreated; int get upvoteReceived; int get downvoteReceived;
+/// Create a copy of SnPublisherStats
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SnPublisherStatsCopyWith<SnPublisherStats> get copyWith => _$SnPublisherStatsCopyWithImpl<SnPublisherStats>(this as SnPublisherStats, _$identity);
+
+  /// Serializes this SnPublisherStats to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnPublisherStats&&(identical(other.postsCreated, postsCreated) || other.postsCreated == postsCreated)&&(identical(other.stickerPacksCreated, stickerPacksCreated) || other.stickerPacksCreated == stickerPacksCreated)&&(identical(other.stickersCreated, stickersCreated) || other.stickersCreated == stickersCreated)&&(identical(other.upvoteReceived, upvoteReceived) || other.upvoteReceived == upvoteReceived)&&(identical(other.downvoteReceived, downvoteReceived) || other.downvoteReceived == downvoteReceived));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,postsCreated,stickerPacksCreated,stickersCreated,upvoteReceived,downvoteReceived);
+
+@override
+String toString() {
+  return 'SnPublisherStats(postsCreated: $postsCreated, stickerPacksCreated: $stickerPacksCreated, stickersCreated: $stickersCreated, upvoteReceived: $upvoteReceived, downvoteReceived: $downvoteReceived)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SnPublisherStatsCopyWith<$Res>  {
+  factory $SnPublisherStatsCopyWith(SnPublisherStats value, $Res Function(SnPublisherStats) _then) = _$SnPublisherStatsCopyWithImpl;
+@useResult
+$Res call({
+ int postsCreated, int stickerPacksCreated, int stickersCreated, int upvoteReceived, int downvoteReceived
+});
+
+
+
+
+}
+/// @nodoc
+class _$SnPublisherStatsCopyWithImpl<$Res>
+    implements $SnPublisherStatsCopyWith<$Res> {
+  _$SnPublisherStatsCopyWithImpl(this._self, this._then);
+
+  final SnPublisherStats _self;
+  final $Res Function(SnPublisherStats) _then;
+
+/// Create a copy of SnPublisherStats
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? postsCreated = null,Object? stickerPacksCreated = null,Object? stickersCreated = null,Object? upvoteReceived = null,Object? downvoteReceived = null,}) {
+  return _then(_self.copyWith(
+postsCreated: null == postsCreated ? _self.postsCreated : postsCreated // ignore: cast_nullable_to_non_nullable
+as int,stickerPacksCreated: null == stickerPacksCreated ? _self.stickerPacksCreated : stickerPacksCreated // ignore: cast_nullable_to_non_nullable
+as int,stickersCreated: null == stickersCreated ? _self.stickersCreated : stickersCreated // ignore: cast_nullable_to_non_nullable
+as int,upvoteReceived: null == upvoteReceived ? _self.upvoteReceived : upvoteReceived // ignore: cast_nullable_to_non_nullable
+as int,downvoteReceived: null == downvoteReceived ? _self.downvoteReceived : downvoteReceived // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _SnPublisherStats implements SnPublisherStats {
+  const _SnPublisherStats({required this.postsCreated, required this.stickerPacksCreated, required this.stickersCreated, required this.upvoteReceived, required this.downvoteReceived});
+  factory _SnPublisherStats.fromJson(Map<String, dynamic> json) => _$SnPublisherStatsFromJson(json);
+
+@override final  int postsCreated;
+@override final  int stickerPacksCreated;
+@override final  int stickersCreated;
+@override final  int upvoteReceived;
+@override final  int downvoteReceived;
+
+/// Create a copy of SnPublisherStats
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SnPublisherStatsCopyWith<_SnPublisherStats> get copyWith => __$SnPublisherStatsCopyWithImpl<_SnPublisherStats>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SnPublisherStatsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnPublisherStats&&(identical(other.postsCreated, postsCreated) || other.postsCreated == postsCreated)&&(identical(other.stickerPacksCreated, stickerPacksCreated) || other.stickerPacksCreated == stickerPacksCreated)&&(identical(other.stickersCreated, stickersCreated) || other.stickersCreated == stickersCreated)&&(identical(other.upvoteReceived, upvoteReceived) || other.upvoteReceived == upvoteReceived)&&(identical(other.downvoteReceived, downvoteReceived) || other.downvoteReceived == downvoteReceived));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,postsCreated,stickerPacksCreated,stickersCreated,upvoteReceived,downvoteReceived);
+
+@override
+String toString() {
+  return 'SnPublisherStats(postsCreated: $postsCreated, stickerPacksCreated: $stickerPacksCreated, stickersCreated: $stickersCreated, upvoteReceived: $upvoteReceived, downvoteReceived: $downvoteReceived)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SnPublisherStatsCopyWith<$Res> implements $SnPublisherStatsCopyWith<$Res> {
+  factory _$SnPublisherStatsCopyWith(_SnPublisherStats value, $Res Function(_SnPublisherStats) _then) = __$SnPublisherStatsCopyWithImpl;
+@override @useResult
+$Res call({
+ int postsCreated, int stickerPacksCreated, int stickersCreated, int upvoteReceived, int downvoteReceived
+});
+
+
+
+
+}
+/// @nodoc
+class __$SnPublisherStatsCopyWithImpl<$Res>
+    implements _$SnPublisherStatsCopyWith<$Res> {
+  __$SnPublisherStatsCopyWithImpl(this._self, this._then);
+
+  final _SnPublisherStats _self;
+  final $Res Function(_SnPublisherStats) _then;
+
+/// Create a copy of SnPublisherStats
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? postsCreated = null,Object? stickerPacksCreated = null,Object? stickersCreated = null,Object? upvoteReceived = null,Object? downvoteReceived = null,}) {
+  return _then(_SnPublisherStats(
+postsCreated: null == postsCreated ? _self.postsCreated : postsCreated // ignore: cast_nullable_to_non_nullable
+as int,stickerPacksCreated: null == stickerPacksCreated ? _self.stickerPacksCreated : stickerPacksCreated // ignore: cast_nullable_to_non_nullable
+as int,stickersCreated: null == stickersCreated ? _self.stickersCreated : stickersCreated // ignore: cast_nullable_to_non_nullable
+as int,upvoteReceived: null == upvoteReceived ? _self.upvoteReceived : upvoteReceived // ignore: cast_nullable_to_non_nullable
+as int,downvoteReceived: null == downvoteReceived ? _self.downvoteReceived : downvoteReceived // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
 /// @nodoc
 mixin _$ReactInfo {
 
