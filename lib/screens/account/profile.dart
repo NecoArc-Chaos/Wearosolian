@@ -1,12 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/models/user.dart';
 import 'package:island/pods/network.dart';
+import 'package:island/widgets/account/badge.dart';
+import 'package:island/widgets/account/status.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:styled_widget/styled_widget.dart';
 
 part 'profile.g.dart';
 
@@ -28,6 +32,13 @@ class AccountProfileScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final accountAsync = ref.watch(accountProvider(name));
+
+    final iconShadow = Shadow(
+      color: Colors.black54,
+      blurRadius: 5.0,
+      offset: Offset(1.0, 1.0),
+    );
+
     return accountAsync.when(
       data:
           (data) => AppScaffold(
@@ -36,6 +47,7 @@ class AccountProfileScreen extends HookConsumerWidget {
                 SliverAppBar(
                   expandedHeight: 180,
                   pinned: true,
+                  leading: PageBackButton(shadows: [iconShadow]),
                   flexibleSpace: FlexibleSpaceBar(
                     background:
                         data.profile.backgroundId != null
@@ -47,33 +59,67 @@ class AccountProfileScreen extends HookConsumerWidget {
                                   Theme.of(context).appBarTheme.backgroundColor,
                             ),
                     title: Text(
-                      data.name,
+                      data.nick,
                       style: TextStyle(
                         color: Theme.of(context).appBarTheme.foregroundColor,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black54,
-                            blurRadius: 5.0,
-                            offset: Offset(1.0, 1.0),
-                          ),
-                        ],
+                        shadows: [iconShadow],
                       ),
                     ),
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          data.profile.bio ?? '',
-                          style: const TextStyle(fontSize: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 20,
+                    children: [
+                      ProfilePictureWidget(
+                        fileId: data.profile.pictureId!,
+                        radius: 32,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              spacing: 6,
+                              children: [
+                                Text(data.nick).fontSize(20),
+                                Text(
+                                  '@${data.name}',
+                                ).fontSize(14).opacity(0.85),
+                              ],
+                            ),
+                            AccountStatusWidget(
+                              uname: name,
+                              padding: EdgeInsets.zero,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    ],
+                  ).padding(horizontal: 24, top: 24, bottom: 8),
+                ),
+                if (data.badges.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: BadgeList(
+                      badges: data.badges,
+                    ).padding(horizontal: 24, bottom: 24),
+                  )
+                else
+                  const Gap(16),
+                SliverToBoxAdapter(
+                  child: const Divider(height: 1).padding(bottom: 24),
+                ),
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text('bio').tr().bold(),
+                      if (data.profile.bio != null &&
+                          data.profile.bio!.isNotEmpty)
+                        Text(data.profile.bio!),
+                    ],
+                  ).padding(horizontal: 24),
                 ),
               ],
             ),

@@ -143,116 +143,119 @@ class UpdateProfileScreen extends HookConsumerWidget {
         title: Text('updateYourProfile').tr(),
         leading: const PageBackButton(),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 16 / 7,
-            child: Stack(
-              clipBehavior: Clip.none,
-              fit: StackFit.expand,
-              children: [
-                GestureDetector(
-                  child: Container(
-                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                    child:
-                        user.value!.profile.background != null
-                            ? CloudFileWidget(
-                              item: user.value!.profile.background!,
-                              fit: BoxFit.cover,
-                            )
-                            : const SizedBox.shrink(),
-                  ),
-                  onTap: () {
-                    updateProfilePicture('background');
-                  },
-                ),
-                Positioned(
-                  left: 20,
-                  bottom: -32,
-                  child: GestureDetector(
-                    child: ProfilePictureWidget(
-                      fileId: user.value!.profile.pictureId,
-                      radius: 40,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 16 / 7,
+              child: Stack(
+                clipBehavior: Clip.none,
+                fit: StackFit.expand,
+                children: [
+                  GestureDetector(
+                    child: Container(
+                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                      child:
+                          user.value!.profile.background != null
+                              ? CloudFileWidget(
+                                item: user.value!.profile.background!,
+                                fit: BoxFit.cover,
+                              )
+                              : const SizedBox.shrink(),
                     ),
                     onTap: () {
-                      updateProfilePicture('picture');
+                      updateProfilePicture('background');
                     },
                   ),
-                ),
-              ],
+                  Positioned(
+                    left: 20,
+                    bottom: -32,
+                    child: GestureDetector(
+                      child: ProfilePictureWidget(
+                        fileId: user.value!.profile.pictureId,
+                        radius: 40,
+                      ),
+                      onTap: () {
+                        updateProfilePicture('picture');
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ).padding(bottom: 32),
+            Text('accountBasicInfo')
+                .tr()
+                .bold()
+                .fontSize(18)
+                .padding(horizontal: 24, top: 16, bottom: 12),
+            Form(
+              key: formKeyBasicInfo,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'username'.tr(),
+                      helperText: 'usernameCannotChangeHint'.tr(),
+                      prefixText: '@',
+                    ),
+                    controller: usernameController,
+                    readOnly: true,
+                    onTapOutside:
+                        (_) => FocusManager.instance.primaryFocus?.unfocus(),
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'nickname'.tr()),
+                    controller: nicknameController,
+                    onTapOutside:
+                        (_) => FocusManager.instance.primaryFocus?.unfocus(),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: submitting.value ? null : updateBasicInfo,
+                      label: Text('saveChanges').tr(),
+                      icon: const Icon(Symbols.save),
+                    ),
+                  ),
+                ],
+              ).padding(horizontal: 24),
             ),
-          ).padding(bottom: 32),
-          Text('accountBasicInfo')
-              .tr()
-              .bold()
-              .fontSize(18)
-              .padding(horizontal: 24, top: 16, bottom: 12),
-          Form(
-            key: formKeyBasicInfo,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 16,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'username'.tr(),
-                    helperText: 'usernameCannotChangeHint'.tr(),
-                    prefixText: '@',
+            Text('accountProfile')
+                .tr()
+                .bold()
+                .fontSize(18)
+                .padding(horizontal: 24, top: 16, bottom: 8),
+            Form(
+              key: formKeyProfile,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'bio'.tr()),
+                    maxLines: null,
+                    minLines: 3,
+                    controller: bioController,
+                    onTapOutside:
+                        (_) => FocusManager.instance.primaryFocus?.unfocus(),
                   ),
-                  controller: usernameController,
-                  readOnly: true,
-                  onTapOutside:
-                      (_) => FocusManager.instance.primaryFocus?.unfocus(),
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'nickname'.tr()),
-                  controller: nicknameController,
-                  onTapOutside:
-                      (_) => FocusManager.instance.primaryFocus?.unfocus(),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: submitting.value ? null : updateBasicInfo,
-                    label: Text('saveChanges').tr(),
-                    icon: const Icon(Symbols.save),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: submitting.value ? null : updateProfile,
+                      label: Text('saveChanges').tr(),
+                      icon: const Icon(Symbols.save),
+                    ),
                   ),
-                ),
-              ],
-            ).padding(horizontal: 24),
-          ),
-          Text('accountProfile')
-              .tr()
-              .bold()
-              .fontSize(18)
-              .padding(horizontal: 24, top: 16, bottom: 8),
-          Form(
-            key: formKeyProfile,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 16,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'bio'.tr()),
-                  maxLines: null,
-                  minLines: 3,
-                  controller: bioController,
-                  onTapOutside:
-                      (_) => FocusManager.instance.primaryFocus?.unfocus(),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: submitting.value ? null : updateProfile,
-                    label: Text('saveChanges').tr(),
-                    icon: const Icon(Symbols.save),
-                  ),
-                ),
-              ],
-            ).padding(horizontal: 24),
-          ),
-        ],
+                ],
+              ).padding(horizontal: 24),
+            ),
+          ],
+        ),
       ),
     );
   }

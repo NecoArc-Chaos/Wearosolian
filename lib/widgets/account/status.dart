@@ -50,7 +50,10 @@ class AccountStatusCreationWidget extends HookConsumerWidget {
         data:
             (status) =>
                 (status?.isCustomized ?? false)
-                    ? AccountStatusWidget(uname: uname)
+                    ? Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: AccountStatusWidget(uname: uname),
+                    )
                     : Padding(
                       padding:
                           padding ??
@@ -112,15 +115,13 @@ class AccountStatusWidget extends HookConsumerWidget {
       child: Row(
         spacing: 4,
         children: [
-          if (!(userStatus.value?.isCustomized ?? false))
-            Icon(Symbols.keyboard_arrow_up)
-          else if (userStatus.value!.isOnline)
+          if (userStatus.value!.isOnline)
             Icon(
               Symbols.circle,
               fill: 1,
               color: Colors.green,
               size: 16,
-            ).padding(all: 4)
+            ).padding(right: 4)
           else
             Icon(Symbols.circle, color: Colors.grey, size: 16).padding(all: 4),
           if (userStatus.value?.isCustomized ?? false)

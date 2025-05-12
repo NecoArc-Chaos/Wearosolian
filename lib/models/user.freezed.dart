@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SnAccount {
 
- int get id; String get name; String get nick; String get language; bool get isSuperuser; SnAccountProfile get profile; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt;
+ int get id; String get name; String get nick; String get language; bool get isSuperuser; SnAccountProfile get profile; List<SnAccountBadge> get badges; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt;
 /// Create a copy of SnAccount
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $SnAccountCopyWith<SnAccount> get copyWith => _$SnAccountCopyWithImpl<SnAccount>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnAccount&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.language, language) || other.language == language)&&(identical(other.isSuperuser, isSuperuser) || other.isSuperuser == isSuperuser)&&(identical(other.profile, profile) || other.profile == profile)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnAccount&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.language, language) || other.language == language)&&(identical(other.isSuperuser, isSuperuser) || other.isSuperuser == isSuperuser)&&(identical(other.profile, profile) || other.profile == profile)&&const DeepCollectionEquality().equals(other.badges, badges)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,nick,language,isSuperuser,profile,createdAt,updatedAt,deletedAt);
+int get hashCode => Object.hash(runtimeType,id,name,nick,language,isSuperuser,profile,const DeepCollectionEquality().hash(badges),createdAt,updatedAt,deletedAt);
 
 @override
 String toString() {
-  return 'SnAccount(id: $id, name: $name, nick: $nick, language: $language, isSuperuser: $isSuperuser, profile: $profile, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+  return 'SnAccount(id: $id, name: $name, nick: $nick, language: $language, isSuperuser: $isSuperuser, profile: $profile, badges: $badges, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $SnAccountCopyWith<$Res>  {
   factory $SnAccountCopyWith(SnAccount value, $Res Function(SnAccount) _then) = _$SnAccountCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String nick, String language, bool isSuperuser, SnAccountProfile profile, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
+ int id, String name, String nick, String language, bool isSuperuser, SnAccountProfile profile, List<SnAccountBadge> badges, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
 });
 
 
@@ -66,7 +66,7 @@ class _$SnAccountCopyWithImpl<$Res>
 
 /// Create a copy of SnAccount
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? nick = null,Object? language = null,Object? isSuperuser = null,Object? profile = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? nick = null,Object? language = null,Object? isSuperuser = null,Object? profile = null,Object? badges = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as String,nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non
 as String,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as String,isSuperuser: null == isSuperuser ? _self.isSuperuser : isSuperuser // ignore: cast_nullable_to_non_nullable
 as bool,profile: null == profile ? _self.profile : profile // ignore: cast_nullable_to_non_nullable
-as SnAccountProfile,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as SnAccountProfile,badges: null == badges ? _self.badges : badges // ignore: cast_nullable_to_non_nullable
+as List<SnAccountBadge>,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
@@ -97,7 +98,7 @@ $SnAccountProfileCopyWith<$Res> get profile {
 @JsonSerializable()
 
 class _SnAccount implements SnAccount {
-  const _SnAccount({required this.id, required this.name, required this.nick, required this.language, required this.isSuperuser, required this.profile, required this.createdAt, required this.updatedAt, required this.deletedAt});
+  const _SnAccount({required this.id, required this.name, required this.nick, required this.language, required this.isSuperuser, required this.profile, final  List<SnAccountBadge> badges = const [], required this.createdAt, required this.updatedAt, required this.deletedAt}): _badges = badges;
   factory _SnAccount.fromJson(Map<String, dynamic> json) => _$SnAccountFromJson(json);
 
 @override final  int id;
@@ -106,6 +107,13 @@ class _SnAccount implements SnAccount {
 @override final  String language;
 @override final  bool isSuperuser;
 @override final  SnAccountProfile profile;
+ final  List<SnAccountBadge> _badges;
+@override@JsonKey() List<SnAccountBadge> get badges {
+  if (_badges is EqualUnmodifiableListView) return _badges;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_badges);
+}
+
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
 @override final  DateTime? deletedAt;
@@ -123,16 +131,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnAccount&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.language, language) || other.language == language)&&(identical(other.isSuperuser, isSuperuser) || other.isSuperuser == isSuperuser)&&(identical(other.profile, profile) || other.profile == profile)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnAccount&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.language, language) || other.language == language)&&(identical(other.isSuperuser, isSuperuser) || other.isSuperuser == isSuperuser)&&(identical(other.profile, profile) || other.profile == profile)&&const DeepCollectionEquality().equals(other._badges, _badges)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,nick,language,isSuperuser,profile,createdAt,updatedAt,deletedAt);
+int get hashCode => Object.hash(runtimeType,id,name,nick,language,isSuperuser,profile,const DeepCollectionEquality().hash(_badges),createdAt,updatedAt,deletedAt);
 
 @override
 String toString() {
-  return 'SnAccount(id: $id, name: $name, nick: $nick, language: $language, isSuperuser: $isSuperuser, profile: $profile, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+  return 'SnAccount(id: $id, name: $name, nick: $nick, language: $language, isSuperuser: $isSuperuser, profile: $profile, badges: $badges, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
 }
 
 
@@ -143,7 +151,7 @@ abstract mixin class _$SnAccountCopyWith<$Res> implements $SnAccountCopyWith<$Re
   factory _$SnAccountCopyWith(_SnAccount value, $Res Function(_SnAccount) _then) = __$SnAccountCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String nick, String language, bool isSuperuser, SnAccountProfile profile, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
+ int id, String name, String nick, String language, bool isSuperuser, SnAccountProfile profile, List<SnAccountBadge> badges, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
 });
 
 
@@ -160,7 +168,7 @@ class __$SnAccountCopyWithImpl<$Res>
 
 /// Create a copy of SnAccount
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? nick = null,Object? language = null,Object? isSuperuser = null,Object? profile = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? nick = null,Object? language = null,Object? isSuperuser = null,Object? profile = null,Object? badges = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
   return _then(_SnAccount(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -168,7 +176,8 @@ as String,nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non
 as String,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as String,isSuperuser: null == isSuperuser ? _self.isSuperuser : isSuperuser // ignore: cast_nullable_to_non_nullable
 as bool,profile: null == profile ? _self.profile : profile // ignore: cast_nullable_to_non_nullable
-as SnAccountProfile,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as SnAccountProfile,badges: null == badges ? _self._badges : badges // ignore: cast_nullable_to_non_nullable
+as List<SnAccountBadge>,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
@@ -556,6 +565,172 @@ as bool,isNotDisturb: null == isNotDisturb ? _self.isNotDisturb : isNotDisturb /
 as bool,isCustomized: null == isCustomized ? _self.isCustomized : isCustomized // ignore: cast_nullable_to_non_nullable
 as bool,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,clearedAt: freezed == clearedAt ? _self.clearedAt : clearedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
+as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SnAccountBadge {
+
+ String get id; String get type; String? get label; String? get caption; Map<String, dynamic> get meta; DateTime? get expiredAt; int get accountId; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt;
+/// Create a copy of SnAccountBadge
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SnAccountBadgeCopyWith<SnAccountBadge> get copyWith => _$SnAccountBadgeCopyWithImpl<SnAccountBadge>(this as SnAccountBadge, _$identity);
+
+  /// Serializes this SnAccountBadge to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnAccountBadge&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.label, label) || other.label == label)&&(identical(other.caption, caption) || other.caption == caption)&&const DeepCollectionEquality().equals(other.meta, meta)&&(identical(other.expiredAt, expiredAt) || other.expiredAt == expiredAt)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,type,label,caption,const DeepCollectionEquality().hash(meta),expiredAt,accountId,createdAt,updatedAt,deletedAt);
+
+@override
+String toString() {
+  return 'SnAccountBadge(id: $id, type: $type, label: $label, caption: $caption, meta: $meta, expiredAt: $expiredAt, accountId: $accountId, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SnAccountBadgeCopyWith<$Res>  {
+  factory $SnAccountBadgeCopyWith(SnAccountBadge value, $Res Function(SnAccountBadge) _then) = _$SnAccountBadgeCopyWithImpl;
+@useResult
+$Res call({
+ String id, String type, String? label, String? caption, Map<String, dynamic> meta, DateTime? expiredAt, int accountId, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
+});
+
+
+
+
+}
+/// @nodoc
+class _$SnAccountBadgeCopyWithImpl<$Res>
+    implements $SnAccountBadgeCopyWith<$Res> {
+  _$SnAccountBadgeCopyWithImpl(this._self, this._then);
+
+  final SnAccountBadge _self;
+  final $Res Function(SnAccountBadge) _then;
+
+/// Create a copy of SnAccountBadge
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? label = freezed,Object? caption = freezed,Object? meta = null,Object? expiredAt = freezed,Object? accountId = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String?,caption: freezed == caption ? _self.caption : caption // ignore: cast_nullable_to_non_nullable
+as String?,meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,expiredAt: freezed == expiredAt ? _self.expiredAt : expiredAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
+as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _SnAccountBadge implements SnAccountBadge {
+  const _SnAccountBadge({required this.id, required this.type, required this.label, required this.caption, required final  Map<String, dynamic> meta, required this.expiredAt, required this.accountId, required this.createdAt, required this.updatedAt, required this.deletedAt}): _meta = meta;
+  factory _SnAccountBadge.fromJson(Map<String, dynamic> json) => _$SnAccountBadgeFromJson(json);
+
+@override final  String id;
+@override final  String type;
+@override final  String? label;
+@override final  String? caption;
+ final  Map<String, dynamic> _meta;
+@override Map<String, dynamic> get meta {
+  if (_meta is EqualUnmodifiableMapView) return _meta;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_meta);
+}
+
+@override final  DateTime? expiredAt;
+@override final  int accountId;
+@override final  DateTime createdAt;
+@override final  DateTime updatedAt;
+@override final  DateTime? deletedAt;
+
+/// Create a copy of SnAccountBadge
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SnAccountBadgeCopyWith<_SnAccountBadge> get copyWith => __$SnAccountBadgeCopyWithImpl<_SnAccountBadge>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SnAccountBadgeToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnAccountBadge&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.label, label) || other.label == label)&&(identical(other.caption, caption) || other.caption == caption)&&const DeepCollectionEquality().equals(other._meta, _meta)&&(identical(other.expiredAt, expiredAt) || other.expiredAt == expiredAt)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,type,label,caption,const DeepCollectionEquality().hash(_meta),expiredAt,accountId,createdAt,updatedAt,deletedAt);
+
+@override
+String toString() {
+  return 'SnAccountBadge(id: $id, type: $type, label: $label, caption: $caption, meta: $meta, expiredAt: $expiredAt, accountId: $accountId, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SnAccountBadgeCopyWith<$Res> implements $SnAccountBadgeCopyWith<$Res> {
+  factory _$SnAccountBadgeCopyWith(_SnAccountBadge value, $Res Function(_SnAccountBadge) _then) = __$SnAccountBadgeCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String type, String? label, String? caption, Map<String, dynamic> meta, DateTime? expiredAt, int accountId, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$SnAccountBadgeCopyWithImpl<$Res>
+    implements _$SnAccountBadgeCopyWith<$Res> {
+  __$SnAccountBadgeCopyWithImpl(this._self, this._then);
+
+  final _SnAccountBadge _self;
+  final $Res Function(_SnAccountBadge) _then;
+
+/// Create a copy of SnAccountBadge
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? label = freezed,Object? caption = freezed,Object? meta = null,Object? expiredAt = freezed,Object? accountId = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+  return _then(_SnAccountBadge(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String?,caption: freezed == caption ? _self.caption : caption // ignore: cast_nullable_to_non_nullable
+as String?,meta: null == meta ? _self._meta : meta // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,expiredAt: freezed == expiredAt ? _self.expiredAt : expiredAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
 as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable

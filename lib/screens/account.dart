@@ -36,7 +36,7 @@ class AccountScreen extends HookConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (user.value?.profile.background != null)
+                  if (user.value?.profile.backgroundId != null)
                     ClipRRect(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(8),
@@ -44,8 +44,8 @@ class AccountScreen extends HookConsumerWidget {
                       ),
                       child: AspectRatio(
                         aspectRatio: 16 / 7,
-                        child: CloudFileWidget(
-                          item: user.value!.profile.background!,
+                        child: CloudImageWidget(
+                          fileId: user.value!.profile.backgroundId!,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -65,22 +65,26 @@ class AccountScreen extends HookConsumerWidget {
                           );
                         },
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            spacing: 4,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Text(user.value!.nick).bold().fontSize(16),
-                              Text('@${user.value!.name}'),
-                            ],
-                          ),
-                          Text(
-                            user.value!.profile.bio ?? 'No description yet.',
-                          ),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              spacing: 4,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(user.value!.nick).bold().fontSize(16),
+                                Text('@${user.value!.name}'),
+                              ],
+                            ),
+                            Text(
+                              user.value!.profile.bio ?? 'No description yet.',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ).padding(horizontal: 16, top: 16),

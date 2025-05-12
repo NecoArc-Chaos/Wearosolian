@@ -13,6 +13,7 @@ abstract class SnAccount with _$SnAccount {
     required String language,
     required bool isSuperuser,
     required SnAccountProfile profile,
+    @Default([]) List<SnAccountBadge> badges,
     required DateTime createdAt,
     required DateTime updatedAt,
     required DateTime? deletedAt,
@@ -62,4 +63,23 @@ abstract class SnAccountStatus with _$SnAccountStatus {
 
   factory SnAccountStatus.fromJson(Map<String, dynamic> json) =>
       _$SnAccountStatusFromJson(json);
+}
+
+@freezed
+abstract class SnAccountBadge with _$SnAccountBadge {
+  const factory SnAccountBadge({
+    required String id,
+    required String type,
+    required String? label,
+    required String? caption,
+    required Map<String, dynamic> meta,
+    required DateTime? expiredAt,
+    required int accountId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required DateTime? deletedAt,
+  }) = _SnAccountBadge;
+
+  factory SnAccountBadge.fromJson(Map<String, dynamic> json) =>
+      _$SnAccountBadgeFromJson(json);
 }

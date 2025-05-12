@@ -13,6 +13,11 @@ _SnAccount _$SnAccountFromJson(Map<String, dynamic> json) => _SnAccount(
   language: json['language'] as String,
   isSuperuser: json['is_superuser'] as bool,
   profile: SnAccountProfile.fromJson(json['profile'] as Map<String, dynamic>),
+  badges:
+      (json['badges'] as List<dynamic>?)
+          ?.map((e) => SnAccountBadge.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   createdAt: DateTime.parse(json['created_at'] as String),
   updatedAt: DateTime.parse(json['updated_at'] as String),
   deletedAt:
@@ -29,6 +34,7 @@ Map<String, dynamic> _$SnAccountToJson(_SnAccount instance) =>
       'language': instance.language,
       'is_superuser': instance.isSuperuser,
       'profile': instance.profile.toJson(),
+      'badges': instance.badges.map((e) => e.toJson()).toList(),
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
       'deleted_at': instance.deletedAt?.toIso8601String(),
@@ -109,6 +115,40 @@ Map<String, dynamic> _$SnAccountStatusToJson(_SnAccountStatus instance) =>
       'is_customized': instance.isCustomized,
       'label': instance.label,
       'cleared_at': instance.clearedAt?.toIso8601String(),
+      'account_id': instance.accountId,
+      'created_at': instance.createdAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
+      'deleted_at': instance.deletedAt?.toIso8601String(),
+    };
+
+_SnAccountBadge _$SnAccountBadgeFromJson(Map<String, dynamic> json) =>
+    _SnAccountBadge(
+      id: json['id'] as String,
+      type: json['type'] as String,
+      label: json['label'] as String?,
+      caption: json['caption'] as String?,
+      meta: json['meta'] as Map<String, dynamic>,
+      expiredAt:
+          json['expired_at'] == null
+              ? null
+              : DateTime.parse(json['expired_at'] as String),
+      accountId: (json['account_id'] as num).toInt(),
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+      deletedAt:
+          json['deleted_at'] == null
+              ? null
+              : DateTime.parse(json['deleted_at'] as String),
+    );
+
+Map<String, dynamic> _$SnAccountBadgeToJson(_SnAccountBadge instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'type': instance.type,
+      'label': instance.label,
+      'caption': instance.caption,
+      'meta': instance.meta,
+      'expired_at': instance.expiredAt?.toIso8601String(),
       'account_id': instance.accountId,
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
