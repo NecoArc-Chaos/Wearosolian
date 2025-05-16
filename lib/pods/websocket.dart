@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:island/pods/config.dart';
@@ -71,10 +71,16 @@ class WebSocketService {
 
     log('[WebSocket] Trying connecting to $url');
     try {
-      _channel = IOWebSocketChannel.connect(
-        Uri.parse(url),
-        headers: {'Authorization': 'Bearer $atk'},
-      );
+      if (kIsWeb) {
+        _channel = WebSocketChannel.connect(
+          Uri.parse(url)..queryParameters['tk'] = atk,
+        );
+      } else {
+        _channel = IOWebSocketChannel.connect(
+          Uri.parse(url),
+          headers: {'Authorization': 'Bearer $atk'},
+        );
+      }
       await _channel!.ready;
       _statusStreamController.sink.add(WebSocketState.connected());
       _channel!.stream.listen(

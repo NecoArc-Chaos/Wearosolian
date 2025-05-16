@@ -9,18 +9,19 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i24;
-import 'package:flutter/material.dart' as _i25;
-import 'package:island/models/post.dart' as _i26;
+import 'package:auto_route/auto_route.dart' as _i25;
+import 'package:flutter/material.dart' as _i26;
+import 'package:island/models/post.dart' as _i27;
 import 'package:island/screens/account.dart' as _i2;
 import 'package:island/screens/account/me.dart' as _i15;
 import 'package:island/screens/account/me/event_calendar.dart' as _i14;
 import 'package:island/screens/account/me/publishers.dart' as _i8;
-import 'package:island/screens/account/me/update.dart' as _i22;
+import 'package:island/screens/account/me/update.dart' as _i23;
 import 'package:island/screens/account/profile.dart' as _i1;
+import 'package:island/screens/account/relationship.dart' as _i20;
 import 'package:island/screens/auth/create_account.dart' as _i6;
 import 'package:island/screens/auth/login.dart' as _i13;
-import 'package:island/screens/auth/tabs.dart' as _i21;
+import 'package:island/screens/auth/tabs.dart' as _i22;
 import 'package:island/screens/chat/chat.dart' as _i4;
 import 'package:island/screens/chat/room.dart' as _i5;
 import 'package:island/screens/chat/room_detail.dart' as _i3;
@@ -33,16 +34,16 @@ import 'package:island/screens/posts/detail.dart' as _i17;
 import 'package:island/screens/posts/pub_profile.dart' as _i18;
 import 'package:island/screens/realm/detail.dart' as _i19;
 import 'package:island/screens/realm/realms.dart' as _i9;
-import 'package:island/screens/settings.dart' as _i20;
-import 'package:island/screens/wallet.dart' as _i23;
+import 'package:island/screens/settings.dart' as _i21;
+import 'package:island/screens/wallet.dart' as _i24;
 
 /// generated route for
 /// [_i1.AccountProfileScreen]
-class AccountProfileRoute extends _i24.PageRouteInfo<AccountProfileRouteArgs> {
+class AccountProfileRoute extends _i25.PageRouteInfo<AccountProfileRouteArgs> {
   AccountProfileRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String name,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          AccountProfileRoute.name,
          args: AccountProfileRouteArgs(key: key, name: name),
@@ -52,7 +53,7 @@ class AccountProfileRoute extends _i24.PageRouteInfo<AccountProfileRouteArgs> {
 
   static const String name = 'AccountProfileRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -68,7 +69,7 @@ class AccountProfileRoute extends _i24.PageRouteInfo<AccountProfileRouteArgs> {
 class AccountProfileRouteArgs {
   const AccountProfileRouteArgs({this.key, required this.name});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String name;
 
@@ -80,13 +81,13 @@ class AccountProfileRouteArgs {
 
 /// generated route for
 /// [_i2.AccountScreen]
-class AccountRoute extends _i24.PageRouteInfo<void> {
-  const AccountRoute({List<_i24.PageRouteInfo>? children})
+class AccountRoute extends _i25.PageRouteInfo<void> {
+  const AccountRoute({List<_i25.PageRouteInfo>? children})
     : super(AccountRoute.name, initialChildren: children);
 
   static const String name = 'AccountRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i2.AccountScreen();
@@ -96,11 +97,11 @@ class AccountRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.ChatDetailScreen]
-class ChatDetailRoute extends _i24.PageRouteInfo<ChatDetailRouteArgs> {
+class ChatDetailRoute extends _i25.PageRouteInfo<ChatDetailRouteArgs> {
   ChatDetailRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String id,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          ChatDetailRoute.name,
          args: ChatDetailRouteArgs(key: key, id: id),
@@ -110,7 +111,7 @@ class ChatDetailRoute extends _i24.PageRouteInfo<ChatDetailRouteArgs> {
 
   static const String name = 'ChatDetailRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -125,7 +126,7 @@ class ChatDetailRoute extends _i24.PageRouteInfo<ChatDetailRouteArgs> {
 class ChatDetailRouteArgs {
   const ChatDetailRouteArgs({this.key, required this.id});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String id;
 
@@ -137,13 +138,13 @@ class ChatDetailRouteArgs {
 
 /// generated route for
 /// [_i4.ChatListScreen]
-class ChatListRoute extends _i24.PageRouteInfo<void> {
-  const ChatListRoute({List<_i24.PageRouteInfo>? children})
+class ChatListRoute extends _i25.PageRouteInfo<void> {
+  const ChatListRoute({List<_i25.PageRouteInfo>? children})
     : super(ChatListRoute.name, initialChildren: children);
 
   static const String name = 'ChatListRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i4.ChatListScreen();
@@ -153,11 +154,11 @@ class ChatListRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.ChatRoomScreen]
-class ChatRoomRoute extends _i24.PageRouteInfo<ChatRoomRouteArgs> {
+class ChatRoomRoute extends _i25.PageRouteInfo<ChatRoomRouteArgs> {
   ChatRoomRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String id,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          ChatRoomRoute.name,
          args: ChatRoomRouteArgs(key: key, id: id),
@@ -167,7 +168,7 @@ class ChatRoomRoute extends _i24.PageRouteInfo<ChatRoomRouteArgs> {
 
   static const String name = 'ChatRoomRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -182,7 +183,7 @@ class ChatRoomRoute extends _i24.PageRouteInfo<ChatRoomRouteArgs> {
 class ChatRoomRouteArgs {
   const ChatRoomRouteArgs({this.key, required this.id});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String id;
 
@@ -194,13 +195,13 @@ class ChatRoomRouteArgs {
 
 /// generated route for
 /// [_i6.CreateAccountScreen]
-class CreateAccountRoute extends _i24.PageRouteInfo<void> {
-  const CreateAccountRoute({List<_i24.PageRouteInfo>? children})
+class CreateAccountRoute extends _i25.PageRouteInfo<void> {
+  const CreateAccountRoute({List<_i25.PageRouteInfo>? children})
     : super(CreateAccountRoute.name, initialChildren: children);
 
   static const String name = 'CreateAccountRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i6.CreateAccountScreen();
@@ -210,13 +211,13 @@ class CreateAccountRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.CreatorHubScreen]
-class CreatorHubRoute extends _i24.PageRouteInfo<void> {
-  const CreatorHubRoute({List<_i24.PageRouteInfo>? children})
+class CreatorHubRoute extends _i25.PageRouteInfo<void> {
+  const CreatorHubRoute({List<_i25.PageRouteInfo>? children})
     : super(CreatorHubRoute.name, initialChildren: children);
 
   static const String name = 'CreatorHubRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i7.CreatorHubScreen();
@@ -226,8 +227,8 @@ class CreatorHubRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.EditChatScreen]
-class EditChatRoute extends _i24.PageRouteInfo<EditChatRouteArgs> {
-  EditChatRoute({_i25.Key? key, String? id, List<_i24.PageRouteInfo>? children})
+class EditChatRoute extends _i25.PageRouteInfo<EditChatRouteArgs> {
+  EditChatRoute({_i26.Key? key, String? id, List<_i25.PageRouteInfo>? children})
     : super(
         EditChatRoute.name,
         args: EditChatRouteArgs(key: key, id: id),
@@ -237,7 +238,7 @@ class EditChatRoute extends _i24.PageRouteInfo<EditChatRouteArgs> {
 
   static const String name = 'EditChatRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -252,7 +253,7 @@ class EditChatRoute extends _i24.PageRouteInfo<EditChatRouteArgs> {
 class EditChatRouteArgs {
   const EditChatRouteArgs({this.key, this.id});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String? id;
 
@@ -264,11 +265,11 @@ class EditChatRouteArgs {
 
 /// generated route for
 /// [_i8.EditPublisherScreen]
-class EditPublisherRoute extends _i24.PageRouteInfo<EditPublisherRouteArgs> {
+class EditPublisherRoute extends _i25.PageRouteInfo<EditPublisherRouteArgs> {
   EditPublisherRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     String? name,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          EditPublisherRoute.name,
          args: EditPublisherRouteArgs(key: key, name: name),
@@ -278,7 +279,7 @@ class EditPublisherRoute extends _i24.PageRouteInfo<EditPublisherRouteArgs> {
 
   static const String name = 'EditPublisherRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -293,7 +294,7 @@ class EditPublisherRoute extends _i24.PageRouteInfo<EditPublisherRouteArgs> {
 class EditPublisherRouteArgs {
   const EditPublisherRouteArgs({this.key, this.name});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String? name;
 
@@ -305,11 +306,11 @@ class EditPublisherRouteArgs {
 
 /// generated route for
 /// [_i9.EditRealmScreen]
-class EditRealmRoute extends _i24.PageRouteInfo<EditRealmRouteArgs> {
+class EditRealmRoute extends _i25.PageRouteInfo<EditRealmRouteArgs> {
   EditRealmRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     String? slug,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          EditRealmRoute.name,
          args: EditRealmRouteArgs(key: key, slug: slug),
@@ -319,7 +320,7 @@ class EditRealmRoute extends _i24.PageRouteInfo<EditRealmRouteArgs> {
 
   static const String name = 'EditRealmRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -334,7 +335,7 @@ class EditRealmRoute extends _i24.PageRouteInfo<EditRealmRouteArgs> {
 class EditRealmRouteArgs {
   const EditRealmRouteArgs({this.key, this.slug});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String? slug;
 
@@ -347,12 +348,12 @@ class EditRealmRouteArgs {
 /// generated route for
 /// [_i10.EditStickerPacksScreen]
 class EditStickerPacksRoute
-    extends _i24.PageRouteInfo<EditStickerPacksRouteArgs> {
+    extends _i25.PageRouteInfo<EditStickerPacksRouteArgs> {
   EditStickerPacksRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String pubName,
     String? packId,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          EditStickerPacksRoute.name,
          args: EditStickerPacksRouteArgs(
@@ -366,7 +367,7 @@ class EditStickerPacksRoute
 
   static const String name = 'EditStickerPacksRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -393,7 +394,7 @@ class EditStickerPacksRouteArgs {
     this.packId,
   });
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String pubName;
 
@@ -407,12 +408,12 @@ class EditStickerPacksRouteArgs {
 
 /// generated route for
 /// [_i11.EditStickersScreen]
-class EditStickersRoute extends _i24.PageRouteInfo<EditStickersRouteArgs> {
+class EditStickersRoute extends _i25.PageRouteInfo<EditStickersRouteArgs> {
   EditStickersRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String packId,
     required String? id,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          EditStickersRoute.name,
          args: EditStickersRouteArgs(key: key, packId: packId, id: id),
@@ -422,7 +423,7 @@ class EditStickersRoute extends _i24.PageRouteInfo<EditStickersRouteArgs> {
 
   static const String name = 'EditStickersRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -449,7 +450,7 @@ class EditStickersRouteArgs {
     required this.id,
   });
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String packId;
 
@@ -463,13 +464,13 @@ class EditStickersRouteArgs {
 
 /// generated route for
 /// [_i12.ExploreScreen]
-class ExploreRoute extends _i24.PageRouteInfo<void> {
-  const ExploreRoute({List<_i24.PageRouteInfo>? children})
+class ExploreRoute extends _i25.PageRouteInfo<void> {
+  const ExploreRoute({List<_i25.PageRouteInfo>? children})
     : super(ExploreRoute.name, initialChildren: children);
 
   static const String name = 'ExploreRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i12.ExploreScreen();
@@ -479,13 +480,13 @@ class ExploreRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i13.LoginScreen]
-class LoginRoute extends _i24.PageRouteInfo<void> {
-  const LoginRoute({List<_i24.PageRouteInfo>? children})
+class LoginRoute extends _i25.PageRouteInfo<void> {
+  const LoginRoute({List<_i25.PageRouteInfo>? children})
     : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i13.LoginScreen();
@@ -495,13 +496,13 @@ class LoginRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i8.ManagedPublisherScreen]
-class ManagedPublisherRoute extends _i24.PageRouteInfo<void> {
-  const ManagedPublisherRoute({List<_i24.PageRouteInfo>? children})
+class ManagedPublisherRoute extends _i25.PageRouteInfo<void> {
+  const ManagedPublisherRoute({List<_i25.PageRouteInfo>? children})
     : super(ManagedPublisherRoute.name, initialChildren: children);
 
   static const String name = 'ManagedPublisherRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i8.ManagedPublisherScreen();
@@ -511,13 +512,13 @@ class ManagedPublisherRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i14.MyselfEventCalendarScreen]
-class MyselfEventCalendarRoute extends _i24.PageRouteInfo<void> {
-  const MyselfEventCalendarRoute({List<_i24.PageRouteInfo>? children})
+class MyselfEventCalendarRoute extends _i25.PageRouteInfo<void> {
+  const MyselfEventCalendarRoute({List<_i25.PageRouteInfo>? children})
     : super(MyselfEventCalendarRoute.name, initialChildren: children);
 
   static const String name = 'MyselfEventCalendarRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i14.MyselfEventCalendarScreen();
@@ -527,13 +528,13 @@ class MyselfEventCalendarRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i15.MyselfProfileScreen]
-class MyselfProfileRoute extends _i24.PageRouteInfo<void> {
-  const MyselfProfileRoute({List<_i24.PageRouteInfo>? children})
+class MyselfProfileRoute extends _i25.PageRouteInfo<void> {
+  const MyselfProfileRoute({List<_i25.PageRouteInfo>? children})
     : super(MyselfProfileRoute.name, initialChildren: children);
 
   static const String name = 'MyselfProfileRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i15.MyselfProfileScreen();
@@ -543,13 +544,13 @@ class MyselfProfileRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.NewChatScreen]
-class NewChatRoute extends _i24.PageRouteInfo<void> {
-  const NewChatRoute({List<_i24.PageRouteInfo>? children})
+class NewChatRoute extends _i25.PageRouteInfo<void> {
+  const NewChatRoute({List<_i25.PageRouteInfo>? children})
     : super(NewChatRoute.name, initialChildren: children);
 
   static const String name = 'NewChatRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i4.NewChatScreen();
@@ -559,13 +560,13 @@ class NewChatRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i8.NewPublisherScreen]
-class NewPublisherRoute extends _i24.PageRouteInfo<void> {
-  const NewPublisherRoute({List<_i24.PageRouteInfo>? children})
+class NewPublisherRoute extends _i25.PageRouteInfo<void> {
+  const NewPublisherRoute({List<_i25.PageRouteInfo>? children})
     : super(NewPublisherRoute.name, initialChildren: children);
 
   static const String name = 'NewPublisherRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i8.NewPublisherScreen();
@@ -575,13 +576,13 @@ class NewPublisherRoute extends _i24.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i9.NewRealmScreen]
-class NewRealmRoute extends _i24.PageRouteInfo<void> {
-  const NewRealmRoute({List<_i24.PageRouteInfo>? children})
+class NewRealmRoute extends _i25.PageRouteInfo<void> {
+  const NewRealmRoute({List<_i25.PageRouteInfo>? children})
     : super(NewRealmRoute.name, initialChildren: children);
 
   static const String name = 'NewRealmRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i9.NewRealmScreen();
@@ -592,11 +593,11 @@ class NewRealmRoute extends _i24.PageRouteInfo<void> {
 /// generated route for
 /// [_i10.NewStickerPacksScreen]
 class NewStickerPacksRoute
-    extends _i24.PageRouteInfo<NewStickerPacksRouteArgs> {
+    extends _i25.PageRouteInfo<NewStickerPacksRouteArgs> {
   NewStickerPacksRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String pubName,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          NewStickerPacksRoute.name,
          args: NewStickerPacksRouteArgs(key: key, pubName: pubName),
@@ -606,7 +607,7 @@ class NewStickerPacksRoute
 
   static const String name = 'NewStickerPacksRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -623,7 +624,7 @@ class NewStickerPacksRoute
 class NewStickerPacksRouteArgs {
   const NewStickerPacksRouteArgs({this.key, required this.pubName});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String pubName;
 
@@ -635,11 +636,11 @@ class NewStickerPacksRouteArgs {
 
 /// generated route for
 /// [_i11.NewStickersScreen]
-class NewStickersRoute extends _i24.PageRouteInfo<NewStickersRouteArgs> {
+class NewStickersRoute extends _i25.PageRouteInfo<NewStickersRouteArgs> {
   NewStickersRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String packId,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          NewStickersRoute.name,
          args: NewStickersRouteArgs(key: key, packId: packId),
@@ -649,7 +650,7 @@ class NewStickersRoute extends _i24.PageRouteInfo<NewStickersRouteArgs> {
 
   static const String name = 'NewStickersRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -665,7 +666,7 @@ class NewStickersRoute extends _i24.PageRouteInfo<NewStickersRouteArgs> {
 class NewStickersRouteArgs {
   const NewStickersRouteArgs({this.key, required this.packId});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String packId;
 
@@ -677,11 +678,11 @@ class NewStickersRouteArgs {
 
 /// generated route for
 /// [_i16.PostComposeScreen]
-class PostComposeRoute extends _i24.PageRouteInfo<PostComposeRouteArgs> {
+class PostComposeRoute extends _i25.PageRouteInfo<PostComposeRouteArgs> {
   PostComposeRoute({
-    _i25.Key? key,
-    _i26.SnPost? originalPost,
-    List<_i24.PageRouteInfo>? children,
+    _i26.Key? key,
+    _i27.SnPost? originalPost,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          PostComposeRoute.name,
          args: PostComposeRouteArgs(key: key, originalPost: originalPost),
@@ -690,7 +691,7 @@ class PostComposeRoute extends _i24.PageRouteInfo<PostComposeRouteArgs> {
 
   static const String name = 'PostComposeRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<PostComposeRouteArgs>(
@@ -707,9 +708,9 @@ class PostComposeRoute extends _i24.PageRouteInfo<PostComposeRouteArgs> {
 class PostComposeRouteArgs {
   const PostComposeRouteArgs({this.key, this.originalPost});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
-  final _i26.SnPost? originalPost;
+  final _i27.SnPost? originalPost;
 
   @override
   String toString() {
@@ -719,11 +720,11 @@ class PostComposeRouteArgs {
 
 /// generated route for
 /// [_i17.PostDetailScreen]
-class PostDetailRoute extends _i24.PageRouteInfo<PostDetailRouteArgs> {
+class PostDetailRoute extends _i25.PageRouteInfo<PostDetailRouteArgs> {
   PostDetailRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String id,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          PostDetailRoute.name,
          args: PostDetailRouteArgs(key: key, id: id),
@@ -733,7 +734,7 @@ class PostDetailRoute extends _i24.PageRouteInfo<PostDetailRouteArgs> {
 
   static const String name = 'PostDetailRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -748,7 +749,7 @@ class PostDetailRoute extends _i24.PageRouteInfo<PostDetailRouteArgs> {
 class PostDetailRouteArgs {
   const PostDetailRouteArgs({this.key, required this.id});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String id;
 
@@ -760,11 +761,11 @@ class PostDetailRouteArgs {
 
 /// generated route for
 /// [_i16.PostEditScreen]
-class PostEditRoute extends _i24.PageRouteInfo<PostEditRouteArgs> {
+class PostEditRoute extends _i25.PageRouteInfo<PostEditRouteArgs> {
   PostEditRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String id,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          PostEditRoute.name,
          args: PostEditRouteArgs(key: key, id: id),
@@ -774,7 +775,7 @@ class PostEditRoute extends _i24.PageRouteInfo<PostEditRouteArgs> {
 
   static const String name = 'PostEditRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -789,7 +790,7 @@ class PostEditRoute extends _i24.PageRouteInfo<PostEditRouteArgs> {
 class PostEditRouteArgs {
   const PostEditRouteArgs({this.key, required this.id});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String id;
 
@@ -802,11 +803,11 @@ class PostEditRouteArgs {
 /// generated route for
 /// [_i18.PublisherProfileScreen]
 class PublisherProfileRoute
-    extends _i24.PageRouteInfo<PublisherProfileRouteArgs> {
+    extends _i25.PageRouteInfo<PublisherProfileRouteArgs> {
   PublisherProfileRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String name,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          PublisherProfileRoute.name,
          args: PublisherProfileRouteArgs(key: key, name: name),
@@ -816,7 +817,7 @@ class PublisherProfileRoute
 
   static const String name = 'PublisherProfileRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -832,7 +833,7 @@ class PublisherProfileRoute
 class PublisherProfileRouteArgs {
   const PublisherProfileRouteArgs({this.key, required this.name});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String name;
 
@@ -844,11 +845,11 @@ class PublisherProfileRouteArgs {
 
 /// generated route for
 /// [_i19.RealmDetailScreen]
-class RealmDetailRoute extends _i24.PageRouteInfo<RealmDetailRouteArgs> {
+class RealmDetailRoute extends _i25.PageRouteInfo<RealmDetailRouteArgs> {
   RealmDetailRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String slug,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          RealmDetailRoute.name,
          args: RealmDetailRouteArgs(key: key, slug: slug),
@@ -858,7 +859,7 @@ class RealmDetailRoute extends _i24.PageRouteInfo<RealmDetailRouteArgs> {
 
   static const String name = 'RealmDetailRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -873,7 +874,7 @@ class RealmDetailRoute extends _i24.PageRouteInfo<RealmDetailRouteArgs> {
 class RealmDetailRouteArgs {
   const RealmDetailRouteArgs({this.key, required this.slug});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String slug;
 
@@ -885,13 +886,13 @@ class RealmDetailRouteArgs {
 
 /// generated route for
 /// [_i9.RealmListScreen]
-class RealmListRoute extends _i24.PageRouteInfo<void> {
-  const RealmListRoute({List<_i24.PageRouteInfo>? children})
+class RealmListRoute extends _i25.PageRouteInfo<void> {
+  const RealmListRoute({List<_i25.PageRouteInfo>? children})
     : super(RealmListRoute.name, initialChildren: children);
 
   static const String name = 'RealmListRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       return const _i9.RealmListScreen();
@@ -900,17 +901,33 @@ class RealmListRoute extends _i24.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i20.SettingsScreen]
-class SettingsRoute extends _i24.PageRouteInfo<void> {
-  const SettingsRoute({List<_i24.PageRouteInfo>? children})
+/// [_i20.RelationshipScreen]
+class RelationshipRoute extends _i25.PageRouteInfo<void> {
+  const RelationshipRoute({List<_i25.PageRouteInfo>? children})
+    : super(RelationshipRoute.name, initialChildren: children);
+
+  static const String name = 'RelationshipRoute';
+
+  static _i25.PageInfo page = _i25.PageInfo(
+    name,
+    builder: (data) {
+      return const _i20.RelationshipScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [_i21.SettingsScreen]
+class SettingsRoute extends _i25.PageRouteInfo<void> {
+  const SettingsRoute({List<_i25.PageRouteInfo>? children})
     : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
-      return const _i20.SettingsScreen();
+      return const _i21.SettingsScreen();
     },
   );
 }
@@ -918,12 +935,12 @@ class SettingsRoute extends _i24.PageRouteInfo<void> {
 /// generated route for
 /// [_i11.StickerPackDetailScreen]
 class StickerPackDetailRoute
-    extends _i24.PageRouteInfo<StickerPackDetailRouteArgs> {
+    extends _i25.PageRouteInfo<StickerPackDetailRouteArgs> {
   StickerPackDetailRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String pubName,
     required String id,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          StickerPackDetailRoute.name,
          args: StickerPackDetailRouteArgs(key: key, pubName: pubName, id: id),
@@ -933,7 +950,7 @@ class StickerPackDetailRoute
 
   static const String name = 'StickerPackDetailRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -960,7 +977,7 @@ class StickerPackDetailRouteArgs {
     required this.id,
   });
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String pubName;
 
@@ -974,11 +991,11 @@ class StickerPackDetailRouteArgs {
 
 /// generated route for
 /// [_i10.StickersScreen]
-class StickersRoute extends _i24.PageRouteInfo<StickersRouteArgs> {
+class StickersRoute extends _i25.PageRouteInfo<StickersRouteArgs> {
   StickersRoute({
-    _i25.Key? key,
+    _i26.Key? key,
     required String pubName,
-    List<_i24.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
          StickersRoute.name,
          args: StickersRouteArgs(key: key, pubName: pubName),
@@ -988,7 +1005,7 @@ class StickersRoute extends _i24.PageRouteInfo<StickersRouteArgs> {
 
   static const String name = 'StickersRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -1003,7 +1020,7 @@ class StickersRoute extends _i24.PageRouteInfo<StickersRouteArgs> {
 class StickersRouteArgs {
   const StickersRouteArgs({this.key, required this.pubName});
 
-  final _i25.Key? key;
+  final _i26.Key? key;
 
   final String pubName;
 
@@ -1014,49 +1031,49 @@ class StickersRouteArgs {
 }
 
 /// generated route for
-/// [_i21.TabsScreen]
-class TabsRoute extends _i24.PageRouteInfo<void> {
-  const TabsRoute({List<_i24.PageRouteInfo>? children})
+/// [_i22.TabsScreen]
+class TabsRoute extends _i25.PageRouteInfo<void> {
+  const TabsRoute({List<_i25.PageRouteInfo>? children})
     : super(TabsRoute.name, initialChildren: children);
 
   static const String name = 'TabsRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
-      return const _i21.TabsScreen();
+      return const _i22.TabsScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i22.UpdateProfileScreen]
-class UpdateProfileRoute extends _i24.PageRouteInfo<void> {
-  const UpdateProfileRoute({List<_i24.PageRouteInfo>? children})
+/// [_i23.UpdateProfileScreen]
+class UpdateProfileRoute extends _i25.PageRouteInfo<void> {
+  const UpdateProfileRoute({List<_i25.PageRouteInfo>? children})
     : super(UpdateProfileRoute.name, initialChildren: children);
 
   static const String name = 'UpdateProfileRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
-      return const _i22.UpdateProfileScreen();
+      return const _i23.UpdateProfileScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i23.WalletScreen]
-class WalletRoute extends _i24.PageRouteInfo<void> {
-  const WalletRoute({List<_i24.PageRouteInfo>? children})
+/// [_i24.WalletScreen]
+class WalletRoute extends _i25.PageRouteInfo<void> {
+  const WalletRoute({List<_i25.PageRouteInfo>? children})
     : super(WalletRoute.name, initialChildren: children);
 
   static const String name = 'WalletRoute';
 
-  static _i24.PageInfo page = _i24.PageInfo(
+  static _i25.PageInfo page = _i25.PageInfo(
     name,
     builder: (data) {
-      return const _i23.WalletScreen();
+      return const _i24.WalletScreen();
     },
   );
 }

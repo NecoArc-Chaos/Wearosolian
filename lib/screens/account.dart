@@ -153,6 +153,16 @@ class AccountScreen extends HookConsumerWidget {
             ),
             ListTile(
               minTileHeight: 48,
+              leading: const Icon(Symbols.people),
+              trailing: const Icon(Symbols.chevron_right),
+              contentPadding: EdgeInsets.symmetric(horizontal: 24),
+              title: Text('relationships').tr(),
+              onTap: () {
+                context.router.push(RelationshipRoute());
+              },
+            ),
+            ListTile(
+              minTileHeight: 48,
               leading: const Icon(Symbols.edit),
               trailing: const Icon(Symbols.chevron_right),
               contentPadding: EdgeInsets.symmetric(horizontal: 24),

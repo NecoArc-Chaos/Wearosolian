@@ -1,0 +1,24 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'package:island/models/user.dart';
+
+part 'relationship.freezed.dart';
+part 'relationship.g.dart';
+
+@freezed
+abstract class SnRelationship with _$SnRelationship {
+  const factory SnRelationship({
+    required DateTime? createdAt,
+    required DateTime? updatedAt,
+    required DateTime? deletedAt,
+    required String accountId,
+    required SnAccount account,
+    required String relatedId,
+    required SnAccount related,
+    required DateTime? expiredAt,
+    required int status,
+  }) = _SnRelationship;
+
+  factory SnRelationship.fromJson(Map<String, dynamic> json) =>
+      _$SnRelationshipFromJson(json);
+}

@@ -127,10 +127,6 @@ PODS:
     - sqlite3/rtree
   - super_native_extensions (0.0.1):
     - FlutterMacOS
-  - tencent_rtc_sdk (10.4):
-    - FlutterMacOS
-    - TXLiteAVSDK_TRTC_Mac (~> 12.3.16995)
-  - TXLiteAVSDK_TRTC_Mac (12.3.16995)
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
   - volume_controller (0.0.1):
@@ -159,7 +155,6 @@ DEPENDENCIES:
   - sqflite_darwin (from `Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin`)
   - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin`)
   - super_native_extensions (from `Flutter/ephemeral/.symlinks/plugins/super_native_extensions/macos`)
-  - tencent_rtc_sdk (from `Flutter/ephemeral/.symlinks/plugins/tencent_rtc_sdk/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - volume_controller (from `Flutter/ephemeral/.symlinks/plugins/volume_controller/macos`)
   - wakelock_plus (from `Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos`)
@@ -178,7 +173,6 @@ SPEC REPOS:
     - PromisesObjC
     - SAMKeychain
     - sqlite3
-    - TXLiteAVSDK_TRTC_Mac
 
 EXTERNAL SOURCES:
   bitsdojo_window_macos:
@@ -221,8 +215,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin
   super_native_extensions:
     :path: Flutter/ephemeral/.symlinks/plugins/super_native_extensions/macos
-  tencent_rtc_sdk:
-    :path: Flutter/ephemeral/.symlinks/plugins/tencent_rtc_sdk/macos
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
   volume_controller:
@@ -263,8 +255,6 @@ SPEC CHECKSUMS:
   sqlite3: fc1400008a9b3525f5914ed715a5d1af0b8f4983
   sqlite3_flutter_libs: f6acaa2172e6bb3e2e70c771661905080e8ebcf2
   super_native_extensions: c2795d6d9aedf4a79fae25cb6160b71b50549189
-  tencent_rtc_sdk: bedbb2bcdf50f5cff9b551d19ed7228391ba1a5c
-  TXLiteAVSDK_TRTC_Mac: bd4218d0415c950913f8f893267e18dd4333f633
   url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
   volume_controller: 5c068e6d085c80dadd33fc2c918d2114b775b3dd
   wakelock_plus: 21ddc249ac4b8d018838dbdabd65c5976c308497

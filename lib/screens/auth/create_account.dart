@@ -47,6 +47,7 @@ class CreateAccountScreen extends HookConsumerWidget {
       if (!context.mounted) return;
 
       try {
+        showLoadingModal(context);
         final client = ref.watch(apiClientProvider);
         await client.post(
           '/accounts',
@@ -59,10 +60,11 @@ class CreateAccountScreen extends HookConsumerWidget {
             'captcha_token': captchaTk,
           },
         );
-
         if (!context.mounted) return;
+        hideLoadingModal(context);
         showPostCreateModal();
       } catch (err) {
+        if (context.mounted) hideLoadingModal(context);
         showErrorAlert(err);
       }
     }

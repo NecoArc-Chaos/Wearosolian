@@ -59,6 +59,7 @@ class ExploreScreen extends ConsumerWidget {
                       }
 
                       final item = data.items[index];
+                      if (item.data == null) return const SizedBox.shrink();
                       Widget itemWidget;
 
                       switch (item.type) {

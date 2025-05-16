@@ -259,9 +259,13 @@ class _WebSocketIndicator extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDesktop =
+        !kIsWeb && (Platform.isMacOS || Platform.isWindows || Platform.isLinux);
+
     final user = ref.watch(userInfoProvider);
     final websocketState = ref.watch(websocketStateProvider);
-    final indicatorHeight = MediaQuery.of(context).padding.top + 60;
+    final indicatorHeight =
+        MediaQuery.of(context).padding.top + (isDesktop ? 27.5 : 60);
 
     Color indicatorColor;
     String indicatorText;
@@ -287,18 +291,23 @@ class _WebSocketIndicator extends HookConsumerWidget {
       left: 0,
       right: 0,
       height: indicatorHeight,
-      child: Material(
-        elevation: 4,
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 300),
-          color: indicatorColor,
-          child: Center(
-            child:
-                Text(
-                  indicatorText,
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ).tr(),
-          ).padding(top: MediaQuery.of(context).padding.top),
+      child: IgnorePointer(
+        child: Material(
+          elevation:
+              !user.hasValue || websocketState == WebSocketState.connected()
+                  ? 0
+                  : 4,
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            color: indicatorColor,
+            child: Center(
+              child:
+                  Text(
+                    indicatorText,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ).tr(),
+            ).padding(top: MediaQuery.of(context).padding.top),
+          ),
         ),
       ),
     );

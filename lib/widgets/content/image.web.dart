@@ -7,6 +7,8 @@ class UniversalImage extends StatelessWidget {
   final BoxFit fit;
   final double? width;
   final double? height;
+  // No cache optimization for web
+  final bool noCacheOptimization;
 
   const UniversalImage({
     super.key,
@@ -15,6 +17,7 @@ class UniversalImage extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.width,
     this.height,
+    this.noCacheOptimization = false,
   });
 
   @override

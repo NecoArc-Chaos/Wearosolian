@@ -20,6 +20,7 @@ class AppRouter extends RootStackRouter {
       ],
     ),
     AutoRoute(page: WalletRoute.page, path: '/wallet'),
+    AutoRoute(page: RelationshipRoute.page, path: '/relationships'),
     AutoRoute(page: SettingsRoute.page, path: '/settings'),
     AutoRoute(page: LoginRoute.page, path: '/auth/login'),
     AutoRoute(page: CreateAccountRoute.page, path: '/auth/create-account'),

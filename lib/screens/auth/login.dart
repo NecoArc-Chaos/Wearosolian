@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_udid/flutter_udid.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:island/models/auth.dart';
@@ -13,6 +12,7 @@ import 'package:island/pods/network.dart';
 import 'package:island/pods/userinfo.dart';
 import 'package:island/pods/websocket.dart';
 import 'package:island/services/notify.dart';
+import 'package:island/services/udid.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -150,8 +150,8 @@ class _LoginCheckScreen extends HookConsumerWidget {
           subscribePushNotification(apiClient);
           final wsNotifier = ref.read(websocketStateProvider.notifier);
           wsNotifier.connect();
+          if (context.mounted) Navigator.pop(context, true);
         });
-        Navigator.pop(context, true);
       } catch (err) {
         showErrorAlert(err);
         return;
@@ -379,7 +379,7 @@ class _LoginLookupScreen extends HookConsumerWidget {
           '/auth/challenge',
           data: {
             'account': uname,
-            'device_id': await FlutterUdid.consistentUdid,
+            'device_id': await getUdid(),
             'platform':
                 kIsWeb
                     ? 1

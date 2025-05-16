@@ -212,5 +212,18 @@
   "walletCurrencyGolds": "The Solar Dollars",
   "walletCurrencyShortGolds": "TSD",
   "retry": "Retry",
-  "creatorHubUnselectedHint": "Pick / create a publisher to get started."
+  "creatorHubUnselectedHint": "Pick / create a publisher to get started.",
+  "relationships": "Relationships",
+  "addFriend": "Send a Friend Request",
+  "addFriendHint": "Add a friend to your relationship list.",
+  "pendingRequest": "Pending",
+  "waitingRequest": "Waiting",
+  "friendRequestAccepted": "Accepted friend request from {}",
+  "friendRequestDeclined": "Declined friend request from {}",
+  "requestExpiredIn": "Expired in {}",
+  "friendSentRequest": "Sent Friend Requests",
+  "friendSentRequestHint": {
+    "one": "{} friend request sent",
+    "other": "{} friend requests sent"
+  }
 }

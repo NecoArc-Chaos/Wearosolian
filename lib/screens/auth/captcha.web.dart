@@ -1,17 +1,23 @@
 // ignore_for_file: invalid_runtime_check_with_js_interop_types
 
 import 'dart:ui_web' as ui;
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/pods/config.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:web/web.dart' as web;
 import 'package:flutter/material.dart';
 
-class CaptchaScreen extends HookConsumerWidget {
+class CaptchaScreen extends ConsumerStatefulWidget {
   const CaptchaScreen({super.key});
 
-  void _setupWebListener(BuildContext context, String serverUrl) {
+  @override
+  ConsumerState<CaptchaScreen> createState() => _CaptchaScreenState();
+}
+
+class _CaptchaScreenState extends ConsumerState<CaptchaScreen> {
+  bool _isInitialized = false;
+
+  void _setupWebListener(String serverUrl) {
     web.window.onMessage.listen((event) {
       if (event.data != null && event.data is String) {
         final message = event.data as String;
@@ -24,7 +30,7 @@ class CaptchaScreen extends HookConsumerWidget {
 
     final iframe =
         web.HTMLIFrameElement()
-          ..src = '$serverUrl/captcha'
+          ..src = '$serverUrl/auth/captcha'
           ..style.border = 'none'
           ..width = '100%'
           ..height = '100%';
@@ -34,18 +40,29 @@ class CaptchaScreen extends HookConsumerWidget {
       'captcha-iframe',
       (int viewId) => iframe,
     );
+
+    setState(() {
+      _isInitialized = true;
+    });
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    useCallback(() {
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
       final serverUrl = ref.watch(serverUrlProvider);
-      _setupWebListener(context, serverUrl);
-    }, []);
+      _setupWebListener(serverUrl);
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return AppScaffold(
       appBar: AppBar(title: Text("Anti-Robot")),
-      body: HtmlElementView(viewType: 'captcha-iframe'),
+      body:
+          _isInitialized
+              ? HtmlElementView(viewType: 'captcha-iframe')
+              : Center(child: CircularProgressIndicator()),
     );
   }
 }
