@@ -8,6 +8,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/models/activity.dart';
 import 'package:island/pods/network.dart';
+import 'package:island/pods/userinfo.dart';
 import 'package:island/route.gr.dart';
 import 'package:island/screens/auth/captcha.dart';
 import 'package:island/widgets/alert.dart';
@@ -58,6 +59,8 @@ class CheckInWidget extends HookConsumerWidget {
               data: jsonEncode(captchaTk),
             );
             ref.invalidate(checkInResultTodayProvider);
+            final userNotifier = ref.read(userInfoProvider.notifier);
+            userNotifier.fetchUser();
             return;
           }
         }

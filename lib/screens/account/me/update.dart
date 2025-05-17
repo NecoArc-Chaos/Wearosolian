@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:croppy/croppy.dart' hide cropImage;
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -14,6 +15,8 @@ import 'package:island/widgets/app_scaffold.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:styled_widget/styled_widget.dart';
+
+const kServerSupportedLanguages = {'en-US': 'en-us', 'zh-CN': 'zh-hans'};
 
 @RoutePage()
 class UpdateProfileScreen extends HookConsumerWidget {
@@ -94,6 +97,7 @@ class UpdateProfileScreen extends HookConsumerWidget {
     final formKeyBasicInfo = useMemoized(GlobalKey<FormState>.new, const []);
     final usernameController = useTextEditingController(text: user.value!.name);
     final nicknameController = useTextEditingController(text: user.value!.nick);
+    final language = useState(user.value!.language);
 
     void updateBasicInfo() async {
       if (!formKeyBasicInfo.currentState!.validate()) return;
@@ -106,6 +110,7 @@ class UpdateProfileScreen extends HookConsumerWidget {
           data: {
             'name': usernameController.text,
             'nick': nicknameController.text,
+            'language': language.value,
           },
         );
         final userNotifier = ref.read(userInfoProvider.notifier);
@@ -161,9 +166,9 @@ class UpdateProfileScreen extends HookConsumerWidget {
                     child: Container(
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       child:
-                          user.value!.profile.background != null
-                              ? CloudFileWidget(
-                                item: user.value!.profile.background!,
+                          user.value!.profile.backgroundId != null
+                              ? CloudImageWidget(
+                                fileId: user.value!.profile.backgroundId!,
                                 fit: BoxFit.cover,
                               )
                               : const SizedBox.shrink(),
@@ -196,7 +201,7 @@ class UpdateProfileScreen extends HookConsumerWidget {
             Form(
               key: formKeyBasicInfo,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 16,
                 children: [
                   TextFormField(
@@ -215,6 +220,34 @@ class UpdateProfileScreen extends HookConsumerWidget {
                     controller: nicknameController,
                     onTapOutside:
                         (_) => FocusManager.instance.primaryFocus?.unfocus(),
+                  ),
+                  DropdownButtonFormField2<String>(
+                    decoration: InputDecoration(
+                      labelText: 'language'.tr(),
+                      helperText: 'accountLanguageHint'.tr(),
+                    ),
+                    items: [
+                      ...kServerSupportedLanguages.values.map(
+                        (e) => DropdownMenuItem(value: e, child: Text(e)),
+                      ),
+                      if (!kServerSupportedLanguages.containsValue(
+                        language.value,
+                      ))
+                        DropdownMenuItem(
+                          value: language.value,
+                          child: Text(language.value),
+                        ),
+                    ],
+                    value: language.value,
+                    onChanged: (value) {
+                      language.value = value ?? language.value;
+                    },
+                    customButton: Row(
+                      children: [
+                        Expanded(child: Text(language.value)),
+                        Icon(Symbols.arrow_drop_down),
+                      ],
+                    ),
                   ),
                   Align(
                     alignment: Alignment.centerRight,

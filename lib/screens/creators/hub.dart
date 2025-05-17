@@ -36,7 +36,7 @@ class CreatorHubScreen extends HookConsumerWidget {
       publishers.value?.firstOrNull,
     );
 
-    final publishersMenu = publishers.when(
+    final List<DropdownMenuItem<SnPublisher>> publishersMenu = publishers.when(
       data:
           (data) =>
               data
@@ -92,10 +92,12 @@ class CreatorHubScreen extends HookConsumerWidget {
               },
               selectedItemBuilder: (context) {
                 return [
-                  ProfilePictureWidget(
-                    radius: 16,
-                    fileId: currentPublisher.value?.pictureId,
-                  ).center().padding(right: 8),
+                  ...publishersMenu.map(
+                    (e) => ProfilePictureWidget(
+                      radius: 16,
+                      fileId: e.value?.pictureId,
+                    ).center().padding(right: 8),
+                  ),
                 ];
               },
               buttonStyleData: ButtonStyleData(

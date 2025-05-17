@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/route.gr.dart';
+import 'package:island/screens/account/me/update.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -56,7 +57,11 @@ class CreateAccountScreen extends HookConsumerWidget {
             'nick': nicknameController.text,
             'email': emailController.text,
             'password': passwordController.text,
-            'language': EasyLocalization.of(context)!.currentLocale.toString(),
+            'language':
+                kServerSupportedLanguages[EasyLocalization.of(
+                  context,
+                )!.currentLocale.toString()] ??
+                'en-us',
             'captcha_token': captchaTk,
           },
         );

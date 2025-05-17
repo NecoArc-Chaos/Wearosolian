@@ -111,7 +111,13 @@ class MyselfEventCalendarScreen extends HookConsumerWidget {
                         fontSize: 9,
                         color:
                             isSameDay(selectedDay.value, day)
-                                ? Theme.of(context).colorScheme.onPrimary
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer
+                                : isSameDay(DateTime.now(), day)
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.onSecondaryContainer
                                 : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
