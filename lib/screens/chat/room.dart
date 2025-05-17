@@ -17,15 +17,14 @@ import 'package:island/pods/websocket.dart';
 import 'package:island/route.gr.dart';
 import 'package:island/screens/posts/compose.dart';
 import 'package:island/widgets/alert.dart';
-import 'package:island/widgets/content/cloud_file_collection.dart';
+import 'package:island/widgets/chat/message_bubble.dart';
 import 'package:island/widgets/content/cloud_files.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:super_context_menu/super_context_menu.dart';
 import 'package:uuid/uuid.dart';
-import 'chat.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'chat.dart';
 
 part 'room.g.dart';
 
@@ -462,20 +461,28 @@ class ChatRoomScreen extends HookConsumerWidget {
                             itemCount: messageList.length,
                             itemBuilder: (context, index) {
                               final message = messageList[index];
+                              final nextMessage =
+                                  index < messageList.length - 1
+                                      ? messageList[index + 1]
+                                      : null;
+                              final isLastInGroup =
+                                  nextMessage == null ||
+                                  nextMessage.senderId != message.senderId;
+
                               return chatIdentity.when(
                                 skipError: true,
                                 data:
-                                    (identity) => _MessageBubble(
+                                    (identity) => MessageBubble(
                                       message: message,
                                       isCurrentUser:
                                           identity?.id == message.senderId,
                                       onAction: (action) {
                                         switch (action) {
-                                          case _MessageBubbleAction.delete:
+                                          case MessageBubbleAction.delete:
                                             messagesNotifier.deleteMessage(
                                               message.id,
                                             );
-                                          case _MessageBubbleAction.edit:
+                                          case MessageBubbleAction.edit:
                                             messageEditingTo.value =
                                                 message.toRemoteMessage();
                                             messageController.text =
@@ -494,23 +501,25 @@ class ChatRoomScreen extends HookConsumerWidget {
                                                           ),
                                                     )
                                                     .toList();
-                                          case _MessageBubbleAction.forward:
+                                          case MessageBubbleAction.forward:
                                             messageForwardingTo.value =
                                                 message.toRemoteMessage();
-                                          case _MessageBubbleAction.reply:
+                                          case MessageBubbleAction.reply:
                                             messageReplyingTo.value =
                                                 message.toRemoteMessage();
                                         }
                                       },
                                       progress:
                                           attachmentProgress.value[message.id],
+                                      showAvatar: isLastInGroup,
                                     ),
                                 loading:
-                                    () => _MessageBubble(
+                                    () => MessageBubble(
                                       message: message,
                                       isCurrentUser: false,
                                       onAction: null,
                                       progress: null,
+                                      showAvatar: false,
                                     ),
                                 error: (_, __) => const SizedBox.shrink(),
                               );
@@ -752,329 +761,6 @@ class _ChatInput extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _MessageBubbleAction {
-  static const String edit = "edit";
-  static const String delete = "delete";
-  static const String reply = "reply";
-  static const String forward = "forward";
-}
-
-class _MessageBubble extends HookConsumerWidget {
-  final LocalChatMessage message;
-  final bool isCurrentUser;
-  final Function(String action)? onAction;
-  final Map<int, double>? progress;
-
-  const _MessageBubble({
-    required this.message,
-    required this.isCurrentUser,
-    required this.onAction,
-    required this.progress,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final textColor =
-        isCurrentUser
-            ? Theme.of(context).colorScheme.onPrimaryContainer
-            : Theme.of(context).colorScheme.onSurfaceVariant;
-    final containerColor =
-        isCurrentUser
-            ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5)
-            : Theme.of(context).colorScheme.surfaceContainer;
-
-    return ContextMenuWidget(
-      menuProvider: (_) {
-        if (onAction == null) return Menu(children: []);
-        return Menu(
-          children: [
-            if (isCurrentUser)
-              MenuAction(
-                title: 'edit'.tr(),
-                image: MenuImage.icon(Symbols.edit),
-                callback: () {
-                  onAction!.call(_MessageBubbleAction.edit);
-                },
-              ),
-            if (isCurrentUser)
-              MenuAction(
-                title: 'delete'.tr(),
-                image: MenuImage.icon(Symbols.delete),
-                callback: () {
-                  onAction!.call(_MessageBubbleAction.delete);
-                },
-              ),
-            if (isCurrentUser) MenuSeparator(),
-            MenuAction(
-              title: 'reply'.tr(),
-              image: MenuImage.icon(Symbols.reply),
-              callback: () {
-                onAction!.call(_MessageBubbleAction.reply);
-              },
-            ),
-            MenuAction(
-              title: 'forward'.tr(),
-              image: MenuImage.icon(Symbols.forward),
-              callback: () {
-                onAction!.call(_MessageBubbleAction.forward);
-              },
-            ),
-          ],
-        );
-      },
-      child: Material(
-        color: Theme.of(context).colorScheme.surface,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment:
-                isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-            children: [
-              if (!isCurrentUser)
-                ProfilePictureWidget(
-                  fileId:
-                      message
-                          .toRemoteMessage()
-                          .sender
-                          .account
-                          .profile
-                          .pictureId,
-                  radius: 18,
-                ),
-              const Gap(8),
-              Flexible(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: containerColor,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (message.toRemoteMessage().repliedMessageId != null)
-                        _MessageQuoteWidget(
-                          message: message,
-                          textColor: textColor,
-                          isReply: true,
-                        ),
-                      if (message.toRemoteMessage().forwardedMessageId != null)
-                        _MessageQuoteWidget(
-                          message: message,
-                          textColor: textColor,
-                          isReply: false,
-                        ),
-                      if (message.toRemoteMessage().content?.isNotEmpty ??
-                          false)
-                        Text(
-                          message.toRemoteMessage().content!,
-                          style: TextStyle(color: textColor),
-                        ),
-                      if (message.toRemoteMessage().attachments.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            CloudFileList(
-                              files: message.toRemoteMessage().attachments,
-                              maxWidth: MediaQuery.of(context).size.width * 0.8,
-                            ),
-                          ],
-                        ).padding(top: 4),
-                      if (progress != null && progress!.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          spacing: 8,
-                          children: [
-                            if ((message
-                                    .toRemoteMessage()
-                                    .content
-                                    ?.isNotEmpty ??
-                                false))
-                              const Gap(0),
-                            for (var entry in progress!.entries)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'fileUploadingProgress'.tr(
-                                      args: [
-                                        (entry.key + 1).toString(),
-                                        entry.value.toStringAsFixed(1),
-                                      ],
-                                    ),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: textColor.withOpacity(0.8),
-                                    ),
-                                  ),
-                                  const Gap(4),
-                                  LinearProgressIndicator(
-                                    value: entry.value / 100,
-                                    backgroundColor:
-                                        Theme.of(
-                                          context,
-                                        ).colorScheme.surfaceVariant,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Theme.of(context).colorScheme.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            const Gap(0),
-                          ],
-                        ),
-                      const Gap(4),
-                      Row(
-                        spacing: 4,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            DateFormat.Hm().format(message.createdAt.toLocal()),
-                            style: TextStyle(fontSize: 10, color: textColor),
-                          ),
-                          if (message.toRemoteMessage().editedAt != null)
-                            Text(
-                              'edited'.tr().toLowerCase(),
-                              style: TextStyle(fontSize: 10, color: textColor),
-                            ),
-                          if (isCurrentUser)
-                            _buildStatusIcon(
-                              context,
-                              message.status,
-                              textColor,
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const Gap(8),
-              if (isCurrentUser)
-                ProfilePictureWidget(
-                  fileId:
-                      message
-                          .toRemoteMessage()
-                          .sender
-                          .account
-                          .profile
-                          .pictureId,
-                  radius: 18,
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusIcon(
-    BuildContext context,
-    MessageStatus status,
-    Color textColor,
-  ) {
-    switch (status) {
-      case MessageStatus.pending:
-        return Icon(Icons.access_time, size: 12, color: textColor);
-      case MessageStatus.sent:
-        return Icon(Icons.check, size: 12, color: textColor);
-      case MessageStatus.failed:
-        return Consumer(
-          builder:
-              (context, ref, _) => GestureDetector(
-                onTap: () {
-                  ref
-                      .read(messagesNotifierProvider(message.roomId).notifier)
-                      .retryMessage(message.id);
-                },
-                child: const Icon(
-                  Icons.error_outline,
-                  size: 12,
-                  color: Colors.red,
-                ),
-              ),
-        );
-    }
-  }
-}
-
-class _MessageQuoteWidget extends HookConsumerWidget {
-  final LocalChatMessage message;
-  final Color textColor;
-  final bool isReply;
-
-  const _MessageQuoteWidget({
-    required this.message,
-    required this.textColor,
-    required this.isReply,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final messagesNotifier = ref.watch(
-      messagesNotifierProvider(message.roomId).notifier,
-    );
-
-    return FutureBuilder<LocalChatMessage?>(
-      future: messagesNotifier.fetchMessageById(
-        isReply
-            ? message.toRemoteMessage().repliedMessageId!
-            : message.toRemoteMessage().forwardedMessageId!,
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-              color: Theme.of(
-                context,
-              ).colorScheme.primaryFixedDim.withOpacity(0.4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (isReply)
-                    Row(
-                      spacing: 4,
-                      children: [
-                        Icon(Symbols.reply, size: 16, color: textColor),
-                        Text(
-                          'Replying to ${snapshot.data!.toRemoteMessage().sender.account.nick}',
-                        ).textColor(textColor).bold(),
-                      ],
-                    )
-                  else
-                    Row(
-                      spacing: 4,
-                      children: [
-                        Icon(Symbols.forward, size: 16, color: textColor),
-                        Text(
-                          'Forwarded from ${snapshot.data!.toRemoteMessage().sender.account.nick}',
-                        ).textColor(textColor).bold(),
-                      ],
-                    ),
-                  if (snapshot.data!.toRemoteMessage().content?.isNotEmpty ??
-                      false)
-                    Text(
-                      snapshot.data!.toRemoteMessage().content!,
-                      style: TextStyle(color: textColor),
-                    ),
-                ],
-              ),
-            ),
-          ).padding(bottom: 4);
-        } else {
-          return SizedBox.shrink();
-        }
-      },
     );
   }
 }
