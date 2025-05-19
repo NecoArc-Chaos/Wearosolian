@@ -86,3 +86,24 @@ abstract class SnAccountBadge with _$SnAccountBadge {
   factory SnAccountBadge.fromJson(Map<String, dynamic> json) =>
       _$SnAccountBadgeFromJson(json);
 }
+
+@freezed
+abstract class SnNotification with _$SnNotification {
+  const factory SnNotification({
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required DateTime? deletedAt,
+    required String id,
+    required String topic,
+    required String title,
+    @Default('') String subtitle,
+    required String content,
+    @Default({}) Map<String, dynamic> meta,
+    required int priority,
+    required DateTime? viewedAt,
+    required String accountId,
+  }) = _SnNotification;
+
+  factory SnNotification.fromJson(Map<String, dynamic> json) =>
+      _$SnNotificationFromJson(json);
+}

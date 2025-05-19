@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/route.dart';
 import 'package:island/route.gr.dart';
+import 'package:island/screens/notification.dart';
 import 'package:island/services/responsive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -17,7 +18,6 @@ class TabNavigationObserver extends AutoRouterObserver {
   @override
   void didPush(Route route, Route? previousRoute) {
     Future(() {
-      print('didPush: ${route.settings.name}');
       onChange(route.settings.name);
     });
   }
@@ -25,7 +25,6 @@ class TabNavigationObserver extends AutoRouterObserver {
   @override
   void didPop(Route route, Route? previousRoute) {
     Future(() {
-      print('didPop: ${previousRoute?.settings.name}');
       onChange(previousRoute?.settings.name);
     });
   }
@@ -46,7 +45,10 @@ class TabsNavigationWidget extends HookConsumerWidget {
     final useHorizontalLayout = isWideScreen(context);
     final useExpandableLayout = isWidestScreen(context);
     final currentRoute = ref.watch(currentRouteProvider);
-    print('currentRoute: $currentRoute');
+
+    final notificationUnreadCount = ref.watch(
+      notificationUnreadCountNotifierProvider,
+    );
 
     int activeIndex = 0;
 
@@ -62,7 +64,11 @@ class TabsNavigationWidget extends HookConsumerWidget {
       ),
       NavigationDestination(
         label: 'account'.tr(),
-        icon: const Icon(Symbols.account_circle),
+        icon: Badge.count(
+          count: notificationUnreadCount.value ?? 0,
+          isLabelVisible: (notificationUnreadCount.value ?? 0) > 0,
+          child: const Icon(Symbols.account_circle),
+        ),
       ),
     ];
 

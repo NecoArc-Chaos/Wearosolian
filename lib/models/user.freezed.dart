@@ -751,4 +751,176 @@ as DateTime?,
 
 }
 
+
+/// @nodoc
+mixin _$SnNotification {
+
+ DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt; String get id; String get topic; String get title; String get subtitle; String get content; Map<String, dynamic> get meta; int get priority; DateTime? get viewedAt; String get accountId;
+/// Create a copy of SnNotification
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SnNotificationCopyWith<SnNotification> get copyWith => _$SnNotificationCopyWithImpl<SnNotification>(this as SnNotification, _$identity);
+
+  /// Serializes this SnNotification to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnNotification&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&(identical(other.content, content) || other.content == content)&&const DeepCollectionEquality().equals(other.meta, meta)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.viewedAt, viewedAt) || other.viewedAt == viewedAt)&&(identical(other.accountId, accountId) || other.accountId == accountId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,createdAt,updatedAt,deletedAt,id,topic,title,subtitle,content,const DeepCollectionEquality().hash(meta),priority,viewedAt,accountId);
+
+@override
+String toString() {
+  return 'SnNotification(createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, id: $id, topic: $topic, title: $title, subtitle: $subtitle, content: $content, meta: $meta, priority: $priority, viewedAt: $viewedAt, accountId: $accountId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SnNotificationCopyWith<$Res>  {
+  factory $SnNotificationCopyWith(SnNotification value, $Res Function(SnNotification) _then) = _$SnNotificationCopyWithImpl;
+@useResult
+$Res call({
+ DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, String id, String topic, String title, String subtitle, String content, Map<String, dynamic> meta, int priority, DateTime? viewedAt, String accountId
+});
+
+
+
+
+}
+/// @nodoc
+class _$SnNotificationCopyWithImpl<$Res>
+    implements $SnNotificationCopyWith<$Res> {
+  _$SnNotificationCopyWithImpl(this._self, this._then);
+
+  final SnNotification _self;
+  final $Res Function(SnNotification) _then;
+
+/// Create a copy of SnNotification
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? id = null,Object? topic = null,Object? title = null,Object? subtitle = null,Object? content = null,Object? meta = null,Object? priority = null,Object? viewedAt = freezed,Object? accountId = null,}) {
+  return _then(_self.copyWith(
+createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,subtitle: null == subtitle ? _self.subtitle : subtitle // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,priority: null == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
+as int,viewedAt: freezed == viewedAt ? _self.viewedAt : viewedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _SnNotification implements SnNotification {
+  const _SnNotification({required this.createdAt, required this.updatedAt, required this.deletedAt, required this.id, required this.topic, required this.title, this.subtitle = '', required this.content, final  Map<String, dynamic> meta = const {}, required this.priority, required this.viewedAt, required this.accountId}): _meta = meta;
+  factory _SnNotification.fromJson(Map<String, dynamic> json) => _$SnNotificationFromJson(json);
+
+@override final  DateTime createdAt;
+@override final  DateTime updatedAt;
+@override final  DateTime? deletedAt;
+@override final  String id;
+@override final  String topic;
+@override final  String title;
+@override@JsonKey() final  String subtitle;
+@override final  String content;
+ final  Map<String, dynamic> _meta;
+@override@JsonKey() Map<String, dynamic> get meta {
+  if (_meta is EqualUnmodifiableMapView) return _meta;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_meta);
+}
+
+@override final  int priority;
+@override final  DateTime? viewedAt;
+@override final  String accountId;
+
+/// Create a copy of SnNotification
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SnNotificationCopyWith<_SnNotification> get copyWith => __$SnNotificationCopyWithImpl<_SnNotification>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SnNotificationToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnNotification&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&(identical(other.content, content) || other.content == content)&&const DeepCollectionEquality().equals(other._meta, _meta)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.viewedAt, viewedAt) || other.viewedAt == viewedAt)&&(identical(other.accountId, accountId) || other.accountId == accountId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,createdAt,updatedAt,deletedAt,id,topic,title,subtitle,content,const DeepCollectionEquality().hash(_meta),priority,viewedAt,accountId);
+
+@override
+String toString() {
+  return 'SnNotification(createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, id: $id, topic: $topic, title: $title, subtitle: $subtitle, content: $content, meta: $meta, priority: $priority, viewedAt: $viewedAt, accountId: $accountId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SnNotificationCopyWith<$Res> implements $SnNotificationCopyWith<$Res> {
+  factory _$SnNotificationCopyWith(_SnNotification value, $Res Function(_SnNotification) _then) = __$SnNotificationCopyWithImpl;
+@override @useResult
+$Res call({
+ DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, String id, String topic, String title, String subtitle, String content, Map<String, dynamic> meta, int priority, DateTime? viewedAt, String accountId
+});
+
+
+
+
+}
+/// @nodoc
+class __$SnNotificationCopyWithImpl<$Res>
+    implements _$SnNotificationCopyWith<$Res> {
+  __$SnNotificationCopyWithImpl(this._self, this._then);
+
+  final _SnNotification _self;
+  final $Res Function(_SnNotification) _then;
+
+/// Create a copy of SnNotification
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? id = null,Object? topic = null,Object? title = null,Object? subtitle = null,Object? content = null,Object? meta = null,Object? priority = null,Object? viewedAt = freezed,Object? accountId = null,}) {
+  return _then(_SnNotification(
+createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,subtitle: null == subtitle ? _self.subtitle : subtitle // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,meta: null == meta ? _self._meta : meta // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,priority: null == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
+as int,viewedAt: freezed == viewedAt ? _self.viewedAt : viewedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 // dart format on

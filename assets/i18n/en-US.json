@@ -152,7 +152,7 @@
   "status": "Status",
   "statusActivityTitle": "{} is {} {}",
   "statusActivityEndedTitle": "{} is {} {} until {}",
-  "appSettings": "App Settings",
+  "appSettings": "App settings",
   "accountSettings": "Account Settings",
   "settings": "Settings",
   "language": "Language",
@@ -258,5 +258,7 @@
   "walletNotFound": "Wallet not found",
   "walletCreateHint": "You don't have a wallet yet. Create one to start using the Solar Network eWallet.",
   "walletCreate": "Create a Wallet",
-  "settingsServerUrl": "Server URL"
+  "settingsServerUrl": "Server URL",
+  "settingsApplied": "The settings has been applied.",
+  "notifications": "Notifications"
 }

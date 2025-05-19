@@ -71,8 +71,8 @@ class MarkdownTextContent extends HookConsumerWidget {
             style:
                 linkStyle ??
                 TextStyle(color: Theme.of(context).colorScheme.primary),
-            onTap: (herf) {
-              final url = Uri.tryParse(herf);
+            onTap: (href) {
+              final url = Uri.tryParse(href);
               if (url != null) {
                 if (url.scheme == 'solian') {
                   context.router.pushPath(
@@ -96,11 +96,11 @@ class MarkdownTextContent extends HookConsumerWidget {
               } else {
                 showSnackBar(
                   context,
-                  'brokenLink'.tr(args: [herf]),
+                  'brokenLink'.tr(args: [href]),
                   action: SnackBarAction(
                     label: 'copyToClipboard'.tr(),
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(text: herf));
+                      Clipboard.setData(ClipboardData(text: href));
                       clearSnackBar(context);
                     },
                   ),

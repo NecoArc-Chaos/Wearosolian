@@ -1,0 +1,194 @@
+import 'dart:math' as math;
+
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:island/models/user.dart';
+import 'package:island/pods/network.dart';
+import 'package:island/widgets/alert.dart';
+import 'package:island/widgets/content/markdown.dart';
+import 'package:relative_time/relative_time.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod_paging_utils/riverpod_paging_utils.dart';
+import 'package:styled_widget/styled_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+part 'notification.g.dart';
+
+@riverpod
+class NotificationUnreadCountNotifier
+    extends _$NotificationUnreadCountNotifier {
+  @override
+  Future<int> build() async {
+    try {
+      final client = ref.read(apiClientProvider);
+      final response = await client.get('/notifications/count');
+      return (response.data as num).toInt();
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  Future<void> decrement(int count) async {
+    final current = await future;
+    state = AsyncData(math.min(current - count, 0));
+  }
+}
+
+@riverpod
+class NotificationListNotifier extends _$NotificationListNotifier
+    with CursorPagingNotifierMixin<SnNotification> {
+  static const int _pageSize = 5;
+
+  @override
+  Future<CursorPagingData<SnNotification>> build() => fetch(cursor: null);
+
+  @override
+  Future<CursorPagingData<SnNotification>> fetch({
+    required String? cursor,
+  }) async {
+    final client = ref.read(apiClientProvider);
+    final offset = cursor == null ? 0 : int.parse(cursor);
+
+    final queryParams = {'offset': offset, 'take': _pageSize};
+
+    final response = await client.get(
+      '/notifications',
+      queryParameters: queryParams,
+    );
+    final total = int.parse(response.headers.value('X-Total') ?? '0');
+    final List<dynamic> data = response.data;
+    final notifications =
+        data.map((json) => SnNotification.fromJson(json)).toList();
+
+    final hasMore = offset + notifications.length < total;
+    final nextCursor =
+        hasMore ? (offset + notifications.length).toString() : null;
+    final unreadCount = notifications.where((n) => n.viewedAt == null).length;
+    ref
+        .read(notificationUnreadCountNotifierProvider.notifier)
+        .decrement(unreadCount);
+
+    return CursorPagingData(
+      items: notifications,
+      hasMore: hasMore,
+      nextCursor: nextCursor,
+    );
+  }
+}
+
+@RoutePage()
+class NotificationScreen extends HookConsumerWidget {
+  const NotificationScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('notifications').tr()),
+      body: PagingHelperView(
+        provider: notificationListNotifierProvider,
+        futureRefreshable: notificationListNotifierProvider.future,
+        notifierRefreshable: notificationListNotifierProvider.notifier,
+        contentBuilder:
+            (data, widgetCount, endItemView) => ListView.builder(
+              itemCount: widgetCount,
+              itemBuilder: (context, index) {
+                if (index == widgetCount - 1) {
+                  return endItemView;
+                }
+
+                final notification = data.items[index];
+                return ListTile(
+                  isThreeLine: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  title: Text(notification.title),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (notification.subtitle.isNotEmpty)
+                        Text(notification.subtitle).bold(),
+                      Row(
+                        spacing: 6,
+                        children: [
+                          Text(
+                            DateFormat().format(
+                              notification.createdAt.toLocal(),
+                            ),
+                          ).fontSize(11),
+                          Text('·').fontSize(11).bold(),
+                          Text(
+                            RelativeTime(
+                              context,
+                            ).format(notification.createdAt.toLocal()),
+                          ).fontSize(11),
+                        ],
+                      ).opacity(0.75).padding(bottom: 4),
+                      MarkdownTextContent(
+                        content: notification.content,
+                        textStyle: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing:
+                      notification.viewedAt == null
+                          ? null
+                          : Container(
+                            width: 12,
+                            height: 12,
+                            decoration: const BoxDecoration(
+                              color: Colors.blue,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                  onTap: () {
+                    if (notification.meta['link'] is String) {
+                      final href = notification.meta['link'];
+                      final uri = Uri.tryParse(href);
+                      if (uri == null) {
+                        showSnackBar(
+                          context,
+                          'brokenLink'.tr(args: []),
+                          action: SnackBarAction(
+                            label: 'copyToClipboard'.tr(),
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: href));
+                              clearSnackBar(context);
+                            },
+                          ),
+                        );
+                        return;
+                      }
+                      if (uri.scheme == 'solian') {
+                        context.router.pushPath(
+                          ['', uri.host, ...uri.pathSegments].join('/'),
+                        );
+                        return;
+                      }
+                      showConfirmAlert(
+                        'openLinkConfirmDescription'.tr(args: [href]),
+                        'openLinkConfirm'.tr(),
+                      ).then((value) {
+                        if (value) {
+                          launchUrl(uri, mode: LaunchMode.externalApplication);
+                        }
+                      });
+                    }
+                  },
+                );
+              },
+            ),
+      ),
+    );
+  }
+}

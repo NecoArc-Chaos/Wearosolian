@@ -160,3 +160,41 @@ Map<String, dynamic> _$SnAccountBadgeToJson(_SnAccountBadge instance) =>
       'updated_at': instance.updatedAt.toIso8601String(),
       'deleted_at': instance.deletedAt?.toIso8601String(),
     };
+
+_SnNotification _$SnNotificationFromJson(Map<String, dynamic> json) =>
+    _SnNotification(
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+      deletedAt:
+          json['deleted_at'] == null
+              ? null
+              : DateTime.parse(json['deleted_at'] as String),
+      id: json['id'] as String,
+      topic: json['topic'] as String,
+      title: json['title'] as String,
+      subtitle: json['subtitle'] as String? ?? '',
+      content: json['content'] as String,
+      meta: json['meta'] as Map<String, dynamic>? ?? const {},
+      priority: (json['priority'] as num).toInt(),
+      viewedAt:
+          json['viewed_at'] == null
+              ? null
+              : DateTime.parse(json['viewed_at'] as String),
+      accountId: json['account_id'] as String,
+    );
+
+Map<String, dynamic> _$SnNotificationToJson(_SnNotification instance) =>
+    <String, dynamic>{
+      'created_at': instance.createdAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
+      'deleted_at': instance.deletedAt?.toIso8601String(),
+      'id': instance.id,
+      'topic': instance.topic,
+      'title': instance.title,
+      'subtitle': instance.subtitle,
+      'content': instance.content,
+      'meta': instance.meta,
+      'priority': instance.priority,
+      'viewed_at': instance.viewedAt?.toIso8601String(),
+      'account_id': instance.accountId,
+    };

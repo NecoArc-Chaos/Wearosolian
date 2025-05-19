@@ -4,6 +4,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -87,6 +88,7 @@ class SettingsScreen extends HookConsumerWidget {
                           kNetworkServerDefault,
                         );
                         ref.invalidate(serverUrlProvider);
+                        showSnackBar(context, 'settingsApplied'.tr());
                       },
                     ),
                     border: OutlineInputBorder(
@@ -98,6 +100,7 @@ class SettingsScreen extends HookConsumerWidget {
                     if (value.isNotEmpty) {
                       prefs.setString(kNetworkServerStoreKey, value);
                       ref.invalidate(serverUrlProvider);
+                      showSnackBar(context, 'settingsApplied'.tr());
                     }
                   },
                 ),

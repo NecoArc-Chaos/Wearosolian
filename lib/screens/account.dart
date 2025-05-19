@@ -9,6 +9,7 @@ import 'package:island/pods/message.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/pods/userinfo.dart';
 import 'package:island/route.gr.dart';
+import 'package:island/screens/notification.dart';
 import 'package:island/services/responsive.dart';
 import 'package:island/widgets/account/status.dart';
 import 'package:island/widgets/account/leveling_progress.dart';
@@ -52,6 +53,9 @@ class AccountScreen extends HookConsumerWidget {
     }
 
     final user = ref.watch(userInfoProvider);
+    final notificationUnreadCount = ref.watch(
+      notificationUnreadCountNotifierProvider,
+    );
 
     if (!user.hasValue || user.value == null) {
       return _UnauthorizedAccountScreen();
@@ -168,12 +172,20 @@ class AccountScreen extends HookConsumerWidget {
             const Gap(8),
             ListTile(
               minTileHeight: 48,
-              leading: const Icon(Symbols.public),
+              leading: const Icon(Symbols.notifications),
               trailing: const Icon(Symbols.chevron_right),
               contentPadding: EdgeInsets.symmetric(horizontal: 24),
-              title: Text('publishers').tr(),
+              title: Row(
+                children: [
+                  Expanded(child: Text('notifications').tr()),
+                  Badge.count(
+                    count: notificationUnreadCount.value ?? 0,
+                    isLabelVisible: (notificationUnreadCount.value ?? 0) > 0,
+                  ),
+                ],
+              ),
               onTap: () {
-                context.router.push(ManagedPublisherRoute());
+                context.router.push(NotificationRoute());
               },
             ),
             ListTile(

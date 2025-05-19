@@ -38,36 +38,31 @@ final websocketProvider = Provider<WebSocketService>((ref) {
 });
 
 class WebSocketService {
+  late Ref _ref;
   WebSocketChannel? _channel;
   final StreamController<WebSocketPacket> _streamController =
       StreamController<WebSocketPacket>.broadcast();
   final StreamController<WebSocketState> _statusStreamController =
       StreamController<WebSocketState>.broadcast();
-  String? _lastUrl;
-  String? _lastAtk;
   Timer? _reconnectTimer;
 
   Stream<WebSocketPacket> get dataStream => _streamController.stream;
   Stream<WebSocketState> get statusStream => _statusStreamController.stream;
 
-  Future<void> connect(String url, String atk, {Ref? ref}) async {
-    _lastUrl = url;
-    _lastAtk = atk;
+  Future<void> connect(Ref ref) async {
+    _ref = ref;
 
-    if (ref != null) {
-      final freshAtk = await getFreshAtk(
-        ref.watch(tokenPairProvider),
-        url.replaceFirst('ws', 'http').replaceFirst('/ws', ''),
-        onRefreshed: (atk, rtk) {
-          setTokenPair(ref.watch(sharedPreferencesProvider), atk, rtk);
-          ref.invalidate(tokenPairProvider);
-        },
-      );
-      if (freshAtk != null) {
-        atk = freshAtk;
-        _lastAtk = freshAtk;
-      }
-    }
+    final baseUrl = ref.watch(serverUrlProvider);
+    final atk = await getFreshAtk(
+      ref.watch(tokenPairProvider),
+      baseUrl,
+      onRefreshed: (atk, rtk) {
+        setTokenPair(ref.watch(sharedPreferencesProvider), atk, rtk);
+        ref.invalidate(tokenPairProvider);
+      },
+    );
+
+    final url = '$baseUrl/ws'.replaceFirst('http', 'ws');
 
     log('[WebSocket] Trying connecting to $url');
     try {
@@ -113,10 +108,8 @@ class WebSocketService {
   void _scheduleReconnect() {
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(const Duration(milliseconds: 500), () {
-      if (_lastUrl != null && _lastAtk != null) {
-        _statusStreamController.sink.add(WebSocketState.connecting());
-        connect(_lastUrl!, _lastAtk!);
-      }
+      _statusStreamController.sink.add(WebSocketState.connecting());
+      connect(_ref);
     });
   }
 
@@ -128,8 +121,6 @@ class WebSocketService {
 
   void close() {
     _reconnectTimer?.cancel();
-    _lastUrl = null;
-    _lastAtk = null;
     _channel?.sink.close();
   }
 }
@@ -162,11 +153,7 @@ class WebSocketStateNotifier extends StateNotifier<WebSocketState> {
         state = const WebSocketState.error('Unauthorized');
         return;
       }
-      await service.connect(
-        '$baseUrl/ws'.replaceFirst('http', 'ws'),
-        atk,
-        ref: ref,
-      );
+      await service.connect(ref);
       state = const WebSocketState.connected();
       service.statusStream.listen((event) {
         state = event;
