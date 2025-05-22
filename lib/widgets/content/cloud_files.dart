@@ -12,33 +12,44 @@ import 'video.dart';
 class CloudFileWidget extends ConsumerWidget {
   final SnCloudFile item;
   final BoxFit fit;
+  final String? heroTag;
+  final bool noBlurhash;
   const CloudFileWidget({
     super.key,
     required this.item,
     this.fit = BoxFit.cover,
+    this.heroTag,
+    this.noBlurhash = false,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final serverUrl = ref.watch(serverUrlProvider);
     final uri = '$serverUrl/files/${item.id}';
-    switch (item.mimeType?.split('/').firstOrNull) {
-      case "image":
-        return AspectRatio(
-          aspectRatio: (item.fileMeta?['ratio'] ?? 1).toDouble(),
-          child: UniversalImage(uri: uri, blurHash: item.fileMeta?['blur']),
-        );
-      case "video":
-        return AspectRatio(
+
+    final content = switch (item.mimeType?.split('/').firstOrNull) {
+      "image" => AspectRatio(
+        aspectRatio: (item.fileMeta?['ratio'] ?? 1).toDouble(),
+        child: UniversalImage(
+          uri: uri,
+          blurHash: noBlurhash ? null : item.fileMeta?['blur'],
+        ),
+      ),
+      "video" => AspectRatio(
+        aspectRatio: (item.fileMeta?['ratio'] ?? 16 / 9).toDouble(),
+        child: UniversalVideo(
+          uri: uri,
           aspectRatio: (item.fileMeta?['ratio'] ?? 16 / 9).toDouble(),
-          child: UniversalVideo(
-            uri: uri,
-            aspectRatio: (item.fileMeta?['ratio'] ?? 16 / 9).toDouble(),
-          ),
-        );
-      default:
-        return Text('Unable render for ${item.mimeType}');
+        ),
+      ),
+      _ => Text('Unable render for ${item.mimeType}'),
+    };
+
+    if (heroTag != null) {
+      return Hero(tag: heroTag!, child: content);
     }
+
+    return content;
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:island/models/post.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/pods/userinfo.dart';
 import 'package:island/route.gr.dart';
+import 'package:island/services/responsive.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/content/cloud_file_collection.dart';
 import 'package:island/widgets/content/cloud_files.dart';
@@ -127,6 +130,18 @@ class PostItem extends HookConsumerWidget {
                           Text(item.publisher.nick).bold(),
                           if (item.content?.isNotEmpty ?? false)
                             MarkdownTextContent(content: item.content!),
+                          if (item.attachments.isNotEmpty)
+                            CloudFileList(
+                              files: item.attachments,
+                              maxWidth: math.min(
+                                MediaQuery.of(context).size.width * 0.85,
+                                kWideScreenWidth - 160,
+                              ),
+                              minWidth: math.min(
+                                MediaQuery.of(context).size.width * 0.9,
+                                kWideScreenWidth - 160,
+                              ),
+                            ).padding(top: 4),
                         ],
                       ),
                       onTap: () {
@@ -138,18 +153,6 @@ class PostItem extends HookConsumerWidget {
                   ),
                 ],
               ),
-              if (item.attachments.isNotEmpty)
-                Container(
-                  margin: EdgeInsets.only(left: 48),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Theme.of(context).dividerColor,
-                      width: 1,
-                    ),
-                  ),
-                  child: CloudFileList(files: item.attachments),
-                ),
               PostReactionList(
                 parentId: item.id,
                 reactions: item.reactionsCount,

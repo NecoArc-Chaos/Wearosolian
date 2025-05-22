@@ -397,10 +397,10 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "27eb0ae77836989a3bc541ce55595e8ceee0992807f14511552a898ddd0d88ac"
+      sha256: "5b236382b47ee411741447c1f1e111459c941ea1b3f2b540dde54c210a3662af"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.1.0"
   dbus:
     dependency: transitive
     description:
@@ -441,6 +441,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  dismissible_page:
+    dependency: "direct main"
+    description:
+      name: dismissible_page
+      sha256: "5b2316f770fe83583f770df1f6505cb19102081c5971979806e77f2e507a9958"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   drift:
     dependency: "direct main"
     description:
@@ -775,10 +783,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_math_fork
-      sha256: "284bab89b2fbf1bc3a0baf13d011c1dd324d004e35d177626b77f2fc056366ac"
+      sha256: "6d5f2f1aa57ae539ffb0a04bb39d2da67af74601d685a161aff7ce5bda5fa407"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.3"
+    version: "0.7.4"
   flutter_native_splash:
     dependency: "direct main"
     description:
@@ -1381,6 +1389,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.0"
+  photo_view:
+    dependency: "direct main"
+    description:
+      name: photo_view
+      sha256: "1fc3d970a91295fbd1364296575f854c9863f225505c28c46e0a03e48960c75e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.0"
   pixel_snap:
     dependency: transitive
     description:
@@ -1734,10 +1750,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3_flutter_libs
-      sha256: "1a96b59227828d9eb1463191d684b37a27d66ee5ed7597fcf42eee6452c88a14"
+      sha256: "7986c26234c0a5cf4fd83ff4ee39d4195b1f47cdb50a949ec7987ede4dcbdc2a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.32"
+    version: "0.5.33"
   sqlparser:
     dependency: transitive
     description:
