@@ -27,7 +27,10 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  }
+
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -51,7 +54,9 @@ void main() async {
     }
   }
 
-  FlutterNativeSplash.remove();
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    FlutterNativeSplash.remove();
+  }
 
   runApp(
     ProviderScope(

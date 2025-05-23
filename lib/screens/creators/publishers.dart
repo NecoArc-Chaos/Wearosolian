@@ -285,7 +285,7 @@ class EditPublisherScreen extends HookConsumerWidget {
                           final user = ref.watch(userInfoProvider);
                           nameController.text = user.value!.name;
                           nickController.text = user.value!.nick;
-                          bioController.text = user.value!.profile.bio ?? '';
+                          bioController.text = user.value!.profile.bio;
                           picture.value = user.value!.profile.pictureId;
                           background.value = user.value!.profile.backgroundId;
                         } else {

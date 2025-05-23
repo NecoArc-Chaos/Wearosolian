@@ -120,13 +120,9 @@ class RealmListScreen extends HookConsumerWidget {
               ),
           loading: () => const Center(child: CircularProgressIndicator()),
           error:
-              (e, _) => GestureDetector(
-                child: Center(
-                  child: Text('Error: $e', textAlign: TextAlign.center),
-                ),
-                onTap: () {
-                  ref.invalidate(realmsJoinedProvider);
-                },
+              (e, _) => ResponseErrorWidget(
+                error: e,
+                onRetry: () => ref.invalidate(realmsJoinedProvider),
               ),
         ),
         onRefresh: () => ref.refresh(realmsJoinedProvider.future),

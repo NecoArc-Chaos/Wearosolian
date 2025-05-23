@@ -263,5 +263,10 @@
   "notifications": "Notifications",
   "posts": "Posts",
   "settingsBackgroundImage": "Background Image",
-  "settingsBackgroundImageClear": "Clear Background Image"
+  "settingsBackgroundImageClear": "Clear Background Image",
+  "messageNone": "No content to display",
+  "unreadMessages": {
+    "one": "{} unread message",
+    "other": "{} unread messages"
+  }
 }

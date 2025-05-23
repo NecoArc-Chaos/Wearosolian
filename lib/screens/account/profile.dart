@@ -130,13 +130,13 @@ class AccountProfileScreen extends HookConsumerWidget {
                 SliverToBoxAdapter(
                   child: const Divider(height: 1).padding(bottom: 24),
                 ),
-                if (data.profile.bio?.isNotEmpty ?? false)
+                if (data.profile.bio.isNotEmpty)
                   SliverToBoxAdapter(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text('bio').tr().bold(),
-                        Text(data.profile.bio!),
+                        Text(data.profile.bio),
                       ],
                     ).padding(horizontal: 24),
                   ),

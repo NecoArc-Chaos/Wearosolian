@@ -875,6 +875,160 @@ $SnAccountCopyWith<$Res> get account {
 
 
 /// @nodoc
+mixin _$SnChatSummary {
+
+ int get unreadCount; SnChatMessage get lastMessage;
+/// Create a copy of SnChatSummary
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SnChatSummaryCopyWith<SnChatSummary> get copyWith => _$SnChatSummaryCopyWithImpl<SnChatSummary>(this as SnChatSummary, _$identity);
+
+  /// Serializes this SnChatSummary to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnChatSummary&&(identical(other.unreadCount, unreadCount) || other.unreadCount == unreadCount)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,unreadCount,lastMessage);
+
+@override
+String toString() {
+  return 'SnChatSummary(unreadCount: $unreadCount, lastMessage: $lastMessage)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SnChatSummaryCopyWith<$Res>  {
+  factory $SnChatSummaryCopyWith(SnChatSummary value, $Res Function(SnChatSummary) _then) = _$SnChatSummaryCopyWithImpl;
+@useResult
+$Res call({
+ int unreadCount, SnChatMessage lastMessage
+});
+
+
+$SnChatMessageCopyWith<$Res> get lastMessage;
+
+}
+/// @nodoc
+class _$SnChatSummaryCopyWithImpl<$Res>
+    implements $SnChatSummaryCopyWith<$Res> {
+  _$SnChatSummaryCopyWithImpl(this._self, this._then);
+
+  final SnChatSummary _self;
+  final $Res Function(SnChatSummary) _then;
+
+/// Create a copy of SnChatSummary
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? unreadCount = null,Object? lastMessage = null,}) {
+  return _then(_self.copyWith(
+unreadCount: null == unreadCount ? _self.unreadCount : unreadCount // ignore: cast_nullable_to_non_nullable
+as int,lastMessage: null == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as SnChatMessage,
+  ));
+}
+/// Create a copy of SnChatSummary
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnChatMessageCopyWith<$Res> get lastMessage {
+  
+  return $SnChatMessageCopyWith<$Res>(_self.lastMessage, (value) {
+    return _then(_self.copyWith(lastMessage: value));
+  });
+}
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _SnChatSummary implements SnChatSummary {
+  const _SnChatSummary({required this.unreadCount, required this.lastMessage});
+  factory _SnChatSummary.fromJson(Map<String, dynamic> json) => _$SnChatSummaryFromJson(json);
+
+@override final  int unreadCount;
+@override final  SnChatMessage lastMessage;
+
+/// Create a copy of SnChatSummary
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SnChatSummaryCopyWith<_SnChatSummary> get copyWith => __$SnChatSummaryCopyWithImpl<_SnChatSummary>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SnChatSummaryToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnChatSummary&&(identical(other.unreadCount, unreadCount) || other.unreadCount == unreadCount)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,unreadCount,lastMessage);
+
+@override
+String toString() {
+  return 'SnChatSummary(unreadCount: $unreadCount, lastMessage: $lastMessage)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SnChatSummaryCopyWith<$Res> implements $SnChatSummaryCopyWith<$Res> {
+  factory _$SnChatSummaryCopyWith(_SnChatSummary value, $Res Function(_SnChatSummary) _then) = __$SnChatSummaryCopyWithImpl;
+@override @useResult
+$Res call({
+ int unreadCount, SnChatMessage lastMessage
+});
+
+
+@override $SnChatMessageCopyWith<$Res> get lastMessage;
+
+}
+/// @nodoc
+class __$SnChatSummaryCopyWithImpl<$Res>
+    implements _$SnChatSummaryCopyWith<$Res> {
+  __$SnChatSummaryCopyWithImpl(this._self, this._then);
+
+  final _SnChatSummary _self;
+  final $Res Function(_SnChatSummary) _then;
+
+/// Create a copy of SnChatSummary
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? unreadCount = null,Object? lastMessage = null,}) {
+  return _then(_SnChatSummary(
+unreadCount: null == unreadCount ? _self.unreadCount : unreadCount // ignore: cast_nullable_to_non_nullable
+as int,lastMessage: null == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as SnChatMessage,
+  ));
+}
+
+/// Create a copy of SnChatSummary
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnChatMessageCopyWith<$Res> get lastMessage {
+  
+  return $SnChatMessageCopyWith<$Res>(_self.lastMessage, (value) {
+    return _then(_self.copyWith(lastMessage: value));
+  });
+}
+}
+
+
+/// @nodoc
 mixin _$MessageChange {
 
  String get messageId; String get action; SnChatMessage? get message; DateTime get timestamp;

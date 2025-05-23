@@ -110,6 +110,7 @@ class TabsNavigationWidget extends HookConsumerWidget {
                         Gap(MediaQuery.of(context).padding.top + 8),
                         Expanded(
                           child: NavigationRail(
+                            minExtendedWidth: 200,
                             extended: useExpandableLayout,
                             selectedIndex: activeIndex,
                             onDestinationSelected: (index) {

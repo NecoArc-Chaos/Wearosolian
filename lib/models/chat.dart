@@ -95,6 +95,17 @@ abstract class SnChatMember with _$SnChatMember {
       _$SnChatMemberFromJson(json);
 }
 
+@freezed
+abstract class SnChatSummary with _$SnChatSummary {
+  const factory SnChatSummary({
+    required int unreadCount,
+    required SnChatMessage lastMessage,
+  }) = _SnChatSummary;
+
+  factory SnChatSummary.fromJson(Map<String, dynamic> json) =>
+      _$SnChatSummaryFromJson(json);
+}
+
 class MessageChangeAction {
   static const String create = "create";
   static const String update = "update";

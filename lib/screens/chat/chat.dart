@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:island/models/chat.dart';
 import 'package:island/models/file.dart';
 import 'package:island/models/realm.dart';
+import 'package:island/pods/chat_summary.dart';
 import 'package:island/pods/config.dart';
 import 'package:island/pods/network.dart';
 import 'package:island/route.gr.dart';
@@ -24,12 +25,13 @@ import 'package:island/widgets/content/cloud_files.dart';
 import 'package:island/widgets/realms/selection_dropdown.dart';
 import 'package:island/widgets/response.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:relative_time/relative_time.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 part 'chat.g.dart';
 
-class ChatRoomListTile extends StatelessWidget {
+class ChatRoomListTile extends HookConsumerWidget {
   final SnChatRoom room;
   final bool isDirect;
   final Widget? subtitle;
@@ -46,7 +48,88 @@ class ChatRoomListTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final summary = ref
+        .watch(chatSummaryProvider)
+        .whenData((summaries) => summaries[room.id]);
+
+    Widget buildSubtitle() {
+      if (subtitle != null) return subtitle!;
+
+      return summary.when(
+        data: (data) {
+          if (data == null) {
+            return isDirect && room.description == null
+                ? Text(
+                  room.members!.map((e) => '@${e.account.name}').join(', '),
+                  maxLines: 1,
+                )
+                : Text(room.description ?? 'descriptionNone'.tr(), maxLines: 1);
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (data.unreadCount > 0)
+                Text(
+                  'unreadMessages'.plural(data.unreadCount),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              Row(
+                children: [
+                  Text(
+                    '${data.lastMessage.sender.account.name}: ',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  Expanded(
+                    child: Text(
+                      data.lastMessage.content ?? 'messageNone'.tr(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    RelativeTime(context).format(data.lastMessage.createdAt),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+        loading: () => const SizedBox.shrink(),
+        error:
+            (_, __) =>
+                isDirect && room.description == null
+                    ? Text(
+                      room.members!.map((e) => '@${e.account.name}').join(', '),
+                      maxLines: 1,
+                    )
+                    : Text(
+                      room.description ?? 'descriptionNone'.tr(),
+                      maxLines: 1,
+                    ),
+      );
+    }
+
+    Widget buildTrailing() {
+      if (trailing != null) return trailing!;
+
+      return summary.when(
+        data: (data) {
+          if (data == null || data.unreadCount == 0) {
+            return const SizedBox.shrink();
+          }
+
+          return Badge(label: Text(data.unreadCount.toString()));
+        },
+        loading: () => const SizedBox.shrink(),
+        error: (_, __) => const SizedBox.shrink(),
+      );
+    }
+
     return ListTile(
       leading:
           (isDirect && room.pictureId == null)
@@ -62,19 +145,20 @@ class ChatRoomListTile extends StatelessWidget {
       title: Text(
         (isDirect && room.name == null)
             ? room.members!.map((e) => e.account.nick).join(', ')
-            : room.name!,
+            : room.name ?? '',
       ),
-      subtitle:
-          subtitle != null
-              ? subtitle!
-              : (isDirect && room.description == null)
-              ? Text(
-                room.members!.map((e) => '@${e.account.name}').join(', '),
-                maxLines: 1,
-              )
-              : Text(room.description ?? 'descriptionNone'.tr(), maxLines: 1),
-      trailing: trailing,
-      onTap: onTap,
+      subtitle: buildSubtitle(),
+      trailing: buildTrailing(),
+      onTap: () async {
+        // Clear unread count if there are unread messages
+        final summary = await ref.read(chatSummaryProvider.future);
+        if ((summary[room.id]?.unreadCount ?? 0) > 0) {
+          await ref
+              .read(chatSummaryProvider.notifier)
+              .clearUnreadCount(room.id);
+        }
+        onTap?.call();
+      },
     );
   }
 }
@@ -100,9 +184,9 @@ class ChatShellScreen extends HookConsumerWidget {
     if (isWide) {
       return Row(
         children: [
-          SizedBox(width: 320, child: ChatListScreen(isAside: true)),
+          Flexible(flex: 2, child: ChatListScreen(isAside: true)),
           VerticalDivider(width: 1),
-          Expanded(child: AutoRouter()),
+          Flexible(flex: 4, child: AutoRouter()),
         ],
       );
     }

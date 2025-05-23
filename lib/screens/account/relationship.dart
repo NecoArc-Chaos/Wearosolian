@@ -96,7 +96,8 @@ class RelationshipListTile extends StatelessWidget {
         relationship.status == 0 && relationship.relatedId == currentUserId;
     final isWaiting =
         relationship.status == 0 && relationship.accountId == currentUserId;
-    final isEstablished = relationship.status == 1 || relationship.status == 2;
+    final isEstablished =
+        relationship.status >= 100 || relationship.status <= -100;
 
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 16, right: 12),
@@ -105,13 +106,13 @@ class RelationshipListTile extends StatelessWidget {
         spacing: 6,
         children: [
           Flexible(child: Text(account.nick)),
-          if (relationship.status == 1) // Friend
+          if (relationship.status >= 100) // Friend
             Badge(
               label: Text('relationshipStatusFriend').tr(),
               backgroundColor: Theme.of(context).colorScheme.primary,
               textColor: Theme.of(context).colorScheme.onPrimary,
             )
-          else if (relationship.status == 2) // Blocked
+          else if (relationship.status <= -100) // Blocked
             Badge(
               label: Text('relationshipStatusBlocked').tr(),
               backgroundColor: Theme.of(context).colorScheme.error,
@@ -171,7 +172,7 @@ class RelationshipListTile extends StatelessWidget {
                       icon: const Icon(Symbols.more_vert),
                       itemBuilder:
                           (context) => [
-                            if (relationship.status == 1) // If friend
+                            if (relationship.status >= 100) // If friend
                               PopupMenuItem(
                                 child: ListTile(
                                   leading: const Icon(Symbols.block),
@@ -179,9 +180,12 @@ class RelationshipListTile extends StatelessWidget {
                                   contentPadding: EdgeInsets.zero,
                                 ),
                                 onTap:
-                                    () => onUpdateStatus?.call(relationship, 2),
+                                    () => onUpdateStatus?.call(
+                                      relationship,
+                                      -100,
+                                    ),
                               )
-                            else if (relationship.status == 2) // If blocked
+                            else if (relationship.status <= -100) // If blocked
                               PopupMenuItem(
                                 child: ListTile(
                                   leading: const Icon(Symbols.person_add),
@@ -189,7 +193,8 @@ class RelationshipListTile extends StatelessWidget {
                                   contentPadding: EdgeInsets.zero,
                                 ),
                                 onTap:
-                                    () => onUpdateStatus?.call(relationship, 1),
+                                    () =>
+                                        onUpdateStatus?.call(relationship, 100),
                               ),
                           ],
                     ),

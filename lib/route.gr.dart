@@ -61,8 +61,8 @@ class AccountProfileRoute extends _i26.PageRouteInfo<AccountProfileRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<AccountProfileRouteArgs>(
-        orElse:
-            () => AccountProfileRouteArgs(name: pathParams.getString('name')),
+        orElse: () =>
+            AccountProfileRouteArgs(name: pathParams.getString('name')),
       );
       return _i1.AccountProfileScreen(key: args.key, name: args.name);
     },
@@ -508,11 +508,10 @@ class EditStickerPacksRoute
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<EditStickerPacksRouteArgs>(
-        orElse:
-            () => EditStickerPacksRouteArgs(
-              pubName: pathParams.getString('name'),
-              packId: pathParams.optString('packId'),
-            ),
+        orElse: () => EditStickerPacksRouteArgs(
+          pubName: pathParams.getString('name'),
+          packId: pathParams.optString('packId'),
+        ),
       );
       return _i11.EditStickerPacksScreen(
         key: args.key,
@@ -564,11 +563,10 @@ class EditStickersRoute extends _i26.PageRouteInfo<EditStickersRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<EditStickersRouteArgs>(
-        orElse:
-            () => EditStickersRouteArgs(
-              packId: pathParams.getString('packId'),
-              id: pathParams.optString('id'),
-            ),
+        orElse: () => EditStickersRouteArgs(
+          packId: pathParams.getString('packId'),
+          id: pathParams.optString('id'),
+        ),
       );
       return _i12.EditStickersScreen(
         key: args.key,
@@ -716,9 +714,8 @@ class NewStickerPacksRoute
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<NewStickerPacksRouteArgs>(
-        orElse:
-            () =>
-                NewStickerPacksRouteArgs(pubName: pathParams.getString('name')),
+        orElse: () =>
+            NewStickerPacksRouteArgs(pubName: pathParams.getString('name')),
       );
       return _i11.NewStickerPacksScreen(key: args.key, pubName: args.pubName);
     },
@@ -759,8 +756,8 @@ class NewStickersRoute extends _i26.PageRouteInfo<NewStickersRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<NewStickersRouteArgs>(
-        orElse:
-            () => NewStickersRouteArgs(packId: pathParams.getString('packId')),
+        orElse: () =>
+            NewStickersRouteArgs(packId: pathParams.getString('packId')),
       );
       return _i12.NewStickersScreen(key: args.key, packId: args.packId);
     },
@@ -942,8 +939,8 @@ class PublisherProfileRoute
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<PublisherProfileRouteArgs>(
-        orElse:
-            () => PublisherProfileRouteArgs(name: pathParams.getString('name')),
+        orElse: () =>
+            PublisherProfileRouteArgs(name: pathParams.getString('name')),
       );
       return _i19.PublisherProfileScreen(key: args.key, name: args.name);
     },
@@ -1075,11 +1072,10 @@ class StickerPackDetailRoute
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<StickerPackDetailRouteArgs>(
-        orElse:
-            () => StickerPackDetailRouteArgs(
-              pubName: pathParams.getString('name'),
-              id: pathParams.getString('packId'),
-            ),
+        orElse: () => StickerPackDetailRouteArgs(
+          pubName: pathParams.getString('name'),
+          id: pathParams.getString('packId'),
+        ),
       );
       return _i12.StickerPackDetailScreen(
         key: args.key,
