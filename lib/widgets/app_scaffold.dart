@@ -214,9 +214,6 @@ class AppBackground extends ConsumerWidget {
       return imageFileAsync.when(
         data: (file) {
           if (file != null) {
-            final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-
-            final size = MediaQuery.of(context).size;
             return Container(
               color: Theme.of(context).colorScheme.surface,
               child: Container(
@@ -225,12 +222,7 @@ class AppBackground extends ConsumerWidget {
                   color: Theme.of(context).colorScheme.surface,
                   image: DecorationImage(
                     opacity: 0.2,
-                    image: ResizeImage(
-                      FileImage(file),
-                      width: (size.width * devicePixelRatio).round(),
-                      height: (size.height * devicePixelRatio).round(),
-                      policy: ResizeImagePolicy.fit,
-                    ),
+                    image: FileImage(file),
                     fit: BoxFit.cover,
                   ),
                 ),
