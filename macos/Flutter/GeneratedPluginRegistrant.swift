@@ -14,6 +14,7 @@ import firebase_messaging
 import flutter_inappwebview_macos
 import flutter_platform_alert
 import flutter_udid
+import flutter_webrtc
 import irondash_engine_context
 import media_kit_libs_macos_video
 import media_kit_video
@@ -37,6 +38,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   InAppWebViewFlutterPlugin.register(with: registry.registrar(forPlugin: "InAppWebViewFlutterPlugin"))
   FlutterPlatformAlertPlugin.register(with: registry.registrar(forPlugin: "FlutterPlatformAlertPlugin"))
   FlutterUdidPlugin.register(with: registry.registrar(forPlugin: "FlutterUdidPlugin"))
+  FlutterWebRTCPlugin.register(with: registry.registrar(forPlugin: "FlutterWebRTCPlugin"))
   IrondashEngineContextPlugin.register(with: registry.registrar(forPlugin: "IrondashEngineContextPlugin"))
   MediaKitLibsMacosVideoPlugin.register(with: registry.registrar(forPlugin: "MediaKitLibsMacosVideoPlugin"))
   MediaKitVideoPlugin.register(with: registry.registrar(forPlugin: "MediaKitVideoPlugin"))

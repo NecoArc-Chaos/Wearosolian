@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_inappwebview_windows
   flutter_platform_alert
   flutter_udid
+  flutter_webrtc
   irondash_engine_context
   media_kit_libs_windows_video
   media_kit_video

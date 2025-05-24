@@ -7,12 +7,14 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_linux
   flutter_platform_alert
   flutter_udid
+  flutter_webrtc
   irondash_engine_context
   media_kit_libs_linux
   media_kit_video
   sqlite3_flutter_libs
   super_native_extensions
   url_launcher_linux
+  volume_controller
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
