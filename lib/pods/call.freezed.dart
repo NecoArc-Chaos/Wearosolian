@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CallState {
 
- bool get isMuted; bool get isConnected; String? get error;
+ bool get isConnected; bool get isMicrophoneEnabled; bool get isCameraEnabled; bool get isScreenSharing; String? get error;
 /// Create a copy of CallState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $CallStateCopyWith<CallState> get copyWith => _$CallStateCopyWithImpl<CallState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CallState&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CallState&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.isMicrophoneEnabled, isMicrophoneEnabled) || other.isMicrophoneEnabled == isMicrophoneEnabled)&&(identical(other.isCameraEnabled, isCameraEnabled) || other.isCameraEnabled == isCameraEnabled)&&(identical(other.isScreenSharing, isScreenSharing) || other.isScreenSharing == isScreenSharing)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isMuted,isConnected,error);
+int get hashCode => Object.hash(runtimeType,isConnected,isMicrophoneEnabled,isCameraEnabled,isScreenSharing,error);
 
 @override
 String toString() {
-  return 'CallState(isMuted: $isMuted, isConnected: $isConnected, error: $error)';
+  return 'CallState(isConnected: $isConnected, isMicrophoneEnabled: $isMicrophoneEnabled, isCameraEnabled: $isCameraEnabled, isScreenSharing: $isScreenSharing, error: $error)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $CallStateCopyWith<$Res>  {
   factory $CallStateCopyWith(CallState value, $Res Function(CallState) _then) = _$CallStateCopyWithImpl;
 @useResult
 $Res call({
- bool isMuted, bool isConnected, String? error
+ bool isConnected, bool isMicrophoneEnabled, bool isCameraEnabled, bool isScreenSharing, String? error
 });
 
 
@@ -63,10 +63,12 @@ class _$CallStateCopyWithImpl<$Res>
 
 /// Create a copy of CallState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isMuted = null,Object? isConnected = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isConnected = null,Object? isMicrophoneEnabled = null,Object? isCameraEnabled = null,Object? isScreenSharing = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
-isMuted: null == isMuted ? _self.isMuted : isMuted // ignore: cast_nullable_to_non_nullable
-as bool,isConnected: null == isConnected ? _self.isConnected : isConnected // ignore: cast_nullable_to_non_nullable
+isConnected: null == isConnected ? _self.isConnected : isConnected // ignore: cast_nullable_to_non_nullable
+as bool,isMicrophoneEnabled: null == isMicrophoneEnabled ? _self.isMicrophoneEnabled : isMicrophoneEnabled // ignore: cast_nullable_to_non_nullable
+as bool,isCameraEnabled: null == isCameraEnabled ? _self.isCameraEnabled : isCameraEnabled // ignore: cast_nullable_to_non_nullable
+as bool,isScreenSharing: null == isScreenSharing ? _self.isScreenSharing : isScreenSharing // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -79,11 +81,13 @@ as String?,
 
 
 class _CallState implements CallState {
-  const _CallState({required this.isMuted, required this.isConnected, this.error});
+  const _CallState({required this.isConnected, required this.isMicrophoneEnabled, required this.isCameraEnabled, required this.isScreenSharing, this.error});
   
 
-@override final  bool isMuted;
 @override final  bool isConnected;
+@override final  bool isMicrophoneEnabled;
+@override final  bool isCameraEnabled;
+@override final  bool isScreenSharing;
 @override final  String? error;
 
 /// Create a copy of CallState
@@ -96,16 +100,16 @@ _$CallStateCopyWith<_CallState> get copyWith => __$CallStateCopyWithImpl<_CallSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CallState&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CallState&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.isMicrophoneEnabled, isMicrophoneEnabled) || other.isMicrophoneEnabled == isMicrophoneEnabled)&&(identical(other.isCameraEnabled, isCameraEnabled) || other.isCameraEnabled == isCameraEnabled)&&(identical(other.isScreenSharing, isScreenSharing) || other.isScreenSharing == isScreenSharing)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isMuted,isConnected,error);
+int get hashCode => Object.hash(runtimeType,isConnected,isMicrophoneEnabled,isCameraEnabled,isScreenSharing,error);
 
 @override
 String toString() {
-  return 'CallState(isMuted: $isMuted, isConnected: $isConnected, error: $error)';
+  return 'CallState(isConnected: $isConnected, isMicrophoneEnabled: $isMicrophoneEnabled, isCameraEnabled: $isCameraEnabled, isScreenSharing: $isScreenSharing, error: $error)';
 }
 
 
@@ -116,7 +120,7 @@ abstract mixin class _$CallStateCopyWith<$Res> implements $CallStateCopyWith<$Re
   factory _$CallStateCopyWith(_CallState value, $Res Function(_CallState) _then) = __$CallStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isMuted, bool isConnected, String? error
+ bool isConnected, bool isMicrophoneEnabled, bool isCameraEnabled, bool isScreenSharing, String? error
 });
 
 
@@ -133,16 +137,166 @@ class __$CallStateCopyWithImpl<$Res>
 
 /// Create a copy of CallState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isMuted = null,Object? isConnected = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isConnected = null,Object? isMicrophoneEnabled = null,Object? isCameraEnabled = null,Object? isScreenSharing = null,Object? error = freezed,}) {
   return _then(_CallState(
-isMuted: null == isMuted ? _self.isMuted : isMuted // ignore: cast_nullable_to_non_nullable
-as bool,isConnected: null == isConnected ? _self.isConnected : isConnected // ignore: cast_nullable_to_non_nullable
+isConnected: null == isConnected ? _self.isConnected : isConnected // ignore: cast_nullable_to_non_nullable
+as bool,isMicrophoneEnabled: null == isMicrophoneEnabled ? _self.isMicrophoneEnabled : isMicrophoneEnabled // ignore: cast_nullable_to_non_nullable
+as bool,isCameraEnabled: null == isCameraEnabled ? _self.isCameraEnabled : isCameraEnabled // ignore: cast_nullable_to_non_nullable
+as bool,isScreenSharing: null == isScreenSharing ? _self.isScreenSharing : isScreenSharing // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
 
 
+}
+
+/// @nodoc
+mixin _$CallParticipantLive {
+
+ CallParticipant get participant; Participant get remoteParticipant;
+/// Create a copy of CallParticipantLive
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CallParticipantLiveCopyWith<CallParticipantLive> get copyWith => _$CallParticipantLiveCopyWithImpl<CallParticipantLive>(this as CallParticipantLive, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CallParticipantLive&&(identical(other.participant, participant) || other.participant == participant)&&(identical(other.remoteParticipant, remoteParticipant) || other.remoteParticipant == remoteParticipant));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,participant,remoteParticipant);
+
+@override
+String toString() {
+  return 'CallParticipantLive(participant: $participant, remoteParticipant: $remoteParticipant)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CallParticipantLiveCopyWith<$Res>  {
+  factory $CallParticipantLiveCopyWith(CallParticipantLive value, $Res Function(CallParticipantLive) _then) = _$CallParticipantLiveCopyWithImpl;
+@useResult
+$Res call({
+ CallParticipant participant, Participant remoteParticipant
+});
+
+
+$CallParticipantCopyWith<$Res> get participant;
+
+}
+/// @nodoc
+class _$CallParticipantLiveCopyWithImpl<$Res>
+    implements $CallParticipantLiveCopyWith<$Res> {
+  _$CallParticipantLiveCopyWithImpl(this._self, this._then);
+
+  final CallParticipantLive _self;
+  final $Res Function(CallParticipantLive) _then;
+
+/// Create a copy of CallParticipantLive
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? participant = null,Object? remoteParticipant = null,}) {
+  return _then(_self.copyWith(
+participant: null == participant ? _self.participant : participant // ignore: cast_nullable_to_non_nullable
+as CallParticipant,remoteParticipant: null == remoteParticipant ? _self.remoteParticipant : remoteParticipant // ignore: cast_nullable_to_non_nullable
+as Participant,
+  ));
+}
+/// Create a copy of CallParticipantLive
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CallParticipantCopyWith<$Res> get participant {
+  
+  return $CallParticipantCopyWith<$Res>(_self.participant, (value) {
+    return _then(_self.copyWith(participant: value));
+  });
+}
+}
+
+
+/// @nodoc
+
+
+class _CallParticipantLive extends CallParticipantLive {
+  const _CallParticipantLive({required this.participant, required this.remoteParticipant}): super._();
+  
+
+@override final  CallParticipant participant;
+@override final  Participant remoteParticipant;
+
+/// Create a copy of CallParticipantLive
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CallParticipantLiveCopyWith<_CallParticipantLive> get copyWith => __$CallParticipantLiveCopyWithImpl<_CallParticipantLive>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CallParticipantLive&&(identical(other.participant, participant) || other.participant == participant)&&(identical(other.remoteParticipant, remoteParticipant) || other.remoteParticipant == remoteParticipant));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,participant,remoteParticipant);
+
+@override
+String toString() {
+  return 'CallParticipantLive(participant: $participant, remoteParticipant: $remoteParticipant)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CallParticipantLiveCopyWith<$Res> implements $CallParticipantLiveCopyWith<$Res> {
+  factory _$CallParticipantLiveCopyWith(_CallParticipantLive value, $Res Function(_CallParticipantLive) _then) = __$CallParticipantLiveCopyWithImpl;
+@override @useResult
+$Res call({
+ CallParticipant participant, Participant remoteParticipant
+});
+
+
+@override $CallParticipantCopyWith<$Res> get participant;
+
+}
+/// @nodoc
+class __$CallParticipantLiveCopyWithImpl<$Res>
+    implements _$CallParticipantLiveCopyWith<$Res> {
+  __$CallParticipantLiveCopyWithImpl(this._self, this._then);
+
+  final _CallParticipantLive _self;
+  final $Res Function(_CallParticipantLive) _then;
+
+/// Create a copy of CallParticipantLive
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? participant = null,Object? remoteParticipant = null,}) {
+  return _then(_CallParticipantLive(
+participant: null == participant ? _self.participant : participant // ignore: cast_nullable_to_non_nullable
+as CallParticipant,remoteParticipant: null == remoteParticipant ? _self.remoteParticipant : remoteParticipant // ignore: cast_nullable_to_non_nullable
+as Participant,
+  ));
+}
+
+/// Create a copy of CallParticipantLive
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CallParticipantCopyWith<$Res> get participant {
+  
+  return $CallParticipantCopyWith<$Res>(_self.participant, (value) {
+    return _then(_self.copyWith(participant: value));
+  });
+}
 }
 
 // dart format on

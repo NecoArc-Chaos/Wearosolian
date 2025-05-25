@@ -19,6 +19,7 @@ import 'package:island/pods/websocket.dart';
 import 'package:island/route.dart';
 import 'package:island/screens/auth/tabs.dart';
 import 'package:island/services/notify.dart';
+import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:relative_time/relative_time.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,11 +29,21 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    log(
+      "[SplashScreen] Keeping the flash screen to loading other resources...",
+    );
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   }
 
-  await EasyLocalization.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  try {
+    await EasyLocalization.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    log("[SplashScreen] Firebase is ready!");
+  } catch (err) {
+    showErrorAlert(err);
+  }
 
   final prefs = await SharedPreferences.getInstance();
 
@@ -43,6 +54,7 @@ void main() async {
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
       appWindow.show();
+      log("[SplashScreen] Desktop window is ready!");
     });
   }
 
@@ -52,10 +64,12 @@ void main() async {
     if (imagePickerImplementation is ImagePickerAndroid) {
       imagePickerImplementation.useAndroidPhotoPicker = true;
     }
+    log("[SplashScreen] Android image picker is ready!");
   }
 
   if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
     FlutterNativeSplash.remove();
+    log("[SplashScreen] Now hiding the splash screen...");
   }
 
   runApp(

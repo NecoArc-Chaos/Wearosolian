@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'solian-0x001.firebasestorage.app',
     measurementId: 'G-JD1YEG9D6F',
   );
+
 }

@@ -146,10 +146,25 @@ sealed class ChatRealtimeJoinResponse with _$ChatRealtimeJoinResponse {
     required String callId,
     required String roomName,
     required bool isAdmin,
+    required List<CallParticipant> participants,
   }) = _ChatRealtimeJoinResponse;
 
   factory ChatRealtimeJoinResponse.fromJson(Map<String, dynamic> json) =>
       _$ChatRealtimeJoinResponseFromJson(json);
+}
+
+@freezed
+sealed class CallParticipant with _$CallParticipant {
+  const factory CallParticipant({
+    required String identity,
+    required String name,
+    required DateTime joinedAt,
+    required String? accountId,
+    required SnChatMember? profile,
+  }) = _CallParticipant;
+
+  factory CallParticipant.fromJson(Map<String, dynamic> json) =>
+      _$CallParticipantFromJson(json);
 }
 
 @freezed

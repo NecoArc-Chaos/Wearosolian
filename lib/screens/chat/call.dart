@@ -1,8 +1,18 @@
 import 'package:auto_route/annotations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/pods/call.dart';
+import 'package:island/pods/userinfo.dart';
+import 'package:island/screens/chat/chat.dart';
+import 'package:island/services/responsive.dart';
+import 'package:island/widgets/app_scaffold.dart';
+import 'package:island/widgets/chat/call_button.dart';
+import 'package:island/widgets/chat/call_participant_tile.dart';
+import 'package:livekit_client/livekit_client.dart';
+import 'package:styled_widget/styled_widget.dart';
 
 @RoutePage()
 class CallScreen extends HookConsumerWidget {
@@ -11,6 +21,9 @@ class CallScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ongoingCall = ref.watch(ongoingCallProvider(roomId));
+    final userInfo = ref.watch(userInfoProvider);
+    final chatRoom = ref.watch(chatroomProvider(roomId));
     final callState = ref.watch(callNotifierProvider);
     final callNotifier = ref.read(callNotifierProvider.notifier);
 
@@ -19,25 +32,327 @@ class CallScreen extends HookConsumerWidget {
       return null;
     }, []);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Audio Call')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    final actionButtonStyle = ButtonStyle(
+      minimumSize: const MaterialStatePropertyAll(Size(24, 24)),
+    );
+
+    final viewMode = useState<String>('grid');
+
+    return AppScaffold(
+      appBar: AppBar(
+        leading: PageBackButton(
+          onWillPop: () {
+            callNotifier.disconnect().then((_) {
+              callNotifier.dispose();
+            });
+          },
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (callState.error != null)
-              Text(callState.error!, style: const TextStyle(color: Colors.red)),
-            IconButton(
-              icon: Icon(callState.isMuted ? Icons.mic_off : Icons.mic),
-              onPressed: callNotifier.toggleMute,
+            Text(
+              chatRoom.whenOrNull()?.name ?? 'loading'.tr(),
+              style: const TextStyle(fontSize: 16),
             ),
-            if (callState.isConnected)
-              const Text('Connected')
-            else
-              const CircularProgressIndicator(),
+            Text(
+              callState.isConnected
+                  ? Duration(
+                    milliseconds:
+                        (DateTime.now().millisecondsSinceEpoch -
+                            (ongoingCall
+                                    .value
+                                    ?.createdAt
+                                    .millisecondsSinceEpoch ??
+                                0)),
+                  ).toString()
+                  : 'Connecting',
+              style: const TextStyle(fontSize: 14),
+            ),
           ],
         ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: Icon(Icons.grid_view),
+                tooltip: 'Grid View',
+                onPressed: () => viewMode.value = 'grid',
+                color:
+                    viewMode.value == 'grid'
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+              ),
+              IconButton(
+                icon: Icon(Icons.view_agenda),
+                tooltip: 'Stage View',
+                onPressed: () => viewMode.value = 'stage',
+                color:
+                    viewMode.value == 'stage'
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+              ),
+            ],
+          ),
+          const Gap(8),
+        ],
       ),
+      body:
+          callState.error != null
+              ? Center(
+                child: Text(
+                  callState.error!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              )
+              : Column(
+                children: [
+                  Card(
+                    margin: const EdgeInsets.only(left: 12, right: 12, top: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Builder(
+                                builder: (context) {
+                                  if (callNotifier.localParticipant == null) {
+                                    return CircularProgressIndicator().center();
+                                  }
+                                  return SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child:
+                                        SpeakingRippleAvatar(
+                                          isSpeaking:
+                                              callNotifier
+                                                  .localParticipant!
+                                                  .isSpeaking,
+                                          audioLevel:
+                                              callNotifier
+                                                  .localParticipant!
+                                                  .audioLevel,
+                                          pictureId:
+                                              userInfo.value?.profile.pictureId,
+                                          size: 36,
+                                        ).center(),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            callState.isMicrophoneEnabled
+                                ? Icons.mic
+                                : Icons.mic_off,
+                          ),
+                          onPressed: () {
+                            callNotifier.toggleMicrophone();
+                          },
+                          style: actionButtonStyle,
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            callState.isCameraEnabled
+                                ? Icons.videocam
+                                : Icons.videocam_off,
+                          ),
+                          onPressed: () {
+                            callNotifier.toggleCamera();
+                          },
+                          style: actionButtonStyle,
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            callState.isScreenSharing
+                                ? Icons.stop_screen_share
+                                : Icons.screen_share,
+                          ),
+                          onPressed: () {
+                            callNotifier.toggleScreenShare();
+                          },
+                          style: actionButtonStyle,
+                        ),
+                      ],
+                    ).padding(all: 16),
+                  ),
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        if (!callState.isConnected) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (callNotifier.participants.isEmpty) {
+                          return const Center(
+                            child: Text('No participants in call'),
+                          );
+                        }
+                        final participants = callNotifier.participants;
+                        final allAudioOnly = participants.every(
+                          (p) =>
+                              !(p.hasVideo &&
+                                  p.remoteParticipant.trackPublications.values
+                                      .any(
+                                        (pub) =>
+                                            pub.track != null &&
+                                            pub.kind == TrackType.VIDEO,
+                                      )),
+                        );
+                        if (allAudioOnly) {
+                          // Audio-only: show avatars in a compact row
+                          return Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                alignment: WrapAlignment.center,
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  for (final live in participants)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                      ),
+                                      child: SpeakingRippleAvatar(
+                                        isSpeaking: live.isSpeaking,
+                                        audioLevel:
+                                            live.remoteParticipant.audioLevel,
+                                        pictureId:
+                                            live
+                                                .participant
+                                                .profile
+                                                ?.account
+                                                .profile
+                                                .pictureId,
+                                        size: 72,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                        if (viewMode.value == 'stage') {
+                          // Stage view: show main speaker(s) large, others in row
+                          final mainSpeakers =
+                              participants
+                                  .where(
+                                    (p) => p
+                                        .remoteParticipant
+                                        .trackPublications
+                                        .values
+                                        .any(
+                                          (pub) =>
+                                              pub.track != null &&
+                                              pub.kind == TrackType.VIDEO,
+                                        ),
+                                  )
+                                  .toList();
+                          if (mainSpeakers.isEmpty && participants.isNotEmpty) {
+                            mainSpeakers.add(participants.first);
+                          }
+                          final others =
+                              participants
+                                  .where((p) => !mainSpeakers.contains(p))
+                                  .toList();
+                          return Column(
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    for (final speaker in mainSpeakers)
+                                      Expanded(
+                                        child:
+                                            AspectRatio(
+                                              aspectRatio: 16 / 9,
+                                              child: Card(
+                                                margin: EdgeInsets.zero,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  child: Column(
+                                                    children: [
+                                                      CallParticipantTile(
+                                                        live: speaker,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ).center(),
+                                      ),
+                                  ],
+                                ).padding(horizontal: 12),
+                              ),
+                              if (others.isNotEmpty)
+                                SizedBox(
+                                  height: 100,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      for (final other in others)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                          child: CallParticipantTile(
+                                            live: other,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          );
+                        }
+                        // Default: grid view
+                        return GridView.builder(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount:
+                                    isWidestScreen(context)
+                                        ? 4
+                                        : isWiderScreen(context)
+                                        ? 3
+                                        : 2,
+                                childAspectRatio: 16 / 9,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                              ),
+                          itemCount: participants.length,
+                          itemBuilder: (context, idx) {
+                            final live = participants[idx];
+                            return AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: Card(
+                                margin: EdgeInsets.zero,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Column(
+                                    children: [CallParticipantTile(live: live)],
+                                  ),
+                                ),
+                              ),
+                            ).center();
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
     );
   }
 }

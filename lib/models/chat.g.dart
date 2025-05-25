@@ -249,6 +249,10 @@ _ChatRealtimeJoinResponse _$ChatRealtimeJoinResponseFromJson(
   callId: json['call_id'] as String,
   roomName: json['room_name'] as String,
   isAdmin: json['is_admin'] as bool,
+  participants:
+      (json['participants'] as List<dynamic>)
+          .map((e) => CallParticipant.fromJson(e as Map<String, dynamic>))
+          .toList(),
 );
 
 Map<String, dynamic> _$ChatRealtimeJoinResponseToJson(
@@ -260,7 +264,29 @@ Map<String, dynamic> _$ChatRealtimeJoinResponseToJson(
   'call_id': instance.callId,
   'room_name': instance.roomName,
   'is_admin': instance.isAdmin,
+  'participants': instance.participants.map((e) => e.toJson()).toList(),
 };
+
+_CallParticipant _$CallParticipantFromJson(Map<String, dynamic> json) =>
+    _CallParticipant(
+      identity: json['identity'] as String,
+      name: json['name'] as String,
+      joinedAt: DateTime.parse(json['joined_at'] as String),
+      accountId: json['account_id'] as String?,
+      profile:
+          json['profile'] == null
+              ? null
+              : SnChatMember.fromJson(json['profile'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$CallParticipantToJson(_CallParticipant instance) =>
+    <String, dynamic>{
+      'identity': instance.identity,
+      'name': instance.name,
+      'joined_at': instance.joinedAt.toIso8601String(),
+      'account_id': instance.accountId,
+      'profile': instance.profile?.toJson(),
+    };
 
 _SnRealtimeCall _$SnRealtimeCallFromJson(Map<String, dynamic> json) =>
     _SnRealtimeCall(

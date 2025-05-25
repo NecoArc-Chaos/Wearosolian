@@ -1,7 +1,12 @@
+import 'package:island/pods/userinfo.dart';
+import 'package:island/screens/chat/chat.dart';
 import 'package:livekit_client/livekit_client.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:island/pods/network.dart';
+import 'package:island/models/chat.dart';
+import 'package:island/pods/websocket.dart';
 
 part 'call.g.dart';
 part 'call.freezed.dart';
@@ -9,43 +14,244 @@ part 'call.freezed.dart';
 @freezed
 sealed class CallState with _$CallState {
   const factory CallState({
-    required bool isMuted,
     required bool isConnected,
+    required bool isMicrophoneEnabled,
+    required bool isCameraEnabled,
+    required bool isScreenSharing,
     String? error,
   }) = _CallState;
+}
+
+@freezed
+sealed class CallParticipantLive with _$CallParticipantLive {
+  const CallParticipantLive._();
+
+  const factory CallParticipantLive({
+    required CallParticipant participant,
+    required Participant remoteParticipant,
+  }) = _CallParticipantLive;
+
+  bool get isSpeaking => remoteParticipant.isSpeaking;
+  bool get isMuted => remoteParticipant.isMuted;
+  bool get isScreenSharing => remoteParticipant.isScreenShareEnabled();
+  bool get isScreenSharingWithAudio =>
+      remoteParticipant.isScreenShareAudioEnabled();
+
+  bool get hasVideo => remoteParticipant.hasVideo;
+  bool get hasAudio => remoteParticipant.hasAudio;
 }
 
 @riverpod
 class CallNotifier extends _$CallNotifier {
   Room? _room;
   LocalParticipant? _localParticipant;
-  LocalAudioTrack? _localAudioTrack;
+  List<CallParticipantLive> _participants = [];
+  final Map<String, CallParticipant> _participantInfoByIdentity = {};
+  StreamSubscription? _wsSubscription;
+  EventsListener? _roomListener;
+
+  List<CallParticipantLive> get participants =>
+      List.unmodifiable(_participants);
+  LocalParticipant? get localParticipant => _localParticipant;
 
   @override
   CallState build() {
-    return const CallState(isMuted: false, isConnected: false);
+    // Subscribe to websocket updates
+    _subscribeToParticipantsUpdate();
+    return const CallState(
+      isConnected: false,
+      isMicrophoneEnabled: true,
+      isCameraEnabled: false,
+      isScreenSharing: false,
+    );
   }
 
+  void _subscribeToParticipantsUpdate() {
+    // Only subscribe once
+    if (_wsSubscription != null) return;
+    final ws = ref.read(websocketProvider);
+    _wsSubscription = ws.dataStream.listen((packet) {
+      if (packet.type == 'call.participants.update' && packet.data != null) {
+        final participantsData = packet.data!["participants"];
+        if (participantsData is List) {
+          final parsed =
+              participantsData
+                  .map(
+                    (e) =>
+                        CallParticipant.fromJson(Map<String, dynamic>.from(e)),
+                  )
+                  .toList();
+          _updateLiveParticipants(parsed);
+        }
+      }
+    });
+  }
+
+  void _initRoomListeners() {
+    if (_room == null) return;
+    _roomListener?.dispose();
+    _roomListener = _room!.createListener();
+    _room!.addListener(_onRoomChange);
+    _roomListener!
+      ..on<ParticipantConnectedEvent>((e) {
+        _refreshLiveParticipants();
+      })
+      ..on<RoomDisconnectedEvent>((e) {
+        _participants = [];
+        state = state.copyWith();
+      });
+  }
+
+  void _onRoomChange() {
+    _refreshLiveParticipants();
+  }
+
+  void _refreshLiveParticipants() {
+    if (_room == null) return;
+    final remoteParticipants = _room!.remoteParticipants;
+    _participants = [];
+    // Add local participant first if available
+    if (_localParticipant != null) {
+      final localInfo = _buildParticipant();
+      _participants.add(
+        CallParticipantLive(
+          participant: localInfo,
+          remoteParticipant: _localParticipant!,
+        ),
+      );
+    }
+    // Add remote participants
+    _participants.addAll(
+      remoteParticipants.values.map((remote) {
+        final match =
+            _participantInfoByIdentity[remote.identity] ??
+            CallParticipant(
+              identity: remote.identity,
+              name: remote.identity,
+              joinedAt: DateTime.now(),
+              accountId: null,
+              profile: null,
+            );
+        return CallParticipantLive(
+          participant: match,
+          remoteParticipant: remote,
+        );
+      }),
+    );
+    state = state.copyWith();
+  }
+
+  /// Builds the CallParticipant object for the local participant.
+  /// Optionally, pass [participants] if you want to prioritize info from the latest list.
+  CallParticipant _buildParticipant({List<CallParticipant>? participants}) {
+    if (_localParticipant == null) {
+      throw StateError('No local participant available');
+    }
+    // Prefer info from the latest participants list if available
+    if (participants != null) {
+      final idx = participants.indexWhere(
+        (p) => p.identity == _localParticipant!.identity,
+      );
+      if (idx != -1) return participants[idx];
+    }
+
+    final userInfo = ref.read(userInfoProvider);
+    final roomIdentity = ref.read(chatroomIdentityProvider(_roomId));
+    // Otherwise, use info from the identity map or fallback to minimal
+    return _participantInfoByIdentity[_localParticipant!.identity] ??
+        CallParticipant(
+          identity: _localParticipant!.identity,
+          name: _localParticipant!.identity,
+          joinedAt: DateTime.now(),
+          accountId: userInfo.value?.id,
+          profile: roomIdentity.value,
+        );
+  }
+
+  void _updateLiveParticipants(List<CallParticipant> participants) {
+    // Update the info map for lookup
+    for (final p in participants) {
+      _participantInfoByIdentity[p.identity] = p;
+    }
+    if (_room == null) {
+      // Can't build live objects, just store empty
+      _participants = [];
+      state = state.copyWith();
+      return;
+    }
+    final remoteParticipants = _room!.remoteParticipants;
+    final remotes = remoteParticipants.values.toList();
+    _participants = [];
+    // Add local participant if present in the list
+    if (_localParticipant != null) {
+      final localInfo = _buildParticipant(participants: participants);
+      _participants.add(
+        CallParticipantLive(
+          participant: localInfo,
+          remoteParticipant: _localParticipant!,
+        ),
+      );
+    }
+    // Add remote participants
+    _participants.addAll(
+      participants.map((p) {
+        RemoteParticipant? remote;
+        for (final r in remotes) {
+          if (r.identity == p.identity) {
+            remote = r;
+            break;
+          }
+        }
+        if (_localParticipant != null &&
+            p.identity == _localParticipant!.identity) {
+          return null; // Already added local
+        }
+        return remote != null
+            ? CallParticipantLive(participant: p, remoteParticipant: remote)
+            : null;
+      }).whereType<CallParticipantLive>(),
+    );
+    state = state.copyWith();
+  }
+
+  String? _roomId;
+
   Future<void> joinRoom(String roomId) async {
+    _roomId = roomId;
     try {
       final apiClient = ref.read(apiClientProvider);
       final response = await apiClient.get('/chat/realtime/$roomId/join');
       if (response.statusCode == 200 && response.data != null) {
         final data = response.data;
-        final String endpoint = data['endpoint'];
-        final String token = data['token'];
+        // Parse join response
+        final joinResponse = ChatRealtimeJoinResponse.fromJson(data);
+        final participants = joinResponse.participants;
+        final String endpoint = joinResponse.endpoint;
+        final String token = joinResponse.token;
         // Connect to LiveKit
         _room = Room();
-        await _room!.connect(endpoint, token);
+
+        await _room!.connect(
+          endpoint,
+          token,
+          connectOptions: ConnectOptions(autoSubscribe: true),
+          roomOptions: RoomOptions(adaptiveStream: true, dynacast: true),
+          fastConnectOptions: FastConnectOptions(
+            microphone: TrackOption(enabled: true),
+          ),
+        );
         _localParticipant = _room!.localParticipant;
-        // Create local audio track and publish
-        _localAudioTrack = await LocalAudioTrack.create();
-        await _localParticipant!.publishAudioTrack(_localAudioTrack!);
+
+        _initRoomListeners();
+        _updateLiveParticipants(participants);
 
         // Listen for connection updates
         _room!.addListener(() {
           state = state.copyWith(
             isConnected: _room!.connectionState == ConnectionState.connected,
+            isMicrophoneEnabled: _localParticipant!.isMicrophoneEnabled(),
+            isCameraEnabled: _localParticipant!.isCameraEnabled(),
+            isScreenSharing: _localParticipant!.isScreenShareEnabled(),
           );
         });
         state = state.copyWith(isConnected: true);
@@ -57,27 +263,55 @@ class CallNotifier extends _$CallNotifier {
     }
   }
 
-  void toggleMute() {
-    final newMuted = !state.isMuted;
-    state = state.copyWith(isMuted: newMuted);
-    if (_localAudioTrack != null) {
-      if (newMuted) {
-        _localAudioTrack!.mute();
+  Future<void> toggleMicrophone() async {
+    if (_localParticipant != null) {
+      const autostop = true;
+      final target = !_localParticipant!.isMicrophoneEnabled();
+      state = state.copyWith(isMicrophoneEnabled: target);
+      if (target) {
+        await _localParticipant!.audioTrackPublications.firstOrNull?.unmute(
+          stopOnMute: autostop,
+        );
       } else {
-        _localAudioTrack!.unmute();
+        await _localParticipant!.audioTrackPublications.firstOrNull?.mute(
+          stopOnMute: autostop,
+        );
       }
+    }
+  }
+
+  Future<void> toggleCamera() async {
+    if (_localParticipant != null) {
+      final target = !_localParticipant!.isCameraEnabled();
+      state = state.copyWith(isCameraEnabled: target);
+      await _localParticipant!.setCameraEnabled(target);
+    }
+  }
+
+  Future<void> toggleScreenShare() async {
+    if (_localParticipant != null) {
+      final target = !_localParticipant!.isScreenShareEnabled();
+      state = state.copyWith(isScreenSharing: target);
+      await _localParticipant!.setScreenShareEnabled(target);
     }
   }
 
   Future<void> disconnect() async {
     if (_room != null) {
       await _room!.disconnect();
-      state = state.copyWith(isConnected: false);
+      state = state.copyWith(
+        isConnected: false,
+        isMicrophoneEnabled: false,
+        isCameraEnabled: false,
+        isScreenSharing: false,
+      );
     }
   }
 
   void dispose() {
-    _localAudioTrack?.dispose();
+    _wsSubscription?.cancel();
+    _roomListener?.dispose();
+    _room?.removeListener(_onRoomChange);
     _room?.dispose();
   }
 }

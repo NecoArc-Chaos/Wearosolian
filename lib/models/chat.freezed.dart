@@ -1342,7 +1342,7 @@ as DateTime,
 /// @nodoc
 mixin _$ChatRealtimeJoinResponse {
 
- String get provider; String get endpoint; String get token; String get callId; String get roomName; bool get isAdmin;
+ String get provider; String get endpoint; String get token; String get callId; String get roomName; bool get isAdmin; List<CallParticipant> get participants;
 /// Create a copy of ChatRealtimeJoinResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1355,16 +1355,16 @@ $ChatRealtimeJoinResponseCopyWith<ChatRealtimeJoinResponse> get copyWith => _$Ch
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatRealtimeJoinResponse&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.endpoint, endpoint) || other.endpoint == endpoint)&&(identical(other.token, token) || other.token == token)&&(identical(other.callId, callId) || other.callId == callId)&&(identical(other.roomName, roomName) || other.roomName == roomName)&&(identical(other.isAdmin, isAdmin) || other.isAdmin == isAdmin));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatRealtimeJoinResponse&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.endpoint, endpoint) || other.endpoint == endpoint)&&(identical(other.token, token) || other.token == token)&&(identical(other.callId, callId) || other.callId == callId)&&(identical(other.roomName, roomName) || other.roomName == roomName)&&(identical(other.isAdmin, isAdmin) || other.isAdmin == isAdmin)&&const DeepCollectionEquality().equals(other.participants, participants));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,endpoint,token,callId,roomName,isAdmin);
+int get hashCode => Object.hash(runtimeType,provider,endpoint,token,callId,roomName,isAdmin,const DeepCollectionEquality().hash(participants));
 
 @override
 String toString() {
-  return 'ChatRealtimeJoinResponse(provider: $provider, endpoint: $endpoint, token: $token, callId: $callId, roomName: $roomName, isAdmin: $isAdmin)';
+  return 'ChatRealtimeJoinResponse(provider: $provider, endpoint: $endpoint, token: $token, callId: $callId, roomName: $roomName, isAdmin: $isAdmin, participants: $participants)';
 }
 
 
@@ -1375,7 +1375,7 @@ abstract mixin class $ChatRealtimeJoinResponseCopyWith<$Res>  {
   factory $ChatRealtimeJoinResponseCopyWith(ChatRealtimeJoinResponse value, $Res Function(ChatRealtimeJoinResponse) _then) = _$ChatRealtimeJoinResponseCopyWithImpl;
 @useResult
 $Res call({
- String provider, String endpoint, String token, String callId, String roomName, bool isAdmin
+ String provider, String endpoint, String token, String callId, String roomName, bool isAdmin, List<CallParticipant> participants
 });
 
 
@@ -1392,7 +1392,7 @@ class _$ChatRealtimeJoinResponseCopyWithImpl<$Res>
 
 /// Create a copy of ChatRealtimeJoinResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? provider = null,Object? endpoint = null,Object? token = null,Object? callId = null,Object? roomName = null,Object? isAdmin = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? provider = null,Object? endpoint = null,Object? token = null,Object? callId = null,Object? roomName = null,Object? isAdmin = null,Object? participants = null,}) {
   return _then(_self.copyWith(
 provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String,endpoint: null == endpoint ? _self.endpoint : endpoint // ignore: cast_nullable_to_non_nullable
@@ -1400,7 +1400,8 @@ as String,token: null == token ? _self.token : token // ignore: cast_nullable_to
 as String,callId: null == callId ? _self.callId : callId // ignore: cast_nullable_to_non_nullable
 as String,roomName: null == roomName ? _self.roomName : roomName // ignore: cast_nullable_to_non_nullable
 as String,isAdmin: null == isAdmin ? _self.isAdmin : isAdmin // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
+as List<CallParticipant>,
   ));
 }
 
@@ -1411,7 +1412,7 @@ as bool,
 @JsonSerializable()
 
 class _ChatRealtimeJoinResponse implements ChatRealtimeJoinResponse {
-  const _ChatRealtimeJoinResponse({required this.provider, required this.endpoint, required this.token, required this.callId, required this.roomName, required this.isAdmin});
+  const _ChatRealtimeJoinResponse({required this.provider, required this.endpoint, required this.token, required this.callId, required this.roomName, required this.isAdmin, required final  List<CallParticipant> participants}): _participants = participants;
   factory _ChatRealtimeJoinResponse.fromJson(Map<String, dynamic> json) => _$ChatRealtimeJoinResponseFromJson(json);
 
 @override final  String provider;
@@ -1420,6 +1421,13 @@ class _ChatRealtimeJoinResponse implements ChatRealtimeJoinResponse {
 @override final  String callId;
 @override final  String roomName;
 @override final  bool isAdmin;
+ final  List<CallParticipant> _participants;
+@override List<CallParticipant> get participants {
+  if (_participants is EqualUnmodifiableListView) return _participants;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_participants);
+}
+
 
 /// Create a copy of ChatRealtimeJoinResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -1434,16 +1442,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatRealtimeJoinResponse&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.endpoint, endpoint) || other.endpoint == endpoint)&&(identical(other.token, token) || other.token == token)&&(identical(other.callId, callId) || other.callId == callId)&&(identical(other.roomName, roomName) || other.roomName == roomName)&&(identical(other.isAdmin, isAdmin) || other.isAdmin == isAdmin));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatRealtimeJoinResponse&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.endpoint, endpoint) || other.endpoint == endpoint)&&(identical(other.token, token) || other.token == token)&&(identical(other.callId, callId) || other.callId == callId)&&(identical(other.roomName, roomName) || other.roomName == roomName)&&(identical(other.isAdmin, isAdmin) || other.isAdmin == isAdmin)&&const DeepCollectionEquality().equals(other._participants, _participants));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,endpoint,token,callId,roomName,isAdmin);
+int get hashCode => Object.hash(runtimeType,provider,endpoint,token,callId,roomName,isAdmin,const DeepCollectionEquality().hash(_participants));
 
 @override
 String toString() {
-  return 'ChatRealtimeJoinResponse(provider: $provider, endpoint: $endpoint, token: $token, callId: $callId, roomName: $roomName, isAdmin: $isAdmin)';
+  return 'ChatRealtimeJoinResponse(provider: $provider, endpoint: $endpoint, token: $token, callId: $callId, roomName: $roomName, isAdmin: $isAdmin, participants: $participants)';
 }
 
 
@@ -1454,7 +1462,7 @@ abstract mixin class _$ChatRealtimeJoinResponseCopyWith<$Res> implements $ChatRe
   factory _$ChatRealtimeJoinResponseCopyWith(_ChatRealtimeJoinResponse value, $Res Function(_ChatRealtimeJoinResponse) _then) = __$ChatRealtimeJoinResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String provider, String endpoint, String token, String callId, String roomName, bool isAdmin
+ String provider, String endpoint, String token, String callId, String roomName, bool isAdmin, List<CallParticipant> participants
 });
 
 
@@ -1471,7 +1479,7 @@ class __$ChatRealtimeJoinResponseCopyWithImpl<$Res>
 
 /// Create a copy of ChatRealtimeJoinResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? provider = null,Object? endpoint = null,Object? token = null,Object? callId = null,Object? roomName = null,Object? isAdmin = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? provider = null,Object? endpoint = null,Object? token = null,Object? callId = null,Object? roomName = null,Object? isAdmin = null,Object? participants = null,}) {
   return _then(_ChatRealtimeJoinResponse(
 provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String,endpoint: null == endpoint ? _self.endpoint : endpoint // ignore: cast_nullable_to_non_nullable
@@ -1479,11 +1487,181 @@ as String,token: null == token ? _self.token : token // ignore: cast_nullable_to
 as String,callId: null == callId ? _self.callId : callId // ignore: cast_nullable_to_non_nullable
 as String,roomName: null == roomName ? _self.roomName : roomName // ignore: cast_nullable_to_non_nullable
 as String,isAdmin: null == isAdmin ? _self.isAdmin : isAdmin // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,participants: null == participants ? _self._participants : participants // ignore: cast_nullable_to_non_nullable
+as List<CallParticipant>,
   ));
 }
 
 
+}
+
+
+/// @nodoc
+mixin _$CallParticipant {
+
+ String get identity; String get name; DateTime get joinedAt; String? get accountId; SnChatMember? get profile;
+/// Create a copy of CallParticipant
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CallParticipantCopyWith<CallParticipant> get copyWith => _$CallParticipantCopyWithImpl<CallParticipant>(this as CallParticipant, _$identity);
+
+  /// Serializes this CallParticipant to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CallParticipant&&(identical(other.identity, identity) || other.identity == identity)&&(identical(other.name, name) || other.name == name)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.profile, profile) || other.profile == profile));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,identity,name,joinedAt,accountId,profile);
+
+@override
+String toString() {
+  return 'CallParticipant(identity: $identity, name: $name, joinedAt: $joinedAt, accountId: $accountId, profile: $profile)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CallParticipantCopyWith<$Res>  {
+  factory $CallParticipantCopyWith(CallParticipant value, $Res Function(CallParticipant) _then) = _$CallParticipantCopyWithImpl;
+@useResult
+$Res call({
+ String identity, String name, DateTime joinedAt, String? accountId, SnChatMember? profile
+});
+
+
+$SnChatMemberCopyWith<$Res>? get profile;
+
+}
+/// @nodoc
+class _$CallParticipantCopyWithImpl<$Res>
+    implements $CallParticipantCopyWith<$Res> {
+  _$CallParticipantCopyWithImpl(this._self, this._then);
+
+  final CallParticipant _self;
+  final $Res Function(CallParticipant) _then;
+
+/// Create a copy of CallParticipant
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? identity = null,Object? name = null,Object? joinedAt = null,Object? accountId = freezed,Object? profile = freezed,}) {
+  return _then(_self.copyWith(
+identity: null == identity ? _self.identity : identity // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,accountId: freezed == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
+as String?,profile: freezed == profile ? _self.profile : profile // ignore: cast_nullable_to_non_nullable
+as SnChatMember?,
+  ));
+}
+/// Create a copy of CallParticipant
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnChatMemberCopyWith<$Res>? get profile {
+    if (_self.profile == null) {
+    return null;
+  }
+
+  return $SnChatMemberCopyWith<$Res>(_self.profile!, (value) {
+    return _then(_self.copyWith(profile: value));
+  });
+}
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _CallParticipant implements CallParticipant {
+  const _CallParticipant({required this.identity, required this.name, required this.joinedAt, required this.accountId, required this.profile});
+  factory _CallParticipant.fromJson(Map<String, dynamic> json) => _$CallParticipantFromJson(json);
+
+@override final  String identity;
+@override final  String name;
+@override final  DateTime joinedAt;
+@override final  String? accountId;
+@override final  SnChatMember? profile;
+
+/// Create a copy of CallParticipant
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CallParticipantCopyWith<_CallParticipant> get copyWith => __$CallParticipantCopyWithImpl<_CallParticipant>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CallParticipantToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CallParticipant&&(identical(other.identity, identity) || other.identity == identity)&&(identical(other.name, name) || other.name == name)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.profile, profile) || other.profile == profile));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,identity,name,joinedAt,accountId,profile);
+
+@override
+String toString() {
+  return 'CallParticipant(identity: $identity, name: $name, joinedAt: $joinedAt, accountId: $accountId, profile: $profile)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CallParticipantCopyWith<$Res> implements $CallParticipantCopyWith<$Res> {
+  factory _$CallParticipantCopyWith(_CallParticipant value, $Res Function(_CallParticipant) _then) = __$CallParticipantCopyWithImpl;
+@override @useResult
+$Res call({
+ String identity, String name, DateTime joinedAt, String? accountId, SnChatMember? profile
+});
+
+
+@override $SnChatMemberCopyWith<$Res>? get profile;
+
+}
+/// @nodoc
+class __$CallParticipantCopyWithImpl<$Res>
+    implements _$CallParticipantCopyWith<$Res> {
+  __$CallParticipantCopyWithImpl(this._self, this._then);
+
+  final _CallParticipant _self;
+  final $Res Function(_CallParticipant) _then;
+
+/// Create a copy of CallParticipant
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? identity = null,Object? name = null,Object? joinedAt = null,Object? accountId = freezed,Object? profile = freezed,}) {
+  return _then(_CallParticipant(
+identity: null == identity ? _self.identity : identity // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,accountId: freezed == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
+as String?,profile: freezed == profile ? _self.profile : profile // ignore: cast_nullable_to_non_nullable
+as SnChatMember?,
+  ));
+}
+
+/// Create a copy of CallParticipant
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SnChatMemberCopyWith<$Res>? get profile {
+    if (_self.profile == null) {
+    return null;
+  }
+
+  return $SnChatMemberCopyWith<$Res>(_self.profile!, (value) {
+    return _then(_self.copyWith(profile: value));
+  });
+}
 }
 
 

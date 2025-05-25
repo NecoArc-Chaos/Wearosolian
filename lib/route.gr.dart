@@ -62,8 +62,8 @@ class AccountProfileRoute extends _i27.PageRouteInfo<AccountProfileRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<AccountProfileRouteArgs>(
-        orElse: () =>
-            AccountProfileRouteArgs(name: pathParams.getString('name')),
+        orElse:
+            () => AccountProfileRouteArgs(name: pathParams.getString('name')),
       );
       return _i1.AccountProfileScreen(key: args.key, name: args.name);
     },
@@ -81,6 +81,16 @@ class AccountProfileRouteArgs {
   String toString() {
     return 'AccountProfileRouteArgs{key: $key, name: $name}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AccountProfileRouteArgs) return false;
+    return key == other.key && name == other.name;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ name.hashCode;
 }
 
 /// generated route for
@@ -120,6 +130,16 @@ class AccountRouteArgs {
   String toString() {
     return 'AccountRouteArgs{key: $key, isAside: $isAside}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AccountRouteArgs) return false;
+    return key == other.key && isAside == other.isAside;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ isAside.hashCode;
 }
 
 /// generated route for
@@ -193,6 +213,16 @@ class CallRouteArgs {
   String toString() {
     return 'CallRouteArgs{key: $key, roomId: $roomId}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CallRouteArgs) return false;
+    return key == other.key && roomId == other.roomId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ roomId.hashCode;
 }
 
 /// generated route for
@@ -234,6 +264,16 @@ class ChatDetailRouteArgs {
   String toString() {
     return 'ChatDetailRouteArgs{key: $key, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChatDetailRouteArgs) return false;
+    return key == other.key && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -273,6 +313,16 @@ class ChatListRouteArgs {
   String toString() {
     return 'ChatListRouteArgs{key: $key, isAside: $isAside}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChatListRouteArgs) return false;
+    return key == other.key && isAside == other.isAside;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ isAside.hashCode;
 }
 
 /// generated route for
@@ -314,6 +364,16 @@ class ChatRoomRouteArgs {
   String toString() {
     return 'ChatRoomRouteArgs{key: $key, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChatRoomRouteArgs) return false;
+    return key == other.key && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -385,6 +445,16 @@ class CreatorHubRouteArgs {
   String toString() {
     return 'CreatorHubRouteArgs{key: $key, isAside: $isAside}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CreatorHubRouteArgs) return false;
+    return key == other.key && isAside == other.isAside;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ isAside.hashCode;
 }
 
 /// generated route for
@@ -439,6 +509,16 @@ class EditChatRouteArgs {
   String toString() {
     return 'EditChatRouteArgs{key: $key, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EditChatRouteArgs) return false;
+    return key == other.key && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -480,6 +560,16 @@ class EditPublisherRouteArgs {
   String toString() {
     return 'EditPublisherRouteArgs{key: $key, name: $name}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EditPublisherRouteArgs) return false;
+    return key == other.key && name == other.name;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ name.hashCode;
 }
 
 /// generated route for
@@ -521,6 +611,16 @@ class EditRealmRouteArgs {
   String toString() {
     return 'EditRealmRouteArgs{key: $key, slug: $slug}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EditRealmRouteArgs) return false;
+    return key == other.key && slug == other.slug;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ slug.hashCode;
 }
 
 /// generated route for
@@ -550,10 +650,11 @@ class EditStickerPacksRoute
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<EditStickerPacksRouteArgs>(
-        orElse: () => EditStickerPacksRouteArgs(
-          pubName: pathParams.getString('name'),
-          packId: pathParams.optString('packId'),
-        ),
+        orElse:
+            () => EditStickerPacksRouteArgs(
+              pubName: pathParams.getString('name'),
+              packId: pathParams.optString('packId'),
+            ),
       );
       return _i12.EditStickerPacksScreen(
         key: args.key,
@@ -581,6 +682,18 @@ class EditStickerPacksRouteArgs {
   String toString() {
     return 'EditStickerPacksRouteArgs{key: $key, pubName: $pubName, packId: $packId}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EditStickerPacksRouteArgs) return false;
+    return key == other.key &&
+        pubName == other.pubName &&
+        packId == other.packId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ pubName.hashCode ^ packId.hashCode;
 }
 
 /// generated route for
@@ -605,10 +718,11 @@ class EditStickersRoute extends _i27.PageRouteInfo<EditStickersRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<EditStickersRouteArgs>(
-        orElse: () => EditStickersRouteArgs(
-          packId: pathParams.getString('packId'),
-          id: pathParams.optString('id'),
-        ),
+        orElse:
+            () => EditStickersRouteArgs(
+              packId: pathParams.getString('packId'),
+              id: pathParams.optString('id'),
+            ),
       );
       return _i13.EditStickersScreen(
         key: args.key,
@@ -636,6 +750,16 @@ class EditStickersRouteArgs {
   String toString() {
     return 'EditStickersRouteArgs{key: $key, packId: $packId, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EditStickersRouteArgs) return false;
+    return key == other.key && packId == other.packId && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ packId.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -659,8 +783,8 @@ class EventCalanderRoute extends _i27.PageRouteInfo<EventCalanderRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<EventCalanderRouteArgs>(
-        orElse: () =>
-            EventCalanderRouteArgs(name: pathParams.getString('name')),
+        orElse:
+            () => EventCalanderRouteArgs(name: pathParams.getString('name')),
       );
       return _i14.EventCalanderScreen(key: args.key, name: args.name);
     },
@@ -678,6 +802,16 @@ class EventCalanderRouteArgs {
   String toString() {
     return 'EventCalanderRouteArgs{key: $key, name: $name}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EventCalanderRouteArgs) return false;
+    return key == other.key && name == other.name;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ name.hashCode;
 }
 
 /// generated route for
@@ -717,6 +851,16 @@ class ExploreRouteArgs {
   String toString() {
     return 'ExploreRouteArgs{key: $key, isAside: $isAside}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ExploreRouteArgs) return false;
+    return key == other.key && isAside == other.isAside;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ isAside.hashCode;
 }
 
 /// generated route for
@@ -821,8 +965,9 @@ class NewStickerPacksRoute
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<NewStickerPacksRouteArgs>(
-        orElse: () =>
-            NewStickerPacksRouteArgs(pubName: pathParams.getString('name')),
+        orElse:
+            () =>
+                NewStickerPacksRouteArgs(pubName: pathParams.getString('name')),
       );
       return _i12.NewStickerPacksScreen(key: args.key, pubName: args.pubName);
     },
@@ -840,6 +985,16 @@ class NewStickerPacksRouteArgs {
   String toString() {
     return 'NewStickerPacksRouteArgs{key: $key, pubName: $pubName}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! NewStickerPacksRouteArgs) return false;
+    return key == other.key && pubName == other.pubName;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ pubName.hashCode;
 }
 
 /// generated route for
@@ -863,8 +1018,8 @@ class NewStickersRoute extends _i27.PageRouteInfo<NewStickersRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<NewStickersRouteArgs>(
-        orElse: () =>
-            NewStickersRouteArgs(packId: pathParams.getString('packId')),
+        orElse:
+            () => NewStickersRouteArgs(packId: pathParams.getString('packId')),
       );
       return _i13.NewStickersScreen(key: args.key, packId: args.packId);
     },
@@ -882,6 +1037,16 @@ class NewStickersRouteArgs {
   String toString() {
     return 'NewStickersRouteArgs{key: $key, packId: $packId}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! NewStickersRouteArgs) return false;
+    return key == other.key && packId == other.packId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ packId.hashCode;
 }
 
 /// generated route for
@@ -940,6 +1105,16 @@ class PostComposeRouteArgs {
   String toString() {
     return 'PostComposeRouteArgs{key: $key, originalPost: $originalPost}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PostComposeRouteArgs) return false;
+    return key == other.key && originalPost == other.originalPost;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ originalPost.hashCode;
 }
 
 /// generated route for
@@ -981,6 +1156,16 @@ class PostDetailRouteArgs {
   String toString() {
     return 'PostDetailRouteArgs{key: $key, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PostDetailRouteArgs) return false;
+    return key == other.key && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -1022,6 +1207,16 @@ class PostEditRouteArgs {
   String toString() {
     return 'PostEditRouteArgs{key: $key, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PostEditRouteArgs) return false;
+    return key == other.key && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -1046,8 +1241,8 @@ class PublisherProfileRoute
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<PublisherProfileRouteArgs>(
-        orElse: () =>
-            PublisherProfileRouteArgs(name: pathParams.getString('name')),
+        orElse:
+            () => PublisherProfileRouteArgs(name: pathParams.getString('name')),
       );
       return _i20.PublisherProfileScreen(key: args.key, name: args.name);
     },
@@ -1065,6 +1260,16 @@ class PublisherProfileRouteArgs {
   String toString() {
     return 'PublisherProfileRouteArgs{key: $key, name: $name}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PublisherProfileRouteArgs) return false;
+    return key == other.key && name == other.name;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ name.hashCode;
 }
 
 /// generated route for
@@ -1106,6 +1311,16 @@ class RealmDetailRouteArgs {
   String toString() {
     return 'RealmDetailRouteArgs{key: $key, slug: $slug}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RealmDetailRouteArgs) return false;
+    return key == other.key && slug == other.slug;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ slug.hashCode;
 }
 
 /// generated route for
@@ -1179,10 +1394,11 @@ class StickerPackDetailRoute
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<StickerPackDetailRouteArgs>(
-        orElse: () => StickerPackDetailRouteArgs(
-          pubName: pathParams.getString('name'),
-          id: pathParams.getString('packId'),
-        ),
+        orElse:
+            () => StickerPackDetailRouteArgs(
+              pubName: pathParams.getString('name'),
+              id: pathParams.getString('packId'),
+            ),
       );
       return _i13.StickerPackDetailScreen(
         key: args.key,
@@ -1210,6 +1426,16 @@ class StickerPackDetailRouteArgs {
   String toString() {
     return 'StickerPackDetailRouteArgs{key: $key, pubName: $pubName, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! StickerPackDetailRouteArgs) return false;
+    return key == other.key && pubName == other.pubName && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ pubName.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -1251,6 +1477,16 @@ class StickersRouteArgs {
   String toString() {
     return 'StickersRouteArgs{key: $key, pubName: $pubName}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! StickersRouteArgs) return false;
+    return key == other.key && pubName == other.pubName;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ pubName.hashCode;
 }
 
 /// generated route for
@@ -1300,6 +1536,16 @@ class TabsNavigationWidgetArgs {
   String toString() {
     return 'TabsNavigationWidgetArgs{key: $key, child: $child, router: $router}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! TabsNavigationWidgetArgs) return false;
+    return key == other.key && child == other.child && router == other.router;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ child.hashCode ^ router.hashCode;
 }
 
 /// generated route for

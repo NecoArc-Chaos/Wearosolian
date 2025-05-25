@@ -244,6 +244,7 @@ class ChatListScreen extends HookConsumerWidget {
             Tab(
               child: Text(
                 'chatTabAll'.tr(),
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Theme.of(context).appBarTheme.foregroundColor!,
                 ),
@@ -252,6 +253,7 @@ class ChatListScreen extends HookConsumerWidget {
             Tab(
               child: Text(
                 'chatTabDirect'.tr(),
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Theme.of(context).appBarTheme.foregroundColor!,
                 ),
@@ -260,6 +262,7 @@ class ChatListScreen extends HookConsumerWidget {
             Tab(
               child: Text(
                 'chatTabGroup'.tr(),
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Theme.of(context).appBarTheme.foregroundColor!,
                 ),

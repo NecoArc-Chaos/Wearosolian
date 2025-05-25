@@ -179,12 +179,14 @@ class AppScaffold extends StatelessWidget {
 
 class PageBackButton extends StatelessWidget {
   final List<Shadow>? shadows;
-  const PageBackButton({super.key, this.shadows});
+  final VoidCallback? onWillPop;
+  const PageBackButton({super.key, this.shadows, this.onWillPop});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
+        onWillPop?.call();
         context.router.maybePop();
       },
       icon: Icon(
