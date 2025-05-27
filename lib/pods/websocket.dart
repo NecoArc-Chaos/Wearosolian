@@ -157,7 +157,7 @@ class WebSocketStateNotifier extends StateNotifier<WebSocketState> {
       await service.connect(ref);
       state = const WebSocketState.connected();
       service.statusStream.listen((event) {
-        state = event;
+        if (mounted) state = event;
       });
     } catch (err) {
       state = WebSocketState.error('Failed to connect: $err');

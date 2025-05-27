@@ -889,6 +889,7 @@ class _ChatInput extends ConsumerWidget {
                     onKey: (event) => _handleKeyPress(context, ref, event),
                     child: TextField(
                       controller: messageController,
+                      onSubmitted: enterToSend ? (_) => onSend() : null,
                       inputFormatters: [
                         if (enterToSend)
                           TextInputFormatter.withFunction((oldValue, newValue) {

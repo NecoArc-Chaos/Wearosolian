@@ -6,10 +6,12 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:island/pods/network.dart';
+import 'package:island/services/responsive.dart';
 import 'package:island/widgets/alert.dart';
 import 'package:island/widgets/app_scaffold.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -27,6 +29,9 @@ class SettingsScreen extends HookConsumerWidget {
     final prefs = ref.watch(sharedPreferencesProvider);
     final controller = TextEditingController(text: serverUrl);
     final settings = ref.watch(appSettingsProvider);
+    final isDesktop =
+        !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
+    final isWide = isWideScreen(context);
 
     final docBasepath = useState<String?>(null);
 
@@ -37,199 +42,436 @@ class SettingsScreen extends HookConsumerWidget {
       return null;
     }, []);
 
-    return AppScaffold(
-      noBackground: false,
-      appBar: AppBar(title: const Text('Settings')),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              minLeadingWidth: 48,
-              title: Text('settingsDisplayLanguage').tr(),
-              contentPadding: const EdgeInsets.only(left: 24, right: 17),
-              leading: const Icon(Symbols.translate),
-              trailing: DropdownButtonHideUnderline(
-                child: DropdownButton2<Locale?>(
-                  isExpanded: true,
-                  items: [
-                    ...EasyLocalization.of(
-                      context,
-                    )!.supportedLocales.mapIndexed((idx, ele) {
-                      return DropdownMenuItem<Locale?>(
-                        value: ele,
-                        child: Text(
-                          '${ele.languageCode}-${ele.countryCode}',
-                        ).fontSize(14),
-                      );
-                    }),
-                    DropdownMenuItem<Locale?>(
-                      value: null,
-                      child: Text('languageFollowSystem').tr().fontSize(14),
-                    ),
-                  ],
-                  value: EasyLocalization.of(context)!.currentLocale,
-                  onChanged: (Locale? value) {
-                    if (value != null) {
-                      EasyLocalization.of(context)!.setLocale(value);
-                    } else {
-                      EasyLocalization.of(context)!.resetLocale();
-                    }
-                  },
-                  buttonStyleData: const ButtonStyleData(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                    height: 40,
-                    width: 160,
-                  ),
-                  menuItemStyleData: const MenuItemStyleData(height: 40),
-                ),
+    // Group settings into categories for better organization
+    final appearanceSettings = [
+      // Language settings
+      ListTile(
+        minLeadingWidth: 48,
+        title: Text('settingsDisplayLanguage').tr(),
+        contentPadding: const EdgeInsets.only(left: 24, right: 17),
+        leading: const Icon(Symbols.translate),
+        trailing: DropdownButtonHideUnderline(
+          child: DropdownButton2<Locale?>(
+            isExpanded: true,
+            items: [
+              ...EasyLocalization.of(context)!.supportedLocales.mapIndexed((
+                idx,
+                ele,
+              ) {
+                return DropdownMenuItem<Locale?>(
+                  value: ele,
+                  child: Text(
+                    '${ele.languageCode}-${ele.countryCode}',
+                  ).fontSize(14),
+                );
+              }),
+              DropdownMenuItem<Locale?>(
+                value: null,
+                child: Text('languageFollowSystem').tr().fontSize(14),
               ),
+            ],
+            value: EasyLocalization.of(context)!.currentLocale,
+            onChanged: (Locale? value) {
+              if (value != null) {
+                EasyLocalization.of(context)!.setLocale(value);
+              } else {
+                EasyLocalization.of(context)!.resetLocale();
+              }
+            },
+            buttonStyleData: const ButtonStyleData(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              height: 40,
+              width: 160,
             ),
-            ListTile(
-              isThreeLine: true,
-              minLeadingWidth: 48,
-              title: Text('settingsServerUrl').tr(),
-              contentPadding: const EdgeInsets.only(left: 24, right: 17),
-              leading: const Icon(Symbols.link),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    hintText: kNetworkServerDefault,
-                    suffixIcon: IconButton(
-                      icon: const Icon(Symbols.restart_alt),
-                      onPressed: () {
-                        controller.text = kNetworkServerDefault;
-                        prefs.setString(
-                          kNetworkServerStoreKey,
-                          kNetworkServerDefault,
-                        );
-                        ref.invalidate(serverUrlProvider);
-                        showSnackBar(context, 'settingsApplied'.tr());
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    isDense: true,
-                  ),
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      prefs.setString(kNetworkServerStoreKey, value);
-                      ref.invalidate(serverUrlProvider);
-                      showSnackBar(context, 'settingsApplied'.tr());
-                    }
-                  },
+            menuItemStyleData: const MenuItemStyleData(height: 40),
+          ),
+        ),
+      ),
+
+      // Background image settings (only for non-web platforms)
+      if (!kIsWeb && docBasepath.value != null)
+        ListTile(
+          minLeadingWidth: 48,
+          title: Text('settingsBackgroundImage').tr(),
+          contentPadding: const EdgeInsets.only(left: 24, right: 17),
+          leading: const Icon(Symbols.image),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isDesktop)
+                Tooltip(
+                  message: 'settingsBackgroundImageTooltip'.tr(),
+                  padding: EdgeInsets.only(left: 8),
+                  child: const Icon(Symbols.info, size: 18),
                 ),
+              const Icon(Symbols.chevron_right),
+            ],
+          ),
+          onTap: () async {
+            final imagePicker = ref.read(imagePickerProvider);
+            final image = await imagePicker.pickImage(
+              source: ImageSource.gallery,
+            );
+            if (image == null) return;
+
+            await File(
+              image.path,
+            ).copy('${docBasepath.value}/$kAppBackgroundImagePath');
+            prefs.setBool(kAppBackgroundStoreKey, true);
+            ref.invalidate(backgroundImageFileProvider);
+            if (context.mounted) {
+              showSnackBar(context, 'settingsApplied'.tr());
+            }
+          },
+        ),
+
+      // Clear background image option
+      if (!kIsWeb && docBasepath.value != null)
+        FutureBuilder<bool>(
+          future: File('${docBasepath.value}/app_background_image').exists(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || !snapshot.data!) {
+              return const SizedBox.shrink();
+            }
+
+            return ListTile(
+              title: Text('settingsBackgroundImageClear').tr(),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+              leading: const Icon(Symbols.texture),
+              trailing: const Icon(Symbols.chevron_right),
+              onTap: () {
+                File(
+                  '${docBasepath.value}/$kAppBackgroundImagePath',
+                ).deleteSync();
+                prefs.remove(kAppBackgroundStoreKey);
+                ref.invalidate(backgroundImageFileProvider);
+                if (context.mounted) {
+                  showSnackBar(context, 'settingsApplied'.tr());
+                }
+              },
+            );
+          },
+        ),
+    ];
+
+    final serverSettings = [
+      // Server URL settings
+      ListTile(
+        isThreeLine: true,
+        minLeadingWidth: 48,
+        title: Text('settingsServerUrl').tr(),
+        contentPadding: const EdgeInsets.only(left: 24, right: 17),
+        leading: const Icon(Symbols.link),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: kNetworkServerDefault,
+              suffixIcon: IconButton(
+                icon: const Icon(Symbols.restart_alt),
+                onPressed: () {
+                  controller.text = kNetworkServerDefault;
+                  prefs.setString(
+                    kNetworkServerStoreKey,
+                    kNetworkServerDefault,
+                  );
+                  ref.invalidate(serverUrlProvider);
+                  showSnackBar(context, 'settingsApplied'.tr());
+                },
               ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              isDense: true,
             ),
-            if (!kIsWeb && docBasepath.value != null)
+            onSubmitted: (value) {
+              if (value.isNotEmpty) {
+                prefs.setString(kNetworkServerStoreKey, value);
+                ref.invalidate(serverUrlProvider);
+                showSnackBar(context, 'settingsApplied'.tr());
+              }
+            },
+          ),
+        ),
+      ),
+    ];
+
+    final behaviorSettings = [
+      // Auto translate settings
+      ListTile(
+        minLeadingWidth: 48,
+        title: Text('settingsAutoTranslate').tr(),
+        contentPadding: const EdgeInsets.only(left: 24, right: 17),
+        leading: const Icon(Symbols.translate),
+        trailing: Switch(
+          value: settings.autoTranslate,
+          onChanged: (value) {
+            ref.read(appSettingsProvider.notifier).setAutoTranslate(value);
+          },
+        ),
+      ),
+
+      // Sound effects settings
+      ListTile(
+        minLeadingWidth: 48,
+        title: Text('settingsSoundEffects').tr(),
+        contentPadding: const EdgeInsets.only(left: 24, right: 17),
+        leading: const Icon(Symbols.volume_up),
+        trailing: Switch(
+          value: settings.soundEffects,
+          onChanged: (value) {
+            ref.read(appSettingsProvider.notifier).setSoundEffects(value);
+          },
+        ),
+      ),
+
+      // April Fool features settings
+      ListTile(
+        minLeadingWidth: 48,
+        title: Text('settingsAprilFoolFeatures').tr(),
+        contentPadding: const EdgeInsets.only(left: 24, right: 17),
+        leading: const Icon(Symbols.celebration),
+        trailing: Switch(
+          value: settings.aprilFoolFeatures,
+          onChanged: (value) {
+            ref.read(appSettingsProvider.notifier).setAprilFoolFeatures(value);
+          },
+        ),
+      ),
+
+      // Enter to send settings
+      ListTile(
+        minLeadingWidth: 48,
+        title: Text('settingsEnterToSend').tr(),
+        subtitle:
+            isDesktop
+                ? Text('settingsEnterToSendDesktopHint').tr().fontSize(12)
+                : null,
+        contentPadding: const EdgeInsets.only(left: 24, right: 17),
+        leading: const Icon(Symbols.send),
+        trailing: Switch(
+          value: settings.enterToSend,
+          onChanged: (value) {
+            ref.read(appSettingsProvider.notifier).setEnterToSend(value);
+          },
+        ),
+      ),
+    ];
+
+    // Desktop-specific settings
+    final desktopSettings =
+        !isDesktop
+            ? <Widget>[]
+            : <Widget>[
               ListTile(
                 minLeadingWidth: 48,
-                title: Text('settingsBackgroundImage').tr(),
+                title: Text('settingsKeyboardShortcuts').tr(),
                 contentPadding: const EdgeInsets.only(left: 24, right: 17),
-                leading: const Icon(Symbols.image),
+                leading: const Icon(Symbols.keyboard),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          title: Text('settingsKeyboardShortcuts').tr(),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _ShortcutRow(
+                                  shortcut: 'Ctrl+F',
+                                  description: 'Search',
+                                ),
+                                _ShortcutRow(
+                                  shortcut: 'Ctrl+,',
+                                  description: 'Settings',
+                                ),
+                                _ShortcutRow(
+                                  shortcut: 'Ctrl+N',
+                                  description: 'New Message',
+                                ),
+                                _ShortcutRow(
+                                  shortcut: 'Esc',
+                                  description: 'Close Dialog',
+                                ),
+                                // Add more shortcuts as needed
+                              ],
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text('Close').tr(),
+                            ),
+                          ],
+                        ),
+                  );
+                },
                 trailing: const Icon(Symbols.chevron_right),
-                onTap: () async {
-                  final imagePicker = ref.read(imagePickerProvider);
-                  final image = await imagePicker.pickImage(
-                    source: ImageSource.gallery,
-                  );
-                  if (image == null) return;
+              ),
+            ];
 
-                  await File(
-                    image.path,
-                  ).copy('${docBasepath.value}/$kAppBackgroundImagePath');
-                  prefs.setBool(kAppBackgroundStoreKey, true);
-                  ref.invalidate(backgroundImageFileProvider);
-                  if (context.mounted) {
-                    showSnackBar(context, 'settingsApplied'.tr());
-                  }
-                },
-              ),
-            if (!kIsWeb && docBasepath.value != null)
-              FutureBuilder<bool>(
-                future:
-                    File('${docBasepath.value}/app_background_image').exists(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData || !snapshot.data!) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return ListTile(
-                    title: Text('settingsBackgroundImageClear').tr(),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                    leading: const Icon(Symbols.texture),
-                    trailing: const Icon(Symbols.chevron_right),
-                    onTap: () {
-                      File(
-                        '${docBasepath.value}/$kAppBackgroundImagePath',
-                      ).deleteSync();
-                      prefs.remove(kAppBackgroundStoreKey);
-                      ref.invalidate(backgroundImageFileProvider);
-                      if (context.mounted) {
-                        showSnackBar(context, 'settingsApplied'.tr());
-                      }
-                    },
-                  );
-                },
-              ),
-            const Divider(),
-            ListTile(
-              minLeadingWidth: 48,
-              title: Text('settingsAutoTranslate').tr(),
-              contentPadding: const EdgeInsets.only(left: 24, right: 17),
-              leading: const Icon(Symbols.translate),
-              trailing: Switch(
-                value: settings.autoTranslate,
-                onChanged: (value) {
-                  ref
-                      .read(appSettingsProvider.notifier)
-                      .setAutoTranslate(value);
-                },
+    // Create a responsive layout based on screen width
+    Widget buildSettingsList() {
+      if (isWide) {
+        // Two-column layout for wide screens
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _SettingsSection(
+                    title: 'Appearance',
+                    children: appearanceSettings,
+                  ),
+                  _SettingsSection(title: 'Server', children: serverSettings),
+                ],
               ),
             ),
-            ListTile(
-              minLeadingWidth: 48,
-              title: Text('settingsSoundEffects').tr(),
-              contentPadding: const EdgeInsets.only(left: 24, right: 17),
-              leading: const Icon(Symbols.volume_up),
-              trailing: Switch(
-                value: settings.soundEffects,
-                onChanged: (value) {
-                  ref.read(appSettingsProvider.notifier).setSoundEffects(value);
-                },
-              ),
-            ),
-            ListTile(
-              minLeadingWidth: 48,
-              title: Text('settingsAprilFoolFeatures').tr(),
-              contentPadding: const EdgeInsets.only(left: 24, right: 17),
-              leading: const Icon(Symbols.celebration),
-              trailing: Switch(
-                value: settings.aprilFoolFeatures,
-                onChanged: (value) {
-                  ref
-                      .read(appSettingsProvider.notifier)
-                      .setAprilFoolFeatures(value);
-                },
-              ),
-            ),
-            ListTile(
-              minLeadingWidth: 48,
-              title: Text('settingsEnterToSend').tr(),
-              contentPadding: const EdgeInsets.only(left: 24, right: 17),
-              leading: const Icon(Symbols.send),
-              trailing: Switch(
-                value: settings.enterToSend,
-                onChanged: (value) {
-                  ref.read(appSettingsProvider.notifier).setEnterToSend(value);
-                },
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _SettingsSection(
+                    title: 'Behavior',
+                    children: behaviorSettings,
+                  ),
+                  if (desktopSettings.isNotEmpty)
+                    _SettingsSection(
+                      title: 'Desktop',
+                      children: desktopSettings,
+                    ),
+                ],
               ),
             ),
           ],
+        ).padding(horizontal: 16);
+      } else {
+        // Single column layout for narrow screens
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _SettingsSection(title: 'Appearance', children: appearanceSettings),
+            _SettingsSection(title: 'Server', children: serverSettings),
+            _SettingsSection(title: 'Behavior', children: behaviorSettings),
+            if (desktopSettings.isNotEmpty)
+              _SettingsSection(title: 'Desktop', children: desktopSettings),
+          ],
+        );
+      }
+    }
+
+    return AppScaffold(
+      noBackground: false,
+      appBar: AppBar(
+        title: Text('Settings').tr(),
+        actions:
+            isDesktop
+                ? [
+                  IconButton(
+                    icon: const Icon(Symbols.help_outline),
+                    onPressed: () {
+                      // Show help dialog
+                      showDialog(
+                        context: context,
+                        builder:
+                            (context) => AlertDialog(
+                              title: Text('settingsHelp').tr(),
+                              content: Text('settingsHelpContent').tr(),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text('Close').tr(),
+                                ),
+                              ],
+                            ),
+                      );
+                    },
+                  ),
+                ]
+                : null,
+      ),
+      body: Focus(
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          // Add keyboard shortcuts for desktop
+          if (isDesktop &&
+              event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.escape) {
+            context.router.pop();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: buildSettingsList(),
         ),
+      ),
+    );
+  }
+}
+
+// Helper widget for displaying settings sections with titles
+class _SettingsSection extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const _SettingsSection({required this.title, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        ...children,
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+}
+
+// Helper widget for displaying keyboard shortcuts
+class _ShortcutRow extends StatelessWidget {
+  final String shortcut;
+  final String description;
+
+  const _ShortcutRow({required this.shortcut, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceVariant,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withOpacity(0.5),
+              ),
+            ),
+            child: Text(shortcut, style: TextStyle(fontFamily: 'monospace')),
+          ),
+          SizedBox(width: 16),
+          Text(description),
+        ],
       ),
     );
   }

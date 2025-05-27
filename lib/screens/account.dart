@@ -235,6 +235,16 @@ class AccountScreen extends HookConsumerWidget {
                 context.router.push(SettingsRoute());
               },
             ),
+            ListTile(
+              minTileHeight: 48,
+              leading: const Icon(Symbols.manage_accounts),
+              trailing: const Icon(Symbols.chevron_right),
+              contentPadding: EdgeInsets.symmetric(horizontal: 24),
+              title: Text('accountSettings').tr(),
+              onTap: () {
+                context.router.push(AccountSettingsRoute());
+              },
+            ),
             if (kDebugMode) const Divider(height: 1).padding(vertical: 8),
             if (kDebugMode)
               ListTile(
