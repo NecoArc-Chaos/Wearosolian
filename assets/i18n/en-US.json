@@ -308,5 +308,7 @@
   "accountDataExportRequested": "Data export requested. You'll receive an email when it's ready.",
   "accountDeletionDescription": "Permanently delete your account and all your data",
   "accountSettingsHelp": "Account Settings Help",
-  "accountSettingsHelpContent": "This page allows you to manage your account security, privacy, and other settings. If you need assistance, please contact support."
+  "accountSettingsHelpContent": "This page allows you to manage your account security, privacy, and other settings. If you need assistance, please contact support.",
+  "unauthorized": "Unauthorized",
+  "unauthorizedHint": "You're not signed in or session expired, please sign in again."
 }
