@@ -147,6 +147,7 @@ class SettingsScreen extends HookConsumerWidget {
                   title: Text('settingsColorScheme').tr(),
                   content: SingleChildScrollView(
                     child: ColorPicker(
+                      enableAlpha: false,
                       pickerColor: selectedColor,
                       onColorChanged: (color) {
                         selectedColor = color;

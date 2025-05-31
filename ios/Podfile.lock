@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.10.2)
   - connectivity_plus (0.0.1):
     - Flutter
   - croppy (0.0.1):
@@ -187,6 +188,7 @@ PODS:
   - WebRTC-SDK (125.6422.07)
 
 DEPENDENCIES:
+  - Alamofire
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - croppy (from `.symlinks/plugins/croppy/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -218,6 +220,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - DKImagePickerController
     - DKPhotoGallery
     - Firebase
@@ -294,6 +297,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   croppy: 979e8ddc254f4642bffe7d52dc7193354b27ba30
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
@@ -340,6 +344,6 @@ SPEC CHECKSUMS:
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
   WebRTC-SDK: dff00a3892bc570b6014e046297782084071657e
 
-PODFILE CHECKSUM: 2608312fddeea6d787ca3aa478c756da8f4ca66d
+PODFILE CHECKSUM: c8120fa04387477e9e62f36b6c37495c69fca3bb
 
 COCOAPODS: 1.16.2

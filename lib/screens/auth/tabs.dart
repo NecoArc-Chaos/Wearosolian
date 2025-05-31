@@ -45,7 +45,6 @@ class TabsNavigationWidget extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final useHorizontalLayout = isWideScreen(context);
-    final useExpandableLayout = isWidestScreen(context);
     final currentRoute = ref.watch(currentRouteProvider);
 
     final notificationUnreadCount = ref.watch(
@@ -112,8 +111,6 @@ class TabsNavigationWidget extends HookConsumerWidget {
                         Gap(MediaQuery.of(context).padding.top + 8),
                         Expanded(
                           child: NavigationRail(
-                            minExtendedWidth: 200,
-                            extended: useExpandableLayout,
                             selectedIndex: activeIndex,
                             onDestinationSelected: (index) {
                               router.replace(routes[index]);

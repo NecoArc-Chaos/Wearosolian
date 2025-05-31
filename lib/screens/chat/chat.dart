@@ -147,6 +147,7 @@ class ChatRoomListTile extends HookConsumerWidget {
             : room.name ?? '',
       ),
       subtitle: buildSubtitle(),
+      trailing: trailing,  // Add this line
       onTap: () async {
         // Clear unread count if there are unread messages
         ref.read(chatSummaryProvider.future).then((summary) {
