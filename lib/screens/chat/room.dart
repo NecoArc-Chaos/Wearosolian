@@ -433,19 +433,23 @@ class ChatRoomScreen extends HookConsumerWidget {
                             height: 26,
                             width: 26,
                             child:
-                                (room!.type == 1 && room.pictureId == null)
+                                (room!.type == 1 && room.picture?.id == null)
                                     ? SplitAvatarWidget(
                                       filesId:
                                           room.members!
                                               .map(
                                                 (e) =>
-                                                    e.account.profile.pictureId,
+                                                    e
+                                                        .account
+                                                        .profile
+                                                        .picture
+                                                        ?.id,
                                               )
                                               .toList(),
                                     )
-                                    : room.pictureId != null
+                                    : room.picture?.id != null
                                     ? ProfilePictureWidget(
-                                      fileId: room.pictureId,
+                                      fileId: room.picture?.id,
                                       fallbackIcon: Symbols.chat,
                                     )
                                     : CircleAvatar(
@@ -473,19 +477,23 @@ class ChatRoomScreen extends HookConsumerWidget {
                             height: 26,
                             width: 26,
                             child:
-                                (room!.type == 1 && room.pictureId == null)
+                                (room!.type == 1 && room.picture?.id == null)
                                     ? SplitAvatarWidget(
                                       filesId:
                                           room.members!
                                               .map(
                                                 (e) =>
-                                                    e.account.profile.pictureId,
+                                                    e
+                                                        .account
+                                                        .profile
+                                                        .picture
+                                                        ?.id,
                                               )
                                               .toList(),
                                     )
-                                    : room.pictureId != null
+                                    : room.picture?.id != null
                                     ? ProfilePictureWidget(
-                                      fileId: room.pictureId,
+                                      fileId: room.picture?.id,
                                       fallbackIcon: Symbols.chat,
                                     )
                                     : CircleAvatar(

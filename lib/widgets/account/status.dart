@@ -146,7 +146,7 @@ class StatusActivityWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ProfilePictureWidget(
-          fileId: item.account.profile.pictureId,
+          fileId: item.account.profile.picture?.id,
           radius: 12,
         ),
         Expanded(

@@ -109,7 +109,7 @@ class ChatRoomListTile extends HookConsumerWidget {
         },
         loading: () => const SizedBox.shrink(),
         error:
-            (_, __) =>
+            (_, _) =>
                 isDirect && room.description == null
                     ? Text(
                       room.members!.map((e) => '@${e.account.name}').join(', '),
@@ -127,19 +127,19 @@ class ChatRoomListTile extends HookConsumerWidget {
         isLabelVisible: summary.when(
           data: (data) => (data?.unreadCount ?? 0) > 0,
           loading: () => false,
-          error: (_, __) => false,
+          error: (_, _) => false,
         ),
         child:
-            (isDirect && room.pictureId == null)
+            (isDirect && room.picture?.id == null)
                 ? SplitAvatarWidget(
                   filesId:
                       room.members!
-                          .map((e) => e.account.profile.pictureId)
+                          .map((e) => e.account.profile.picture?.id)
                           .toList(),
                 )
-                : room.pictureId == null
+                : room.picture?.id == null
                 ? CircleAvatar(child: Text(room.name![0].toUpperCase()))
-                : ProfilePictureWidget(fileId: room.pictureId),
+                : ProfilePictureWidget(fileId: room.picture?.id),
       ),
       title: Text(
         (isDirect && room.name == null)
@@ -147,7 +147,7 @@ class ChatRoomListTile extends HookConsumerWidget {
             : room.name ?? '',
       ),
       subtitle: buildSubtitle(),
-      trailing: trailing,  // Add this line
+      trailing: trailing, // Add this line
       onTap: () async {
         // Clear unread count if there are unread messages
         ref.read(chatSummaryProvider.future).then((summary) {
@@ -280,13 +280,13 @@ class ChatListScreen extends HookConsumerWidget {
               label: Text(
                 chatInvites.when(
                   data: (invites) => invites.length.toString(),
-                  error: (_, __) => '0',
+                  error: (_, _) => '0',
                   loading: () => '0',
                 ),
               ),
               isLabelVisible: chatInvites.when(
                 data: (invites) => invites.isNotEmpty,
-                error: (_, __) => false,
+                error: (_, _) => false,
                 loading: () => false,
               ),
               child: const Icon(Symbols.email),
@@ -589,7 +589,7 @@ class EditChatScreen extends HookConsumerWidget {
             realms: joinedRealms.when(
               data: (realms) => realms,
               loading: () => [],
-              error: (_, __) => [],
+              error: (_, _) => [],
             ),
             onChanged: (SnRealm? value) {
               currentRealm.value = value;

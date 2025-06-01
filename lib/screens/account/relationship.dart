@@ -100,7 +100,7 @@ class RelationshipListTile extends StatelessWidget {
 
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 16, right: 12),
-      leading: ProfilePictureWidget(fileId: account.profile.pictureId),
+      leading: ProfilePictureWidget(fileId: account.profile.picture?.id),
       title: Row(
         spacing: 6,
         children: [

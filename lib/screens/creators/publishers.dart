@@ -138,8 +138,8 @@ class EditPublisherScreen extends HookConsumerWidget {
 
     useEffect(() {
       if (publisher.value != null) {
-        picture.value = publisher.value!.pictureId;
-        background.value = publisher.value!.backgroundId;
+        picture.value = publisher.value!.picture?.id;
+        background.value = publisher.value!.background?.id;
         nameController.text = publisher.value!.name;
         nickController.text = publisher.value!.nick;
         bioController.text = publisher.value!.bio;
@@ -193,7 +193,7 @@ class EditPublisherScreen extends HookConsumerWidget {
             realms: joinedRealms.when(
               data: (realms) => realms,
               loading: () => [],
-              error: (_, __) => [],
+              error: (_, _) => [],
             ),
             onChanged: (SnRealm? value) {
               currentRealm.value = value;
@@ -279,14 +279,14 @@ class EditPublisherScreen extends HookConsumerWidget {
                           nameController.text = user.value!.name;
                           nickController.text = user.value!.nick;
                           bioController.text = user.value!.profile.bio;
-                          picture.value = user.value!.profile.pictureId;
-                          background.value = user.value!.profile.backgroundId;
+                          picture.value = user.value!.profile.picture?.id;
+                          background.value = user.value!.profile.background?.id;
                         } else {
                           nameController.text = currentRealm.value!.slug;
                           nickController.text = currentRealm.value!.name;
                           bioController.text = currentRealm.value!.description;
-                          picture.value = currentRealm.value!.pictureId;
-                          background.value = currentRealm.value!.backgroundId;
+                          picture.value = currentRealm.value!.picture?.id;
+                          background.value = currentRealm.value!.background?.id;
                         }
                       },
                       label:

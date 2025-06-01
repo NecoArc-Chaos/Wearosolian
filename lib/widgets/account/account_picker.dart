@@ -81,7 +81,7 @@ class AccountPickerSheet extends HookConsumerWidget {
                           final account = accounts[index];
                           return ListTile(
                             leading: ProfilePictureWidget(
-                              fileId: account.profile.pictureId,
+                              fileId: account.profile.picture?.id,
                             ),
                             title: Text(account.nick),
                             subtitle: Text('@${account.name}'),

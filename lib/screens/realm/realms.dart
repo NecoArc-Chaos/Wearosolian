@@ -49,13 +49,13 @@ class RealmListScreen extends HookConsumerWidget {
               label: Text(
                 realmInvites.when(
                   data: (invites) => invites.length.toString(),
-                  error: (_, __) => '0',
+                  error: (_, _) => '0',
                   loading: () => '0',
                 ),
               ),
               isLabelVisible: realmInvites.when(
                 data: (invites) => invites.isNotEmpty,
-                error: (_, __) => false,
+                error: (_, _) => false,
                 loading: () => false,
               ),
               child: const Icon(Symbols.email),
@@ -97,7 +97,7 @@ class RealmListScreen extends HookConsumerWidget {
                         return ListTile(
                           isThreeLine: true,
                           leading: ProfilePictureWidget(
-                            fileId: value[item].pictureId,
+                            fileId: value[item].picture?.id,
                             fallbackIcon: Symbols.group,
                           ),
                           title: Text(value[item].name),
@@ -448,7 +448,7 @@ class _RealmInviteSheet extends HookConsumerWidget {
                               final invite = items[index];
                               return ListTile(
                                 leading: ProfilePictureWidget(
-                                  fileId: invite.realm!.pictureId,
+                                  fileId: invite.realm!.picture?.id,
                                   fallbackIcon: Symbols.group,
                                 ),
                                 title: Text(invite.realm!.name),

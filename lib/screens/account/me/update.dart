@@ -159,9 +159,9 @@ class UpdateProfileScreen extends HookConsumerWidget {
                     child: Container(
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       child:
-                          user.value!.profile.backgroundId != null
+                          user.value!.profile.background?.id != null
                               ? CloudImageWidget(
-                                fileId: user.value!.profile.backgroundId!,
+                                fileId: user.value!.profile.background!.id,
                                 fit: BoxFit.cover,
                               )
                               : const SizedBox.shrink(),
@@ -175,7 +175,7 @@ class UpdateProfileScreen extends HookConsumerWidget {
                     bottom: -32,
                     child: GestureDetector(
                       child: ProfilePictureWidget(
-                        fileId: user.value!.profile.pictureId,
+                        fileId: user.value!.profile.picture?.id,
                         radius: 40,
                       ),
                       onTap: () {

@@ -58,9 +58,7 @@ class NotificationService: UNNotificationServiceExtension {
             throw ParseNotificationPayloadError.missingMetadata("The notification has no meta.")
         }
         
-        guard let pfpIdentifier = meta["pfp"] as? String else {
-            throw ParseNotificationPayloadError.missingAvatarUrl("The notification has no pfp.")
-        }
+        let pfpIdentifier = meta["pfp"] as? String
         
         let replyableMessageCategory = UNNotificationCategory(
             identifier: content.categoryIdentifier,
@@ -78,13 +76,13 @@ class NotificationService: UNNotificationServiceExtension {
         UNUserNotificationCenter.current().setNotificationCategories([replyableMessageCategory])
         content.categoryIdentifier = replyableMessageCategory.identifier
         
-        let metaCopy = meta as? [String: String] ?? [:]
-        let pfpUrl = getAttachmentUrl(for: pfpIdentifier)
+        let metaCopy = meta as? [String: Any] ?? [:]
+        let pfpUrl = pfpIdentifier != nil ? getAttachmentUrl(for: pfpIdentifier!) : nil
         
         let targetSize = 512
         let scaleProcessor = ResizingImageProcessor(referenceSize: CGSize(width: targetSize, height: targetSize), mode: .aspectFit)
         
-        KingfisherManager.shared.retrieveImage(with: URL(string: pfpUrl)!, options: [.processor(scaleProcessor)], completionHandler: { result in
+        KingfisherManager.shared.retrieveImage(with: URL(string: pfpUrl!)!, options: [.processor(scaleProcessor)], completionHandler: { result in
             var image: Data?
             switch result {
             case .success(let value):

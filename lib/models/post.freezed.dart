@@ -370,7 +370,7 @@ $SnPublisherCopyWith<$Res> get publisher {
 /// @nodoc
 mixin _$SnPublisher {
 
- String get id; int get type; String get name; String get nick; String get bio; String? get pictureId; SnCloudFile? get picture; String? get backgroundId; SnCloudFile? get background; SnAccount? get account; String? get accountId; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt; String? get realmId;
+ String get id; int get type; String get name; String get nick; String get bio; SnCloudFile? get picture; SnCloudFile? get background; SnAccount? get account; String? get accountId; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt; String? get realmId;
 /// Create a copy of SnPublisher
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -383,16 +383,16 @@ $SnPublisherCopyWith<SnPublisher> get copyWith => _$SnPublisherCopyWithImpl<SnPu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnPublisher&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.name, name) || other.name == name)&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.pictureId, pictureId) || other.pictureId == pictureId)&&(identical(other.picture, picture) || other.picture == picture)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&(identical(other.background, background) || other.background == background)&&(identical(other.account, account) || other.account == account)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.realmId, realmId) || other.realmId == realmId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SnPublisher&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.name, name) || other.name == name)&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.picture, picture) || other.picture == picture)&&(identical(other.background, background) || other.background == background)&&(identical(other.account, account) || other.account == account)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.realmId, realmId) || other.realmId == realmId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type,name,nick,bio,pictureId,picture,backgroundId,background,account,accountId,createdAt,updatedAt,deletedAt,realmId);
+int get hashCode => Object.hash(runtimeType,id,type,name,nick,bio,picture,background,account,accountId,createdAt,updatedAt,deletedAt,realmId);
 
 @override
 String toString() {
-  return 'SnPublisher(id: $id, type: $type, name: $name, nick: $nick, bio: $bio, pictureId: $pictureId, picture: $picture, backgroundId: $backgroundId, background: $background, account: $account, accountId: $accountId, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, realmId: $realmId)';
+  return 'SnPublisher(id: $id, type: $type, name: $name, nick: $nick, bio: $bio, picture: $picture, background: $background, account: $account, accountId: $accountId, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, realmId: $realmId)';
 }
 
 
@@ -403,7 +403,7 @@ abstract mixin class $SnPublisherCopyWith<$Res>  {
   factory $SnPublisherCopyWith(SnPublisher value, $Res Function(SnPublisher) _then) = _$SnPublisherCopyWithImpl;
 @useResult
 $Res call({
- String id, int type, String name, String nick, String bio, String? pictureId, SnCloudFile? picture, String? backgroundId, SnCloudFile? background, SnAccount? account, String? accountId, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, String? realmId
+ String id, int type, String name, String nick, String bio, SnCloudFile? picture, SnCloudFile? background, SnAccount? account, String? accountId, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, String? realmId
 });
 
 
@@ -420,17 +420,15 @@ class _$SnPublisherCopyWithImpl<$Res>
 
 /// Create a copy of SnPublisher
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? name = null,Object? nick = null,Object? bio = null,Object? pictureId = freezed,Object? picture = freezed,Object? backgroundId = freezed,Object? background = freezed,Object? account = freezed,Object? accountId = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? realmId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? name = null,Object? nick = null,Object? bio = null,Object? picture = freezed,Object? background = freezed,Object? account = freezed,Object? accountId = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? realmId = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
 as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
-as String,pictureId: freezed == pictureId ? _self.pictureId : pictureId // ignore: cast_nullable_to_non_nullable
-as String?,picture: freezed == picture ? _self.picture : picture // ignore: cast_nullable_to_non_nullable
-as SnCloudFile?,backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
-as String?,background: freezed == background ? _self.background : background // ignore: cast_nullable_to_non_nullable
+as String,picture: freezed == picture ? _self.picture : picture // ignore: cast_nullable_to_non_nullable
+as SnCloudFile?,background: freezed == background ? _self.background : background // ignore: cast_nullable_to_non_nullable
 as SnCloudFile?,account: freezed == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as SnAccount?,accountId: freezed == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -484,7 +482,7 @@ $SnAccountCopyWith<$Res>? get account {
 @JsonSerializable()
 
 class _SnPublisher implements SnPublisher {
-  const _SnPublisher({required this.id, required this.type, required this.name, required this.nick, this.bio = '', required this.pictureId, required this.picture, required this.backgroundId, required this.background, required this.account, required this.accountId, required this.createdAt, required this.updatedAt, required this.deletedAt, required this.realmId});
+  const _SnPublisher({required this.id, required this.type, required this.name, required this.nick, this.bio = '', required this.picture, required this.background, required this.account, required this.accountId, required this.createdAt, required this.updatedAt, required this.deletedAt, required this.realmId});
   factory _SnPublisher.fromJson(Map<String, dynamic> json) => _$SnPublisherFromJson(json);
 
 @override final  String id;
@@ -492,9 +490,7 @@ class _SnPublisher implements SnPublisher {
 @override final  String name;
 @override final  String nick;
 @override@JsonKey() final  String bio;
-@override final  String? pictureId;
 @override final  SnCloudFile? picture;
-@override final  String? backgroundId;
 @override final  SnCloudFile? background;
 @override final  SnAccount? account;
 @override final  String? accountId;
@@ -516,16 +512,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnPublisher&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.name, name) || other.name == name)&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.pictureId, pictureId) || other.pictureId == pictureId)&&(identical(other.picture, picture) || other.picture == picture)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&(identical(other.background, background) || other.background == background)&&(identical(other.account, account) || other.account == account)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.realmId, realmId) || other.realmId == realmId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SnPublisher&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.name, name) || other.name == name)&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.picture, picture) || other.picture == picture)&&(identical(other.background, background) || other.background == background)&&(identical(other.account, account) || other.account == account)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.realmId, realmId) || other.realmId == realmId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type,name,nick,bio,pictureId,picture,backgroundId,background,account,accountId,createdAt,updatedAt,deletedAt,realmId);
+int get hashCode => Object.hash(runtimeType,id,type,name,nick,bio,picture,background,account,accountId,createdAt,updatedAt,deletedAt,realmId);
 
 @override
 String toString() {
-  return 'SnPublisher(id: $id, type: $type, name: $name, nick: $nick, bio: $bio, pictureId: $pictureId, picture: $picture, backgroundId: $backgroundId, background: $background, account: $account, accountId: $accountId, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, realmId: $realmId)';
+  return 'SnPublisher(id: $id, type: $type, name: $name, nick: $nick, bio: $bio, picture: $picture, background: $background, account: $account, accountId: $accountId, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, realmId: $realmId)';
 }
 
 
@@ -536,7 +532,7 @@ abstract mixin class _$SnPublisherCopyWith<$Res> implements $SnPublisherCopyWith
   factory _$SnPublisherCopyWith(_SnPublisher value, $Res Function(_SnPublisher) _then) = __$SnPublisherCopyWithImpl;
 @override @useResult
 $Res call({
- String id, int type, String name, String nick, String bio, String? pictureId, SnCloudFile? picture, String? backgroundId, SnCloudFile? background, SnAccount? account, String? accountId, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, String? realmId
+ String id, int type, String name, String nick, String bio, SnCloudFile? picture, SnCloudFile? background, SnAccount? account, String? accountId, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, String? realmId
 });
 
 
@@ -553,17 +549,15 @@ class __$SnPublisherCopyWithImpl<$Res>
 
 /// Create a copy of SnPublisher
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? name = null,Object? nick = null,Object? bio = null,Object? pictureId = freezed,Object? picture = freezed,Object? backgroundId = freezed,Object? background = freezed,Object? account = freezed,Object? accountId = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? realmId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? name = null,Object? nick = null,Object? bio = null,Object? picture = freezed,Object? background = freezed,Object? account = freezed,Object? accountId = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? realmId = freezed,}) {
   return _then(_SnPublisher(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
 as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
-as String,pictureId: freezed == pictureId ? _self.pictureId : pictureId // ignore: cast_nullable_to_non_nullable
-as String?,picture: freezed == picture ? _self.picture : picture // ignore: cast_nullable_to_non_nullable
-as SnCloudFile?,backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
-as String?,background: freezed == background ? _self.background : background // ignore: cast_nullable_to_non_nullable
+as String,picture: freezed == picture ? _self.picture : picture // ignore: cast_nullable_to_non_nullable
+as SnCloudFile?,background: freezed == background ? _self.background : background // ignore: cast_nullable_to_non_nullable
 as SnCloudFile?,account: freezed == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as SnAccount?,accountId: freezed == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable

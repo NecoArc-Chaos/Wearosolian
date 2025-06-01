@@ -159,7 +159,7 @@ class CloudFileList extends HookConsumerWidget {
               ),
             );
           },
-          separatorBuilder: (_, __) => const Gap(8),
+          separatorBuilder: (_, _) => const Gap(8),
         ),
       ),
     );

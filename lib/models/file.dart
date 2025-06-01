@@ -43,7 +43,6 @@ sealed class SnCloudFile with _$SnCloudFile {
     required int size,
     required DateTime? uploadedAt,
     required String? uploadedTo,
-    required int usedCount,
     required DateTime createdAt,
     required DateTime updatedAt,
     required DateTime? deletedAt,

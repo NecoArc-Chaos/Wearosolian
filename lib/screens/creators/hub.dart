@@ -101,7 +101,7 @@ class CreatorHubScreen extends HookConsumerWidget {
                         minTileHeight: 48,
                         leading: ProfilePictureWidget(
                           radius: 16,
-                          fileId: item.pictureId,
+                          fileId: item.picture?.id,
                         ),
                         title: Text(item.nick),
                         subtitle: Text('@${item.name}'),
@@ -115,7 +115,7 @@ class CreatorHubScreen extends HookConsumerWidget {
                   )
                   .toList(),
       loading: () => [],
-      error: (_, __) => [],
+      error: (_, _) => [],
     );
 
     final publisherStats = ref.watch(
@@ -150,7 +150,7 @@ class CreatorHubScreen extends HookConsumerWidget {
                   ...publishersMenu.map(
                     (e) => ProfilePictureWidget(
                       radius: 16,
-                      fileId: e.value?.pictureId,
+                      fileId: e.value?.picture?.id,
                     ).center().padding(right: 8),
                   ),
                 ];
@@ -204,7 +204,7 @@ class CreatorHubScreen extends HookConsumerWidget {
                           ...(publishers.value?.map(
                                 (publisher) => ListTile(
                                   leading: ProfilePictureWidget(
-                                    fileId: publisher.pictureId,
+                                    fileId: publisher.picture?.id,
                                   ),
                                   title: Text(publisher.nick),
                                   subtitle: Text('@${publisher.name}'),
@@ -293,7 +293,7 @@ class CreatorHubScreen extends HookConsumerWidget {
                       ),
             ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const SizedBox.shrink(),
+        error: (_, _) => const SizedBox.shrink(),
       ),
     );
   }

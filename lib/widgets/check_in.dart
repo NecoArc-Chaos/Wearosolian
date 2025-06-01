@@ -151,7 +151,7 @@ class CheckInWidget extends HookConsumerWidget {
                       key: ValueKey(result != null),
                     ),
                 loading: () => const Icon(Symbols.refresh),
-                error: (_, __) => const Icon(Symbols.error),
+                error: (_, _) => const Icon(Symbols.error),
               ),
             ),
           ),
@@ -188,7 +188,7 @@ class CheckInActivityWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ProfilePictureWidget(
-          fileId: result.account!.profile.pictureId,
+          fileId: result.account!.profile.picture?.id,
           radius: 12,
         ),
         Expanded(

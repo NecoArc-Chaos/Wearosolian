@@ -303,7 +303,7 @@ class PostComposeScreen extends HookConsumerWidget {
               children: [
                 GestureDetector(
                   child: ProfilePictureWidget(
-                    fileId: currentPublisher.value?.pictureId,
+                    fileId: currentPublisher.value?.picture?.id,
                     radius: 20,
                     fallbackIcon:
                         currentPublisher.value == null

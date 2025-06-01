@@ -74,7 +74,7 @@ class AccountScreen extends HookConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (user.value?.profile.backgroundId != null)
+                  if (user.value?.profile.background?.id != null)
                     ClipRRect(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(8),
@@ -83,7 +83,7 @@ class AccountScreen extends HookConsumerWidget {
                       child: AspectRatio(
                         aspectRatio: 16 / 7,
                         child: CloudImageWidget(
-                          fileId: user.value!.profile.backgroundId!,
+                          fileId: user.value!.profile.background!.id,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -94,7 +94,7 @@ class AccountScreen extends HookConsumerWidget {
                     children: [
                       GestureDetector(
                         child: ProfilePictureWidget(
-                          fileId: user.value?.profile.pictureId,
+                          fileId: user.value?.profile.picture?.id,
                           radius: 24,
                         ),
                         onTap: () {

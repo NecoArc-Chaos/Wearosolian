@@ -202,7 +202,7 @@ class EventCalanderScreen extends HookConsumerWidget {
               color: Colors.transparent,
               child: ListTile(
                 leading: ProfilePictureWidget(
-                  fileId: user.value!.profile.pictureId,
+                  fileId: user.value!.profile.picture?.id,
                 ),
                 title: Text(user.value!.nick).bold(),
                 subtitle: Text('@${user.value!.name}'),

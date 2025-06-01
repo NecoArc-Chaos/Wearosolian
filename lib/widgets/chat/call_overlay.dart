@@ -45,7 +45,7 @@ class CallControlsBar extends HookConsumerWidget {
                                 callNotifier.localParticipant!.isSpeaking,
                             audioLevel:
                                 callNotifier.localParticipant!.audioLevel,
-                            pictureId: userInfo.value?.profile.pictureId,
+                            pictureId: userInfo.value?.profile.picture?.id,
                             size: 36,
                           ).center(),
                     );
@@ -158,7 +158,8 @@ class CallOverlayBar extends HookConsumerWidget {
                                       .profile
                                       ?.account
                                       .profile
-                                      .pictureId,
+                                      .picture
+                                      ?.id,
                               size: 36,
                             ).center(),
                       );

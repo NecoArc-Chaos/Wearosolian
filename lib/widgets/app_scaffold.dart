@@ -235,7 +235,7 @@ class AppBackground extends ConsumerWidget {
         },
         loading: () => const SizedBox(),
         error:
-            (_, __) => Material(
+            (_, _) => Material(
               color: Theme.of(context).colorScheme.surface,
               child: child,
             ),

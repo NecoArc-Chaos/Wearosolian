@@ -27,9 +27,9 @@ class NotifyDelegate: UIResponder, UNUserNotificationCenterDelegate {
             }
             
             let serverUrl = "https://nt.solian.app"
-            let url = "\(serverUrl)/chat/\(metadata["room_id"])/messages"
+            let url = "\(serverUrl)/chat/\(metadata["room_id"] ?? "")/messages"
             
-            let parameters: [String: Any] = [
+            let parameters: [String: Any?] = [
                 "content": textResponse.userText,
                 "replied_message_id": metadata["message_id"]
             ]

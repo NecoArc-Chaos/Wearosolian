@@ -118,7 +118,7 @@ class PostItem extends HookConsumerWidget {
                 children: [
                   GestureDetector(
                     child: ProfilePictureWidget(
-                      fileId: item.publisher.pictureId,
+                      fileId: item.publisher.picture?.id,
                     ),
                     onTap: () {
                       context.router.push(

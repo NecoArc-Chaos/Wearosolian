@@ -166,7 +166,8 @@ class CallScreen extends HookConsumerWidget {
                                                 .profile
                                                 ?.account
                                                 .profile
-                                                .pictureId,
+                                                .picture
+                                                ?.id,
                                         size: 72,
                                       ),
                                     ),

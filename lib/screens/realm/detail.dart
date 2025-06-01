@@ -54,8 +54,8 @@ class RealmDetailScreen extends HookConsumerWidget {
                   leading: PageBackButton(shadows: [iconShadow]),
                   flexibleSpace: FlexibleSpaceBar(
                     background:
-                        realm!.backgroundId != null
-                            ? CloudImageWidget(fileId: realm.backgroundId!)
+                        realm!.background?.id != null
+                            ? CloudImageWidget(fileId: realm.background!.id)
                             : Container(
                               color:
                                   Theme.of(context).appBarTheme.backgroundColor,
@@ -118,7 +118,7 @@ class _RealmActionMenu extends HookConsumerWidget {
     final isModerator = realmIdentityAsync.when(
       data: (identity) => (identity?.role ?? 0) >= 50,
       loading: () => false,
-      error: (_, __) => false,
+      error: (_, _) => false,
     );
 
     return PopupMenuButton(
@@ -212,7 +212,7 @@ class _RealmActionMenu extends HookConsumerWidget {
                     child: Center(child: CircularProgressIndicator()),
                   ),
               error:
-                  (_, __) => PopupMenuItem(
+                  (_, _) => PopupMenuItem(
                     child: Row(
                       children: [
                         Icon(
@@ -403,7 +403,7 @@ class _RealmMemberListSheet extends HookConsumerWidget {
                         return ListTile(
                           contentPadding: EdgeInsets.only(left: 16, right: 12),
                           leading: ProfilePictureWidget(
-                            fileId: member.account!.profile.pictureId,
+                            fileId: member.account!.profile.picture?.id,
                           ),
                           title: Row(
                             spacing: 6,

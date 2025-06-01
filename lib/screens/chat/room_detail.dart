@@ -48,9 +48,9 @@ class ChatDetailScreen extends HookConsumerWidget {
                   flexibleSpace: FlexibleSpaceBar(
                     background:
                         (currentRoom!.type == 1 &&
-                                currentRoom.backgroundId != null)
+                                currentRoom.background?.id != null)
                             ? CloudImageWidget(
-                              fileId: currentRoom.backgroundId!,
+                              fileId: currentRoom.background!.id,
                             )
                             : (currentRoom.type == 1 &&
                                 currentRoom.members!.length == 1 &&
@@ -59,7 +59,8 @@ class ChatDetailScreen extends HookConsumerWidget {
                                         .first
                                         .account
                                         .profile
-                                        .backgroundId !=
+                                        .background
+                                        ?.id !=
                                     null)
                             ? CloudImageWidget(
                               fileId:
@@ -68,11 +69,12 @@ class ChatDetailScreen extends HookConsumerWidget {
                                       .first
                                       .account
                                       .profile
-                                      .backgroundId!,
+                                      .background!
+                                      .id,
                             )
-                            : currentRoom.backgroundId != null
+                            : currentRoom.background?.id != null
                             ? CloudImageWidget(
-                              fileId: currentRoom.backgroundId!,
+                              fileId: currentRoom.background!.id,
                               fit: BoxFit.cover,
                             )
                             : Container(
@@ -390,7 +392,7 @@ class _ChatMemberListSheet extends HookConsumerWidget {
                         return ListTile(
                           contentPadding: EdgeInsets.only(left: 16, right: 12),
                           leading: ProfilePictureWidget(
-                            fileId: member.account.profile.pictureId,
+                            fileId: member.account.profile.picture?.id,
                           ),
                           title: Row(
                             spacing: 6,

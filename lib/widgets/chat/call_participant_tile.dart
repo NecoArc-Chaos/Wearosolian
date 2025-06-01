@@ -106,7 +106,7 @@ class CallParticipantTile extends StatelessWidget {
       return SpeakingRippleAvatar(
         isSpeaking: live.isSpeaking,
         audioLevel: audioLevel,
-        pictureId: live.participant.profile?.account.profile.pictureId,
+        pictureId: live.participant.profile?.account.profile.picture?.id,
         size: 84,
       );
     }

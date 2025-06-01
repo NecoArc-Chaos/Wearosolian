@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ class TabNavigationObserver extends AutoRouterObserver {
 
   @override
   void didPush(Route route, Route? previousRoute) {
+    log('pushed ${previousRoute?.settings.name} -> ${route.settings.name}');
     if (route is DialogRoute) return;
     Future(() {
       onChange(route.settings.name);
@@ -25,6 +28,7 @@ class TabNavigationObserver extends AutoRouterObserver {
 
   @override
   void didPop(Route route, Route? previousRoute) {
+    log('popped ${route.settings.name} -> ${previousRoute?.settings.name}');
     if (route is DialogRoute) return;
     Future(() {
       onChange(previousRoute?.settings.name);
@@ -81,6 +85,7 @@ class TabsNavigationWidget extends HookConsumerWidget {
     ];
     final routeNames = [
       ExploreRoute.name,
+      ExploreShellRoute.name,
       ChatListRoute.name,
       RealmListRoute.name,
       AccountRoute.name,

@@ -18,12 +18,10 @@ _SnRealm _$SnRealmFromJson(Map<String, dynamic> json) => _SnRealm(
           : DateTime.parse(json['verified_at'] as String),
   isCommunity: json['is_community'] as bool,
   isPublic: json['is_public'] as bool,
-  pictureId: json['picture_id'] as String?,
   picture:
       json['picture'] == null
           ? null
           : SnCloudFile.fromJson(json['picture'] as Map<String, dynamic>),
-  backgroundId: json['background_id'] as String?,
   background:
       json['background'] == null
           ? null
@@ -46,9 +44,7 @@ Map<String, dynamic> _$SnRealmToJson(_SnRealm instance) => <String, dynamic>{
   'verified_at': instance.verifiedAt?.toIso8601String(),
   'is_community': instance.isCommunity,
   'is_public': instance.isPublic,
-  'picture_id': instance.pictureId,
   'picture': instance.picture?.toJson(),
-  'background_id': instance.backgroundId,
   'background': instance.background?.toJson(),
   'account_id': instance.accountId,
   'created_at': instance.createdAt.toIso8601String(),

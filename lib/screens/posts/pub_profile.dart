@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -108,8 +109,8 @@ class PublisherProfileScreen extends HookConsumerWidget {
                   leading: PageBackButton(shadows: [iconShadow]),
                   flexibleSpace: FlexibleSpaceBar(
                     background:
-                        data.backgroundId != null
-                            ? CloudImageWidget(fileId: data.backgroundId!)
+                        data.background?.id != null
+                            ? CloudImageWidget(fileId: data.background!.id)
                             : Container(
                               color:
                                   Theme.of(context).appBarTheme.backgroundColor,
@@ -139,7 +140,7 @@ class PublisherProfileScreen extends HookConsumerWidget {
                               shadows: [iconShadow],
                             ),
                           ),
-                      error: (_, __) => const SizedBox(),
+                      error: (_, _) => const SizedBox(),
                       loading:
                           () => const SizedBox(
                             width: 48,
@@ -163,7 +164,10 @@ class PublisherProfileScreen extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 20,
                     children: [
-                      ProfilePictureWidget(fileId: data.pictureId!, radius: 32),
+                      ProfilePictureWidget(
+                        fileId: data.picture!.id,
+                        radius: 32,
+                      ),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -177,6 +181,26 @@ class PublisherProfileScreen extends HookConsumerWidget {
                                 ).fontSize(14).opacity(0.85),
                               ],
                             ),
+                            if (data.type == 0 && data.account != null)
+                              InkWell(
+                                onTap: () {
+                                  context.router.pushPath(
+                                    '/account/${data.account!.name}',
+                                  );
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  spacing: 4,
+                                  children: [
+                                    Text(
+                                      'publisherVisitAccountPage'.tr(
+                                        args: ['@${data.account!.name}'],
+                                      ),
+                                    ).fontSize(14),
+                                    Icon(Icons.launch, size: 14),
+                                  ],
+                                ).opacity(0.85),
+                              ).padding(bottom: 6),
                             if (data.type == 0 && data.account != null)
                               AccountStatusWidget(
                                 uname: data.account!.name,

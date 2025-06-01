@@ -259,7 +259,7 @@ class CloudFilePicker extends HookConsumerWidget {
                             progress: null,
                           );
                         },
-                        separatorBuilder: (_, __) => const Gap(8),
+                        separatorBuilder: (_, _) => const Gap(8),
                       ),
                     ),
                   Card(

@@ -111,7 +111,7 @@ class MessageItem extends HookConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ProfilePictureWidget(
-                      fileId: sender.account.profile.pictureId,
+                      fileId: sender.account.profile.picture?.id,
                       radius: 16,
                     ),
                     Column(

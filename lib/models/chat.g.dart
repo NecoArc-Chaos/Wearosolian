@@ -12,12 +12,10 @@ _SnChatRoom _$SnChatRoomFromJson(Map<String, dynamic> json) => _SnChatRoom(
   description: json['description'] as String?,
   type: (json['type'] as num).toInt(),
   isPublic: json['is_public'] as bool,
-  pictureId: json['picture_id'] as String?,
   picture:
       json['picture'] == null
           ? null
           : SnCloudFile.fromJson(json['picture'] as Map<String, dynamic>),
-  backgroundId: json['background_id'] as String?,
   background:
       json['background'] == null
           ? null
@@ -46,9 +44,7 @@ Map<String, dynamic> _$SnChatRoomToJson(_SnChatRoom instance) =>
       'description': instance.description,
       'type': instance.type,
       'is_public': instance.isPublic,
-      'picture_id': instance.pictureId,
       'picture': instance.picture?.toJson(),
-      'background_id': instance.backgroundId,
       'background': instance.background?.toJson(),
       'realm_id': instance.realmId,
       'realm': instance.realm?.toJson(),

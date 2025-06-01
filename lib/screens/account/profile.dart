@@ -67,9 +67,9 @@ class AccountProfileScreen extends HookConsumerWidget {
                   leading: PageBackButton(shadows: [iconShadow]),
                   flexibleSpace: FlexibleSpaceBar(
                     background:
-                        data.profile.backgroundId != null
+                        data.profile.background?.id != null
                             ? CloudImageWidget(
-                              fileId: data.profile.backgroundId!,
+                              fileId: data.profile.background!.id,
                             )
                             : Container(
                               color:
@@ -91,7 +91,7 @@ class AccountProfileScreen extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ProfilePictureWidget(
-                          fileId: data.profile.pictureId,
+                          fileId: data.profile.picture?.id,
                           radius: 32,
                         ),
                         const Gap(20),
