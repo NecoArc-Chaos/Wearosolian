@@ -39,7 +39,7 @@ target 'Runner' do
     inherit! :search_paths
   end
 
-  target 'NotificationService' do
+  target 'SolianNotificationService' do
     inherit! :search_paths
     pod 'Kingfisher', '~> 8.0'
     pod 'Alamofire'
