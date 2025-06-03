@@ -6,13 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
+import 'package:gal/gal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:island/models/file.dart';
 import 'package:island/pods/config.dart';
 import 'package:island/widgets/content/cloud_files.dart';
+import 'package:path/path.dart' show extension;
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:uuid/uuid.dart';
+import 'package:dio/dio.dart';
 
 class CloudFileList extends HookConsumerWidget {
   final List<SnCloudFile> files;
@@ -110,6 +114,7 @@ class CloudFileList extends HookConsumerWidget {
                   heroTag: heroTags[i],
                   isImage: files[i].mimeType?.startsWith('image') ?? false,
                   disableZoomIn: disableZoomIn,
+                  fit: BoxFit.cover,
                 ),
             ],
             onTap: (i) {
@@ -175,6 +180,47 @@ class CloudFileZoomIn extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final serverUrl = ref.watch(serverUrlProvider);
     final photoViewController = useMemoized(() => PhotoViewController(), []);
+    final rotation = useState(0);
+
+    Future<void> saveToGallery() async {
+      try {
+        // Show loading indicator
+        final scaffold = ScaffoldMessenger.of(context);
+        scaffold.showSnackBar(
+          const SnackBar(
+            content: Text('Saving image to gallery...'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+
+        // Get the image URL
+        final imageUrl = '$serverUrl/files/${item.id}?original=true';
+
+        // Create a temporary file to save the image
+        final tempDir = await getTemporaryDirectory();
+        final filePath = '${tempDir.path}/${item.id}.${extension(item.name)}';
+
+        await Dio().download(imageUrl, filePath);
+        await Gal.putImage(filePath);
+
+        // Show success message
+        scaffold.showSnackBar(
+          const SnackBar(
+            content: Text('Image saved to gallery'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        // Show error message
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save image: $e'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    }
 
     return DismissiblePage(
       isFullScreen: true,
@@ -195,16 +241,119 @@ class CloudFileZoomIn extends HookConsumerWidget {
               imageProvider: CloudImageWidget.provider(
                 fileId: item.id,
                 serverUrl: serverUrl,
+                original: true,
               ),
+              // Apply rotation transformation
+              customSize: MediaQuery.of(context).size,
+              basePosition: Alignment.center,
+              filterQuality: FilterQuality.high,
             ),
           ),
-          // Close button
+          // Close button and save button
           Positioned(
-            top: MediaQuery.of(context).padding.top + 20,
-            right: 20,
-            child: IconButton(
-              icon: Icon(Icons.close, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
+            top: MediaQuery.of(context).padding.top + 16,
+            right: 16,
+            left: 16,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.save_alt,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 5.0,
+                            offset: Offset(1.0, 1.0),
+                          ),
+                        ],
+                      ),
+                      onPressed: () async {
+                        saveToGallery();
+                      },
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black54,
+                        blurRadius: 5.0,
+                        offset: Offset(1.0, 1.0),
+                      ),
+                    ],
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          ),
+          // Rotation controls
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 16,
+            left: 16,
+            right: 16,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.remove, color: Colors.white),
+                  onPressed: () {
+                    photoViewController.scale =
+                        (photoViewController.scale ?? 1) - 0.05;
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.add, color: Colors.white),
+                  onPressed: () {
+                    photoViewController.scale =
+                        (photoViewController.scale ?? 1) + 0.05;
+                  },
+                ),
+                const Gap(8),
+                IconButton(
+                  icon: Icon(
+                    Icons.rotate_left,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black54,
+                        blurRadius: 5.0,
+                        offset: Offset(1.0, 1.0),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    rotation.value = (rotation.value - 1) % 4;
+                    photoViewController.rotation =
+                        rotation.value * -math.pi / 2;
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.rotate_right,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black54,
+                        blurRadius: 5.0,
+                        offset: Offset(1.0, 1.0),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    rotation.value = (rotation.value + 1) % 4;
+                    photoViewController.rotation =
+                        rotation.value * -math.pi / 2;
+                  },
+                ),
+              ],
             ),
           ),
         ],
@@ -219,6 +368,7 @@ class _CloudFileListEntry extends StatelessWidget {
   final bool isImage;
   final bool disableZoomIn;
   final VoidCallback? onTap;
+  final BoxFit fit;
 
   const _CloudFileListEntry({
     required this.file,
@@ -226,11 +376,13 @@ class _CloudFileListEntry extends StatelessWidget {
     required this.isImage,
     required this.disableZoomIn,
     this.onTap,
+    this.fit = BoxFit.contain,
   });
 
   @override
   Widget build(BuildContext context) {
     final content = Stack(
+      fit: StackFit.expand,
       children: [
         if (isImage)
           Positioned.fill(
@@ -247,9 +399,10 @@ class _CloudFileListEntry extends StatelessWidget {
             item: file,
             heroTag: heroTag,
             noBlurhash: true,
-          ).center()
+            fit: fit,
+          )
         else
-          CloudFileWidget(item: file, heroTag: heroTag),
+          CloudFileWidget(item: file, heroTag: heroTag, fit: fit),
       ],
     );
 

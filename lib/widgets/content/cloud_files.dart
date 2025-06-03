@@ -79,8 +79,9 @@ class CloudImageWidget extends ConsumerWidget {
   static ImageProvider provider({
     required String fileId,
     required String serverUrl,
+    bool original = false,
   }) {
-    final uri = '$serverUrl/files/$fileId';
+    final uri = '$serverUrl/files/$fileId?original=$original';
     return CachedNetworkImageProvider(uri);
   }
 }

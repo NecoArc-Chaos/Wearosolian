@@ -90,6 +90,8 @@ PODS:
   - flutter_webrtc (0.14.0):
     - Flutter
     - WebRTC-SDK (= 125.6422.07)
+  - gal (1.0.0):
+    - Flutter
   - GoogleDataTransport (10.1.0):
     - nanopb (~> 3.30910.0)
     - PromisesObjC (~> 2.4)
@@ -144,6 +146,8 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.4.0)
+  - record_ios (1.0.0):
+    - Flutter
   - SAMKeychain (1.5.3)
   - SDWebImage (5.21.0):
     - SDWebImage/Core (= 5.21.0)
@@ -201,6 +205,7 @@ DEPENDENCIES:
   - flutter_platform_alert (from `.symlinks/plugins/flutter_platform_alert/ios`)
   - flutter_udid (from `.symlinks/plugins/flutter_udid/ios`)
   - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
+  - gal (from `.symlinks/plugins/gal/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - irondash_engine_context (from `.symlinks/plugins/irondash_engine_context/ios`)
   - Kingfisher (~> 8.0)
@@ -210,6 +215,7 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - pasteboard (from `.symlinks/plugins/pasteboard/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - record_ios (from `.symlinks/plugins/record_ios/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/darwin`)
@@ -265,6 +271,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_udid/ios"
   flutter_webrtc:
     :path: ".symlinks/plugins/flutter_webrtc/ios"
+  gal:
+    :path: ".symlinks/plugins/gal/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   irondash_engine_context:
@@ -281,6 +289,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/pasteboard/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  record_ios:
+    :path: ".symlinks/plugins/record_ios/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
@@ -317,6 +327,7 @@ SPEC CHECKSUMS:
   flutter_platform_alert: bf3b5fcd4ac14bd637e20527e9c471633071afd3
   flutter_udid: f7c3884e6ec2951efe4f9de082257fc77c4d15e9
   flutter_webrtc: fd0d3bdef8766a0736dbbe2e5b7e85f1f3c52117
+  gal: 29e711cd17bccb47f839d9b30afe9bc9750950b2
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
@@ -331,6 +342,7 @@ SPEC CHECKSUMS:
   pasteboard: 49088aeb6119d51f976a421db60d8e1ab079b63c
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
+  record_ios: fee1c924aa4879b882ebca2b4bce6011bcfc3d8b
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
   SDWebImage: f84b0feeb08d2d11e6a9b843cb06d75ebf5b8868
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7

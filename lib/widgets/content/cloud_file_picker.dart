@@ -56,7 +56,7 @@ class CloudFilePicker extends HookConsumerWidget {
           final file = files.value[idx];
           final cloudFile =
               await putMediaToCloud(
-                fileData: file.data,
+                fileData: file,
                 atk: token,
                 baseUrl: baseUrl,
                 filename: file.data.name ?? 'Post media',

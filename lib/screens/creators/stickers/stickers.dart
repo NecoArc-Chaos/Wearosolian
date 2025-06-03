@@ -13,7 +13,7 @@ import 'package:island/widgets/app_scaffold.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:very_good_infinite_list/very_good_infinite_list.dart';
+import 'package:riverpod_paging_utils/riverpod_paging_utils.dart';
 
 part 'stickers.g.dart';
 
@@ -24,9 +24,6 @@ class StickersScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stickersState = ref.watch(stickerPacksProvider);
-    final stickersNotifier = ref.watch(stickerPacksProvider.notifier);
-
     return AppScaffold(
       appBar: AppBar(
         title: const Text('stickers').tr(),
@@ -37,7 +34,7 @@ class StickersScreen extends HookConsumerWidget {
                 value,
               ) {
                 if (value != null) {
-                  stickersNotifier.refresh();
+                  ref.invalidate(stickerPacksNotifierProvider(pubName));
                 }
               });
             },
@@ -46,103 +43,89 @@ class StickersScreen extends HookConsumerWidget {
           const Gap(8),
         ],
       ),
-      body: stickersState.when(
-        data:
-            (stickers) => RefreshIndicator(
-              onRefresh: stickersNotifier.refresh,
-              child: InfiniteList(
-                padding: EdgeInsets.zero,
-                itemCount: stickers.length,
-                hasReachedMax: stickersNotifier.isReachedMax,
-                isLoading: stickersNotifier.isLoading,
-                onFetchData: stickersNotifier.fetchMore,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(stickers[index].name),
-                    subtitle: Text(stickers[index].description),
-                    trailing: const Icon(Symbols.chevron_right),
-                    onTap: () {
-                      context.router.push(
-                        StickerPackDetailRoute(
-                          pubName: pubName,
-                          id: stickers[index].id,
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-        loading: () => const CircularProgressIndicator(),
-        error: (error, stack) => Text('Error: $error'),
-      ),
+      body: SliverStickerPacksList(pubName: pubName),
     );
   }
 }
 
-final stickerPacksProvider = StateNotifierProvider<
-  StickerPacksNotifier,
-  AsyncValue<List<SnStickerPack>>
->((ref) {
-  return StickerPacksNotifier(ref.watch(apiClientProvider));
-});
+class SliverStickerPacksList extends HookConsumerWidget {
+  final String pubName;
+  const SliverStickerPacksList({super.key, required this.pubName});
 
-class StickerPacksNotifier
-    extends StateNotifier<AsyncValue<List<SnStickerPack>>> {
-  final Dio _apiClient;
-  StickerPacksNotifier(this._apiClient) : super(const AsyncValue.loading()) {
-    fetchStickers();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PagingHelperView(
+      provider: stickerPacksNotifierProvider(pubName),
+      futureRefreshable: stickerPacksNotifierProvider(pubName).future,
+      notifierRefreshable: stickerPacksNotifierProvider(pubName).notifier,
+      contentBuilder:
+          (data, widgetCount, endItemView) => ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: widgetCount,
+            itemBuilder: (context, index) {
+              if (index == widgetCount - 1) {
+                return endItemView;
+              }
+
+              final sticker = data.items[index];
+              return ListTile(
+                title: Text(sticker.name),
+                subtitle: Text(sticker.description),
+                trailing: const Icon(Symbols.chevron_right),
+                onTap: () {
+                  context.router.push(
+                    StickerPackDetailRoute(pubName: pubName, id: sticker.id),
+                  );
+                },
+              );
+            },
+          ),
+    );
+  }
+}
+
+@riverpod
+class StickerPacksNotifier extends _$StickerPacksNotifier
+    with CursorPagingNotifierMixin<SnStickerPack> {
+  static const int _pageSize = 20;
+
+  @override
+  Future<CursorPagingData<SnStickerPack>> build(String pubName) {
+    return fetch(cursor: null);
   }
 
-  int offset = 0;
-  int take = 20;
-  int total = 0;
-
-  bool isLoading = false;
-  bool get isReachedMax =>
-      state.valueOrNull != null && state.valueOrNull!.length >= total;
-
-  Future<void> fetchStickers() async {
-    if (isLoading) return;
-    isLoading = true;
+  @override
+  Future<CursorPagingData<SnStickerPack>> fetch({
+    required String? cursor,
+  }) async {
+    final client = ref.read(apiClientProvider);
+    final offset = cursor == null ? 0 : int.parse(cursor);
 
     try {
-      final response = await _apiClient.get(
-        '/stickers?offset=$offset&take=$take',
+      final response = await client.get(
+        '/stickers',
+        queryParameters: {
+          'offset': offset,
+          'take': _pageSize,
+          'pubName': pubName,
+        },
       );
-      if (response.statusCode == 200) {
-        total = int.parse(response.headers.value('X-Total') ?? '0');
-        final newStickers =
-            response.data
-                .map((e) => SnStickerPack.fromJson(e))
-                .cast<SnStickerPack>()
-                .toList();
 
-        state = AsyncValue.data(
-          state.valueOrNull != null
-              ? [...state.value!, ...newStickers]
-              : newStickers,
-        );
-        offset += take;
-      } else {
-        state = AsyncValue.error('Failed to load stickers', StackTrace.current);
-      }
-    } catch (err, stackTrace) {
-      state = AsyncValue.error(err, stackTrace);
-    } finally {
-      isLoading = false;
+      final total = int.parse(response.headers.value('X-Total') ?? '0');
+      final List<dynamic> data = response.data;
+      final stickers = data.map((e) => SnStickerPack.fromJson(e)).toList();
+
+      final hasMore = offset + stickers.length < total;
+      final nextCursor = hasMore ? (offset + stickers.length).toString() : null;
+
+      return CursorPagingData(
+        items: stickers,
+        hasMore: hasMore,
+        nextCursor: nextCursor,
+      );
+    } catch (err) {
+      rethrow;
     }
-  }
-
-  Future<void> fetchMore() async {
-    if (state.valueOrNull == null || state.valueOrNull!.length >= total) return;
-    await fetchStickers();
-  }
-
-  Future<void> refresh() async {
-    offset = 0;
-    state = const AsyncValue.loading();
-    await fetchStickers();
   }
 }
 

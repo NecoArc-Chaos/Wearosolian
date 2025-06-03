@@ -142,7 +142,7 @@ class PostComposeScreen extends HookConsumerWidget {
         attachmentProgress.value = {...attachmentProgress.value, index: 0};
         final cloudFile =
             await putMediaToCloud(
-              fileData: attachment.data,
+              fileData: attachment,
               atk: token,
               baseUrl: baseUrl,
               filename: attachment.data.name ?? 'Post media',

@@ -917,6 +917,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  gal:
+    dependency: "direct main"
+    description:
+      name: gal
+      sha256: "1bdef5879e4569910cfd8c77f460f98fcb7a1f910026af1daa80869856c67d66"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.9.1"
   gap:
     dependency: "direct main"
     description:
@@ -2041,7 +2049,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "55fd380bcca8c984773711062ac7dfdbfa87c9d1"
+      resolved-ref: "55e0eecfb7a7af67be4a7b6e8e73d128d4460436"
       url: "https://github.com/LittleSheep2Code/tus_client.git"
     source: git
     version: "2.5.0"

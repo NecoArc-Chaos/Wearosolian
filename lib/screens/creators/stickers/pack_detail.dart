@@ -298,7 +298,7 @@ class _StickerPackActionMenu extends HookConsumerWidget {
                   if (confirm) {
                     final client = ref.watch(apiClientProvider);
                     client.delete('/stickers/$packId');
-                    ref.invalidate(stickerPacksProvider);
+                    ref.invalidate(stickerPacksNotifierProvider);
                     if (context.mounted) context.router.maybePop(true);
                   }
                 });

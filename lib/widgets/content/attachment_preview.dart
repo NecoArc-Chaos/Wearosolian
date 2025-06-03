@@ -43,7 +43,23 @@ class AttachmentPreview extends StatelessWidget {
                     return CloudFileWidget(item: item.data);
                   } else if (item.data is XFile) {
                     if (item.type == UniversalFileType.image) {
-                      return Image.file(File(item.data.path));
+                      final file = item.data as XFile;
+                      if (file.path.isEmpty) {
+                        return FutureBuilder<Uint8List>(
+                          future: file.readAsBytes(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Image.memory(snapshot.data!);
+                            }
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        );
+                      }
+                      return kIsWeb
+                          ? Image.network(file.path)
+                          : Image.file(File(file.path));
                     } else {
                       return Center(
                         child: Text(

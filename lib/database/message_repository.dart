@@ -231,7 +231,7 @@ class MessageRepository {
       for (var idx = 0; idx < attachments.length; idx++) {
         final cloudFile =
             await putMediaToCloud(
-              fileData: attachments[idx].data,
+              fileData: attachments[idx],
               atk: token,
               baseUrl: baseUrl,
               filename: attachments[idx].data.name ?? 'Post media',
