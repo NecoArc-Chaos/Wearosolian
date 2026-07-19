@@ -12,3 +12,7 @@
 #-keep class io.flutter.**  { *; }
 #-keep class io.flutter.plugins.**  { *; }
 #-keep class de.prosiebensat1digital.** { *; }
+
+# Suppress R8 missing class warnings for wear plugin
+-dontwarn com.google.android.wearable.compat.WearableActivityController$AmbientCallback
+-dontwarn com.google.android.wearable.compat.WearableActivityController
