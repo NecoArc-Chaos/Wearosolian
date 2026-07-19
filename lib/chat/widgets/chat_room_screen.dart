@@ -48,6 +48,7 @@ import 'package:island/thoughts/screens/think_sheet.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:solar_network_sdk/solar_network_sdk.dart';
+import 'package:wear/wear.dart';
 
 @RoutePage()
 class ChatRoomScreen extends HookConsumerWidget {
@@ -825,8 +826,12 @@ class ChatRoomScreen extends HookConsumerWidget {
       jumpAndRevealMessage(targetId);
     }, [savedLastReadAt.value, messages, jumpAndRevealMessage]);
 
-    return Stack(
-      children: [
+    return AmbientMode(
+      builder: (context, mode, child) => WatchShape(
+        builder: (context, shape, child) {
+          final isRound = shape == WearShape.round;
+          return Stack(
+            children: [
         AppScaffold(
           appBar: AppBar(
             leading: isSelectionMode
@@ -880,8 +885,13 @@ class ChatRoomScreen extends HookConsumerWidget {
                     const SizedBox(width: 8),
                   ],
           ),
-          body: Column(
-            children: [
+          body: Padding(
+            padding: EdgeInsets.only(
+              top: isRound ? 24.0 : 0.0,
+              bottom: isRound ? 24.0 : 0.0,
+            ),
+            child: Column(
+              children: [
               const ChatSyncIndicator(),
               if (pinnedPins.value.isNotEmpty)
                 _PinnedMessagesBar(
@@ -1269,8 +1279,12 @@ class ChatRoomScreen extends HookConsumerWidget {
               ),
             ],
           ),
+          ),
         ),
       ],
+    );
+        },
+      ),
     );
   }
 }

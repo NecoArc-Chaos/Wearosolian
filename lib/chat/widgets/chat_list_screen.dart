@@ -25,6 +25,7 @@ import 'package:island/core/lifecycle.dart';
 import 'package:island/core/network.dart';
 import 'package:island/core/services/event_bus.dart';
 import 'package:island/core/services/responsive.dart';
+import 'package:island/core/services/wear_os.dart';
 import 'package:island/core/utils/share_utils.dart';
 import 'package:island/data/database.dart';
 import 'package:island/drive/widgets/cloud_files.dart';
@@ -39,6 +40,7 @@ import 'package:styled_widget/styled_widget.dart';
 import 'package:super_context_menu/super_context_menu.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:solar_network_sdk/solar_network_sdk.dart';
+import 'package:wear/wear.dart';
 
 DateTime _chatRoomActivityAt(
   SnChatRoom room,
@@ -1760,7 +1762,57 @@ class ChatListWidget extends HookConsumerWidget {
         ),
       );
     }
+    // Wear OS: ultra-compact chat list without AppBar to maximize screen space
+    if (isWearDevice(context)) {
+      return WatchShape(
+        builder: (context, shape, _) {
+          final isRound = shape == WearShape.round;
+          final side = isRound ? 20.0 : 8.0;
+          return Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: side,
+                  vertical: isRound ? 16.0 : 4.0,
+                ),
+                child: userInfo.value == null
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.person_off_outlined,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
+                              size: 32,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'login'.tr(),
+                              style: const TextStyle(fontSize: 11),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      )
+                    : ChatListBodyWidget(
+                        isFloating: false,
+                        tabController: tabController,
+                        selectedTab: selectedTab,
+                        chatGroups: chatGroups,
+                        onChatGroupsChanged: refreshChatGroups,
+                        accountId: accountId,
+                      ),
+              ),
+            ),
+          );
+        },
+      );
+    }
 
+    // Fallback (should not be reached – handled by _WearTabsLayout in TabsScreen)
     return AppScaffold(
       extendBody: false,
       floatingActionButton: const ChatFabWidget().padding(

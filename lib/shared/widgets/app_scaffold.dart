@@ -13,6 +13,7 @@ import 'package:island/accounts/account_pod.dart';
 import 'package:island/core/websocket.dart';
 import 'package:island/core/services/event_bus.dart';
 import 'package:island/core/services/responsive.dart';
+import 'package:island/core/services/wear_os.dart';
 import 'package:island/notifications/notification_overlay.dart';
 import 'package:island/route.gr.dart';
 import 'package:island/shared/widgets/task_overlay.dart';
@@ -21,6 +22,7 @@ import 'package:island_ui_foundation/island_ui_foundation.dart'
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shake/shake.dart';
+import 'package:wear/wear.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppScrollBehavior extends MaterialScrollBehavior {
@@ -264,6 +266,29 @@ class AppScaffold extends HookConsumerWidget {
         onEndDrawerChanged: onEndDrawerChanged,
       ),
     );
+
+    // Wear OS: clip to circle and inject safe insets for round-screen watches
+    if (isWearDevice(context)) {
+      return WatchShape(
+        builder: (ctx, shape, _) {
+          final isRound = shape == WearShape.round;
+          Widget wrapped = builtWidget;
+          if (isRound) {
+            wrapped = ClipOval(
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  padding: const EdgeInsets.all(24),
+                ),
+                child: wrapped,
+              ),
+            );
+          }
+          return noBackground
+              ? wrapped
+              : AppBackground(isRoot: true, child: wrapped);
+        },
+      );
+    }
 
     return noBackground
         ? builtWidget

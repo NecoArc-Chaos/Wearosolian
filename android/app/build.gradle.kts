@@ -33,7 +33,7 @@ android {
         applicationId = "dev.solsynth.solian"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 26
+        minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -41,10 +41,10 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String
+            keystoreProperties["keyAlias"]?.let { keyAlias = it as String }
+            keystoreProperties["keyPassword"]?.let { keyPassword = it as String }
+            keystoreProperties["storeFile"]?.let { storeFile = file(it as String) }
+            keystoreProperties["storePassword"]?.let { storePassword = it as String }
         }
     }
 

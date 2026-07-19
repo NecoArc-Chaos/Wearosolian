@@ -5,7 +5,15 @@ const kWiderScreenWidth = 1024.0;
 const kWidescreenWidth = 1280.0;
 const kUltraWideScreenWidth = 1600.0;
 
+/// Threshold for treating the device as a Wear OS watch.
+const kWearOsMaxShortestSide = 300.0;
+
 enum ResponsiveTier { compact, medium, wide, ultraWide }
+
+/// Returns true when running on a Wear OS watch (tiny screen).
+bool isWearOsScreen(BuildContext context) {
+  return MediaQuery.of(context).size.shortestSide < kWearOsMaxShortestSide;
+}
 
 bool isWideScreen(BuildContext context) {
   return MediaQuery.of(context).size.width > kWideScreenWidth;

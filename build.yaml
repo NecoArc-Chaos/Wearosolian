@@ -1,7 +1,8 @@
 targets:
   $default:
     builders:
-      json_serializable:
+      native_assets_builder:
         options:
-          explicit_to_json: true
-          field_rename: snake
+          sqlite3:
+            source: test-sqlite3
+            directory: /Users/nickole/wearosolian

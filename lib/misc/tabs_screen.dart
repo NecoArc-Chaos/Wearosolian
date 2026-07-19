@@ -10,6 +10,7 @@ import 'package:island/accounts/account_pod.dart';
 import 'package:island/core/config.dart';
 import 'package:island/core/network.dart';
 import 'package:island/core/services/responsive.dart';
+import 'package:island/core/services/wear_os.dart';
 import 'package:island/drive/widgets/cloud_files.dart';
 import 'package:island/core/navigation/conditional_bottom_nav.dart';
 import 'package:island/notifications/notification.dart';
@@ -19,6 +20,7 @@ import 'package:island/shared/widgets/layouts/sheet_scaffold.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:island/chat/pods/chat_summary.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wear/wear.dart';
 
 @RoutePage()
 class TabsScreen extends StatelessWidget {
@@ -527,6 +529,21 @@ class _TabsScreenContentState extends ConsumerState<_TabsScreenContent> {
       );
     }
 
+    // Wear OS: replace bottom nav with horizontal PageView swipe navigation.
+    if (isWearDevice(context)) {
+      return WatchShape(
+        builder: (context, shape, _) {
+          final isRound = shape == WearShape.round;
+          return _WearTabsLayout(
+            tabsRouter: tabsRouter,
+            destinations: bottomNavDestinations,
+            isRound: isRound,
+            child: widget.child,
+          );
+        },
+      );
+    }
+
     final mobileTabBody = Builder(
       builder: (context) {
         final bodyMediaQuery = MediaQuery.of(context);
@@ -883,6 +900,186 @@ class _NavigationCustomizationSheetState
 
 class _OpenDrawerIntent extends Intent {
   const _OpenDrawerIntent();
+}
+
+/// Wear OS swipe navigation layout.
+/// Shows pages left/right with dot indicators at the bottom of the screen.
+class _WearTabsLayout extends StatefulWidget {
+  final TabsRouter tabsRouter;
+  final List<_TabDestination> destinations;
+  final bool isRound;
+  final Widget child;
+
+  const _WearTabsLayout({
+    required this.tabsRouter,
+    required this.destinations,
+    required this.isRound,
+    required this.child,
+  });
+
+  @override
+  State<_WearTabsLayout> createState() => _WearTabsLayoutState();
+}
+
+class _WearTabsLayoutState extends State<_WearTabsLayout> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialPage = _pageIndexForRouteIndex(widget.tabsRouter.activeIndex);
+    _pageController = PageController(initialPage: initialPage);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  int _pageIndexForRouteIndex(int routeIndex) {
+    final idx = widget.destinations.indexWhere(
+      (d) => d.routeIndex == routeIndex,
+    );
+    return idx >= 0 ? idx : 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final screenSize = MediaQuery.of(context).size;
+    final isRound = widget.isRound;
+
+    // Sync external router changes into our PageController
+    final currentRouterPage = _pageIndexForRouteIndex(
+      widget.tabsRouter.activeIndex,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_pageController.hasClients &&
+          _pageController.page?.round() != currentRouterPage) {
+        _pageController.animateToPage(
+          currentRouterPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    });
+
+    final isOnFirstPage = currentRouterPage == 0;
+
+    // The Wear OS system swipe-to-dismiss is disabled in styles.xml
+    // (android:windowSwipeToDismiss=false). We implement our own:
+    // – right-swipe on first page → exit app
+    // – right-swipe on other pages → go to previous page
+    return PopScope(
+      canPop: isOnFirstPage,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && !isOnFirstPage) {
+          _pageController.animateToPage(
+            currentRouterPage - 1,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      },
+      child: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          // Right swipe (positive velocity = finger moved left→right)
+          final isRightSwipe = (details.primaryVelocity ?? 0) > 300;
+          if (!isRightSwipe) return;
+          if (isOnFirstPage) {
+            // Exit app from first page
+            SystemNavigator.pop();
+          } else {
+            // Navigate to previous page
+            _pageController.previousPage(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOutCubic,
+            );
+          }
+        },
+        child: Scaffold(
+          backgroundColor: colorScheme.surface,
+          body: Stack(
+            children: [
+            // Main page content – occupies the entire screen
+            PageView.builder(
+              controller: _pageController,
+              scrollDirection: Axis.horizontal,
+              // Disable the built-in page-left scroll; we handle it via GestureDetector
+              physics: const ClampingScrollPhysics(),
+              itemCount: widget.destinations.length,
+              onPageChanged: (page) {
+                widget.tabsRouter.setActiveIndex(
+                  widget.destinations[page].routeIndex,
+                );
+              },
+              itemBuilder: (context, index) {
+                final dest = widget.destinations[index];
+                final isActive = widget.tabsRouter.activeIndex == dest.routeIndex;
+              // Only render the child for the active tab;
+              // show a placeholder for others (saves memory on a watch).
+              if (!isActive) {
+                return Container(
+                  color: colorScheme.surface,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          dest.navigationIcon,
+                          color: colorScheme.onSurfaceVariant,
+                          size: 32,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          dest.label,
+                          style: TextStyle(
+                            color: colorScheme.onSurfaceVariant,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return widget.child;
+            },
+          ),
+
+          // Page indicator dots (bottom, for horizontal swipe)
+          Positioned(
+            bottom: isRound ? screenSize.height * 0.07 : 6,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(widget.destinations.length, (i) {
+                final isSelected =
+                    _pageIndexForRouteIndex(widget.tabsRouter.activeIndex) == i;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  width: isSelected ? 14 : 8,
+                  height: isSelected ? 6 : 4,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    color: isSelected
+                        ? colorScheme.primary
+                        : colorScheme.onSurface.withOpacity(0.3),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    ),  // Scaffold
+    ),  // GestureDetector
+    ); // PopScope
+  }
 }
 
 class _TabDestination {

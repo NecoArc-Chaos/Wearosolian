@@ -18,6 +18,7 @@ import 'package:island/accounts/account_pod.dart';
 import 'package:island/chat/widgets/chat_room_list_tile.dart';
 import 'package:island/core/services/event_bus.dart';
 import 'package:island/core/services/responsive.dart';
+import 'package:island/core/services/wear_os.dart';
 import 'package:island/notifications/notification.dart';
 import 'package:island/posts/widgets/compose/post_featured.dart';
 import 'package:island/route.gr.dart';
@@ -550,6 +551,34 @@ class ClockCard extends HookConsumerWidget {
       });
       return () => timer.value?.cancel();
     }, []);
+
+    // Wear OS: ultra-compact clock — just the time, no icon/countdown
+    if (isWearOsScreen(context)) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${time.value.hour.toString().padLeft(2, '0')}:${time.value.minute.toString().padLeft(2, '0')}',
+              style: GoogleFonts.robotoMono(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            Text(
+              '${time.value.year}/${time.value.month.toString().padLeft(2, '0')}/${time.value.day.toString().padLeft(2, '0')}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return Card(
       elevation: 0,
@@ -1186,10 +1215,11 @@ class _UnauthorizedCard extends HookConsumerWidget {
           horizontal: isWide ? 48 : 32,
           vertical: isWide ? 40 : 32,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Symbols.person, size: 64, color: colorScheme.onSurfaceVariant),
             const Gap(24),
@@ -1236,6 +1266,7 @@ class _UnauthorizedCard extends HookConsumerWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
