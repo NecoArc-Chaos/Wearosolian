@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "dev.solsynth.solian"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "dev.solsynth.solian"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "0.0.3"
     }
@@ -43,16 +43,13 @@ android {
 
 dependencies {
     // ── Wear OS Compose M3 ──
-    val wearCompose = "1.4.0"
+    val wearCompose = "1.3.1"
     implementation("androidx.wear.compose:compose-material3:$wearCompose")
     implementation("androidx.wear.compose:compose-foundation:$wearCompose")
     implementation("androidx.wear.compose:compose-navigation:$wearCompose")
 
-    // ── Ambient / Always-on ──
-    implementation("androidx.wear:wear-ambient:1.0.0")
-
     // ── Core AndroidX ──
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-compose:1.10.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
