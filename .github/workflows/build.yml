@@ -31,13 +31,16 @@ jobs:
 
       - run: gradle wrapper
 
+      - name: Generate keystore
+        run: keytool -genkeypair -v -keystore keystore.jks -alias wearosolian -keyalg RSA -keysize 2048 -validity 365 -storepass wearosolian -keypass wearosolian -dname "CN=Wearosolian, OU=Dev, O=Solsynth, L=Tsingdao, ST=Shandong, C=CN"
+
       - name: Assemble Release
         run: ./gradlew assembleRelease
 
       - uses: actions/upload-artifact@v4
         with:
           name: wearosolian-release
-          path: app/build/outputs/apk/release/*.apk
+          path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
   release:

@@ -16,8 +16,18 @@ android {
         versionName = "0.0.3"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file("keystore.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "wearosolian"
+            keyAlias = System.getenv("KEY_ALIAS") ?: "wearosolian"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: "wearosolian"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

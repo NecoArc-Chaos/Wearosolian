@@ -56,3 +56,4 @@ buildtools/.env
 # Development certificate
 devcert.pfx
 .agents/
+keystore.jks
