@@ -25,7 +25,7 @@ jobs:
           gradle-version: '8.14'
           cache-read-only: ${{ github.event_name == 'pull_request' }}
 
-      - run: chmod +x gradlew
+      - run: gradle wrapper
 
       - name: Assemble Release
         run: ./gradlew assembleRelease
