@@ -6,6 +6,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.FilterChip
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
