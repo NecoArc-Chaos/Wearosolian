@@ -2,6 +2,7 @@ package dev.solsynth.solian.data.api
 
 import dev.solsynth.solian.data.TokenStore
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -13,13 +14,27 @@ object ApiClient {
 
     private fun build(): Retrofit {
         val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = HttpLoggingInterceptor.Level.HEADERS
         }
 
         val client = OkHttpClient.Builder()
+            // Force HTTP/1.1 to avoid proxy connection resets on Wear OS
+            .protocols(listOf(Protocol.HTTP_1_1))
+            .followRedirects(true)
+            .followSslRedirects(true)
+            // Auto-retry on transient socket drops
+            .retryOnConnectionFailure(true)
             .addInterceptor(logging)
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
+            // Close connection after each request to prevent stale socket errors
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("Connection", "close")
+                    .build()
+                chain.proceed(request)
+            }
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
         return Retrofit.Builder()
@@ -27,10 +42,6 @@ object ApiClient {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
-
-    fun rebuild() {
-        // Force rebuild on server URL change
     }
 
     private fun String.ensureTrailingSlash() =

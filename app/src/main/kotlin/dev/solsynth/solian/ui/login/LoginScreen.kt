@@ -4,9 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.OutlinedTextField
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
+import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -14,6 +19,7 @@ import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.ChallengeRequest
 import dev.solsynth.solian.data.model.TokenExchangeRequest
+import dev.solsynth.solian.theme.LocalScreenRound
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
@@ -23,93 +29,146 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     var challengeId by remember { mutableStateOf<String?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    val listState = rememberScalingLazyListState()
+    val focusRequester = remember { FocusRequester() }
+    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
+    val isRound = LocalScreenRound.current
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(12.dp),
-        verticalArrangement = Arrangement.Center,
+    ScalingLazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .rotaryScrollable(rotaryBehavior, focusRequester),
+        state = listState,
+        topPadding = if (isRound) 36f else 8f,
+        bottomPadding = if (isRound) 36f else 8f,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Solian", style = MaterialTheme.typography.titleMedium)
+        // Title
+        item {
+            Text("Solian", style = MaterialTheme.typography.titleMedium)
+        }
+        item {
+            Text("Solar Network",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
 
         when (step) {
             0 -> {
-                Spacer(Modifier.height(12.dp))
+                item { Spacer(Modifier.height(16.dp)) }
 
-                OutlinedTextField(
-                    value = serverUrl,
-                    onValueChange = { serverUrl = it },
-                    label = { Text("Server") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                Spacer(Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = account,
-                    onValueChange = { account = it },
-                    label = { Text("Name or Email") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-
-                if (error != null) {
-                    Text(error!!, color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall)
+                // Server URL
+                item {
+                    OutlinedTextField(
+                        value = serverUrl,
+                        onValueChange = { serverUrl = it },
+                        label = { Text("Server") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(0.9f),
+                    )
                 }
 
-                Spacer(Modifier.height(12.dp))
+                // Account
+                item { Spacer(Modifier.height(6.dp)) }
+                item {
+                    OutlinedTextField(
+                        value = account,
+                        onValueChange = { account = it },
+                        label = { Text("Name or Email") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(0.9f),
+                    )
+                }
 
-                Button(
-                    onClick = {
-                        error = null
-                        TokenStore.serverUrl = serverUrl
-                        scope.launch {
-                            try {
-                                val c = ApiClient.api.createChallenge(
-                                    ChallengeRequest(account = account)
-                                )
-                                challengeId = c.id
-                                step = 1
-                                pollForApproval(c.id) { result ->
-                                    when (result) {
-                                        is PollResult.Approved -> {
-                                            step = 2
-                                            scope.launch {
-                                                delay(500)
-                                                onLoginSuccess()
+                // Error
+                if (error != null) {
+                    item {
+                        Card(
+                            onClick = {},
+                            modifier = Modifier.fillMaxWidth(0.85f),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+                            ),
+                        ) {
+                            Text(
+                                error!!,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                            )
+                        }
+                    }
+                }
+
+                // Login button
+                item { Spacer(Modifier.height(12.dp)) }
+                item {
+                    Button(
+                        onClick = {
+                            error = null
+                            TokenStore.serverUrl = serverUrl
+                            scope.launch {
+                                try {
+                                    val c = ApiClient.api.createChallenge(
+                                        ChallengeRequest(account = account)
+                                    )
+                                    challengeId = c.id
+                                    step = 1
+                                    pollForApproval(c.id) { result ->
+                                        when (result) {
+                                            is PollResult.Approved -> {
+                                                step = 2
+                                                scope.launch {
+                                                    delay(500)
+                                                    onLoginSuccess()
+                                                }
+                                            }
+                                            is PollResult.Error -> {
+                                                error = result.message
+                                                step = 0
+                                            }
+                                            is PollResult.Expired -> {
+                                                error = "Expired. Try again."
+                                                step = 0
                                             }
                                         }
-                                        is PollResult.Error -> {
-                                            error = result.message
-                                            step = 0
-                                        }
-                                        is PollResult.Expired -> {
-                                            error = "Expired. Try again."
-                                            step = 0
-                                        }
                                     }
+                                } catch (e: Exception) {
+                                    error = e.message ?: "Connection failed"
                                 }
-                            } catch (e: Exception) {
-                                error = e.message ?: "Failed"
                             }
-                        }
-                    },
-                    enabled = account.isNotBlank(),
-                    modifier = Modifier.fillMaxWidth(0.8f),
-                ) { Text("Login") }
+                        },
+                        enabled = account.isNotBlank(),
+                        modifier = Modifier.fillMaxWidth(0.7f),
+                    ) { Text("Login") }
+                }
             }
 
             1 -> {
-                CircularProgressIndicator(modifier = Modifier.size(32.dp))
-                Spacer(Modifier.height(8.dp))
-                Text("Check your phone",
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center)
+                item {
+                    CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                }
+                item {
+                    Text("Check your phone",
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center)
+                }
+                item {
+                    Text("Approve the login request",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center)
+                }
             }
 
             2 -> {
-                Text("Approved!", style = MaterialTheme.typography.bodySmall)
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                item {
+                    Text("Approved!", style = MaterialTheme.typography.bodySmall)
+                }
+                item {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                }
             }
         }
     }
