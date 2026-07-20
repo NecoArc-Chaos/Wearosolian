@@ -3,43 +3,47 @@ package dev.solsynth.solian.data.model
 import com.google.gson.annotations.SerializedName
 
 // ── Auth ──
-data class LoginRequest(
-    val email: String,
-    val password: String,
+data class ChallengeRequest(
+    val account: String,
+    val platform: String = "wearos",
     @SerializedName("device_id") val deviceId: String = "wearos",
-    @SerializedName("device_name") val deviceName: String = "Wear OS Watch",
+    @SerializedName("device_name") val deviceName: String = "Wear OS",
 )
 
-data class LoginResponse(
+data class SnAuthChallenge(
+    val id: String,
+    @SerializedName("expired_at") val expiredAt: String?,
+    @SerializedName("step_total") val stepTotal: Int?,
+    @SerializedName("account_id") val accountId: String?,
+    val status: String? = null, // "pending", "approved", "declined"
+)
+
+data class TokenExchangeRequest(
+    @SerializedName("grant_type") val grantType: String = "code",
+    val code: String,
+)
+
+data class TokenExchangeResponse(
     val token: String,
     @SerializedName("refresh_token") val refreshToken: String?,
-    @SerializedName("expires_in") val expiresIn: Int?,
+    @SerializedName("expires_in") val expiresIn: Long?,
 )
 
 // ── Post / Timeline ──
 data class SnPost(
     val id: String,
     val body: String?,
-    val title: String?,
-    @SerializedName("created_at") val createdAt: String?,
     val author: SnAuthor?,
-    val attachments: List<SnAttachment>?,
+    @SerializedName("created_at") val createdAt: String?,
 )
 
 data class SnAuthor(
-    val id: String,
     val name: String,
     val avatar: String?,
 )
 
-data class SnAttachment(
-    val id: String,
-    val url: String?,
-    val name: String?,
-)
-
-// ── Server Capabilities ──
-data class ServerCapabilities(
-    val version: String?,
-    val features: List<String>?,
+// ── API Error ──
+data class ApiError(
+    val code: String?,
+    val message: String?,
 )
