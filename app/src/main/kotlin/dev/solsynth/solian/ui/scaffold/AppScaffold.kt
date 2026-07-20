@@ -3,12 +3,11 @@ package dev.solsynth.solian.ui.scaffold
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
-import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
+import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.MaterialTheme
@@ -31,9 +30,8 @@ fun WearScalingColumn(
     itemContent: @Composable (index: Int) -> Unit,
 ) {
     val listState = rememberTransformingLazyColumnState()
-    val focusRequester = remember { FocusRequester() }
-
-    val rotaryBehavior = remember { androidx.wear.compose.foundation.rotary.RotaryScrollableBehavior() }
+    val focusRequester = FocusRequester()
+    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
 
     TransformingLazyColumn(
         modifier = modifier
