@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.devtools.ksp")
 }
 
 android {
@@ -58,12 +57,6 @@ dependencies {
 
     // ── Image Loading ──
     implementation("io.coil-kt:coil-compose:2.7.0")
-
-    // ── Room ──
-    val room = "2.6.1"
-    implementation("androidx.room:room-runtime:$room")
-    implementation("androidx.room:room-ktx:$room")
-    ksp("androidx.room:room-compiler:$room")
 }
 
 kotlin {
