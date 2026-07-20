@@ -36,7 +36,6 @@ import 'package:image_picker_platform_interface/image_picker_platform_interface.
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:island/shared/stubs/window_manager_stub.dart';
-import 'package:protocol_handler/protocol_handler.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 // ponytail: desktop_multi_window for call window support
