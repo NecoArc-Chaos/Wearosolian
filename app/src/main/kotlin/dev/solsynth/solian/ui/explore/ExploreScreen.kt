@@ -82,8 +82,8 @@ fun ExploreScreen() {
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary)
                         }
-                        if (!post.body.isNullOrBlank()) {
-                            Text(post.body,
+                        if (!post.content.isNullOrBlank()) {
+                            Text(post.content,
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 3,
                                 overflow = TextOverflow.Ellipsis)

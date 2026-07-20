@@ -6,6 +6,7 @@ import retrofit2.http.*
 interface SolianApi {
 
     // ── Auth (DysonNetwork /api/auth) ──
+
     @POST("api/auth/challenge")
     suspend fun createChallenge(@Body request: ChallengeRequest): SnAuthChallenge
 
@@ -15,13 +16,19 @@ interface SolianApi {
     @POST("api/auth/token")
     suspend fun exchangeToken(@Body request: TokenExchangeRequest): TokenExchangeResponse
 
-    @POST("api/auth/refresh")
-    suspend fun refreshToken(@Body body: Map<String, String>): TokenExchangeResponse
-
     // ── Timeline (DysonNetwork /api/posts) ──
+
     @GET("api/posts")
     suspend fun getTimeline(
         @Header("Authorization") token: String,
         @Query("take") take: Int = 20,
     ): List<SnPost>
+
+    // ── Post Creation ──
+
+    @POST("api/posts")
+    suspend fun createPost(
+        @Header("Authorization") token: String,
+        @Body request: PostRequest,
+    ): SnPost
 }

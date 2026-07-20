@@ -11,8 +11,7 @@ import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
+import dev.solsynth.solian.data.model.PostRequest
 
 @Composable
 fun ComposeScreen() {
@@ -46,7 +45,9 @@ fun ComposeScreen() {
 
         if (result != null) {
             Text(result!!, style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary)
+                color = if (result?.startsWith("Error") == true)
+                    MaterialTheme.colorScheme.error
+                else MaterialTheme.colorScheme.primary)
         }
 
         Button(
@@ -55,24 +56,12 @@ fun ComposeScreen() {
                     isPosting = true
                     result = null
                     try {
-                        val json = """{"body":"${text.replace("\"", "\\\"")}"}"""
-                        val body = json.toRequestBody("application/json".toMediaType())
-                        val client = okhttp3.OkHttpClient()
-                        val request = okhttp3.Request.Builder()
-                            .url("${TokenStore.serverUrl}/api/posts")
-                            .header("Authorization", "Bearer ${TokenStore.token}")
-                            .post(body)
-                            .build()
-                        client.newCall(request).execute().use { response ->
-                            if (response.isSuccessful) {
-                                text = ""
-                                result = "Posted!"
-                            } else {
-                                result = "Error: ${response.code}"
-                            }
-                        }
+                        val token = "Bearer ${TokenStore.token}"
+                        ApiClient.api.createPost(token, PostRequest(content = text))
+                        text = ""
+                        result = "Posted!"
                     } catch (e: Exception) {
-                        result = e.message
+                        result = "Error: ${e.message}"
                     } finally {
                         isPosting = false
                     }
