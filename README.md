@@ -140,3 +140,6 @@ Third-party deployments must not impersonate the official Solar Network service.
 <p align="center">
   Forked with ❤️ from <a href="https://github.com/Solsynth/HyperNet.Surface">Solsynth/HyperNet.Surface</a>
 </p>
+
+Vibe Coding  
+有部分借鉴了优秀的wearos项目，请谅解，个人水平不高
