@@ -99,6 +99,20 @@ flutter build appbundle
 
 ---
 
+## Wear OS 适配
+
+本项目专为 Wear OS 手表深度优化：
+
+| 特性 | 实现 |
+|------|------|
+| **表冠旋转滚动** | Flutter Wear OS engine 自动将表冠旋转映射为 `PointerScrollEvent`，所有 `Scrollable` 组件原生支持 |
+| **圆表适配** | `app_scaffold.dart` 根据 `WatchShape` 自动裁剪为圆形并注入安全边距 |
+| **缩放列表** | `WearScalingList` — 参考 Orbit 的 `TransformingLazyColumn`，边缘项目缩放至 70% |
+| **表形检测** | `wear_os.dart` 提供 `isWearDevice()` / `isRoundWatch()` / `WearAwareBuilder` |
+| **大触摸目标** | 主题确保最小 48dp 触摸区域 |
+
+---
+
 ## 技术栈
 
 | 层级 | 技术 |

@@ -99,6 +99,20 @@ The backend is the same as upstream: **[Solsynth/DysonNetwork](https://github.co
 
 ---
 
+## Wear OS Adaptation
+
+This fork is optimized for Wear OS smartwatches:
+
+| Feature | Implementation |
+|---------|---------------|
+| **Crown scrolling** | Flutter Wear OS engine auto-maps crown rotation to `PointerScrollEvent` on all `Scrollable` widgets |
+| **Round watch** | `app_scaffold.dart` clips to circle via `WatchShape` and injects safe insets |
+| **Scaling list** | `WearScalingList` — inspired by Orbit's `TransformingLazyColumn`, items scale down to 70% at edges |
+| **Shape detection** | `wear_os.dart` provides `isWearDevice()` / `isRoundWatch()` / `WearAwareBuilder` |
+| **Large targets** | Theme enforces minimum 48dp touch targets |
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
