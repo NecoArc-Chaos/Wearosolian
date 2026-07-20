@@ -1,20 +1,25 @@
 import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:island/shared/stubs/island_desktop_presence_stub.dart';
 
 class NowPlayingState {
+  final ExternalNowPlayingEvent? event;
+  final Map<String, dynamic>? activityData;
+  final bool isPublishing;
+  final String? lastError;
+
   const NowPlayingState({
+    this.event,
+    this.activityData,
     this.isPublishing = false,
     this.lastError,
   });
 
-  final bool isPublishing;
-  final String? lastError;
-
-  String? get title => null;
-  String? get artist => null;
-  String? get album => null;
-  dynamic get playbackState => null;
-  dynamic get source => null;
+  String? get title => event?.title;
+  String? get artist => event?.artist;
+  String? get album => event?.album;
+  dynamic get playbackState => event?.state;
+  dynamic get source => event?.source;
 }
 
 final desktopPresenceProvider = Provider<DesktopPresenceService?>((ref) {

@@ -59,4 +59,18 @@ class IslandDesktopPresence {
   Future<void> stopExternalNowPlayingMonitoring() async {}
 
   Future<void> setAuthToken({String? token, String? serverURL}) async {}
+
+  Future<Duration> getIdleTime() async => Duration.zero;
+
+  Future<String> debugNowPlaying({
+    String? executablePath,
+    String? bundleIdentifier,
+    String? bundleName,
+    String? sourceName,
+    String? searchTerm,
+    bool simulatePlaying = false,
+    bool simulatePaused = false,
+    bool simulateStopped = false,
+    ExternalNowPlayingSource? sourceOverride,
+  }) async => '{}';
 }

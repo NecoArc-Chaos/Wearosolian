@@ -21,6 +21,7 @@ CallWindowArgs? parseCallWindowArgs(String raw) => null;
 Future<dynamic> createCallWindow(
   SnChatRoom room, {
   bool cameraEnabled = false,
+  bool microphoneEnabled = false,
 }) async {
   return null;
 }

@@ -1024,10 +1024,6 @@ class _LoginLookupScreen extends HookConsumerWidget {
       }
     }
 
-    Future<void> withApple() async {
-      return withOidc('apple');
-    }
-
     Future<void> performDiscoverablePasskeyLogin() async {
       isBusy.value = true;
       try {
@@ -1172,7 +1168,7 @@ class _LoginLookupScreen extends HookConsumerWidget {
                 tooltip: 'Google',
               ),
               AuthMethodIconButton(
-                onPressed: withApple,
+                onPressed: () => withOidc('apple'),
                 icon: getProviderIcon(
                   'apple',
                   size: 18,

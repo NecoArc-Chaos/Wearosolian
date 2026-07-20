@@ -33,6 +33,8 @@ class WindowManager {
   static final WindowManager instance = WindowManager._();
   WindowManager._();
 
+  final List<void Function()> _listeners = [];
+
   Future<void> ensureInitialized() async {}
   Future<void> waitUntilReadyToShow(WindowOptions options, VoidCallback callback) async {}
   Future<void> show() async {}
@@ -45,6 +47,9 @@ class WindowManager {
   Future<void> setOpacity(double opacity) async {}
   Future<void> setAsFrameless() async {}
   Future<Rect> getBounds() async => Rect.zero;
+  Future<bool> isFocused() async => false;
+  void addListener(VoidCallback listener) => _listeners.add(listener);
+  void removeListener(VoidCallback listener) => _listeners.remove(listener);
 }
 
 final windowManager = WindowManager.instance;
