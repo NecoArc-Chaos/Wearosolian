@@ -7,19 +7,19 @@ plugins {
 
 android {
     namespace = "dev.solsynth.solian"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "dev.solsynth.solian"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "0.0.3"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -42,22 +42,13 @@ android {
 }
 
 dependencies {
-    // ── Compose BOM ──
-    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
-
-    // ── Wear OS Compose (foundation/navigation from BOM, M3 is alpha) ──
-    implementation("androidx.wear.compose:compose-foundation")
-    implementation("androidx.wear.compose:compose-navigation")
-    implementation("androidx.wear.compose:compose-material3:1.0.0-alpha23")
-
-    // ── Core AndroidX ──
+    // ── Same as Orbit ──
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
+    implementation("androidx.wear.compose:compose-material3:1.6.2")
+    implementation("androidx.wear.compose:compose-foundation:1.6.2")
+    implementation("androidx.wear.compose:compose-navigation:1.6.2")
     implementation("androidx.activity:activity-compose")
-    implementation("androidx.core:core-ktx")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose")
-
-    // ── Wear OS base ──
-    implementation("androidx.wear:wear:1.3.0")
 
     // ── Networking ──
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
@@ -68,7 +59,7 @@ dependencies {
     // ── Image Loading ──
     implementation("io.coil-kt:coil-compose:2.7.0")
 
-    // ── Room (SQLite) ──
+    // ── Room ──
     val room = "2.6.1"
     implementation("androidx.room:room-runtime:$room")
     implementation("androidx.room:room-ktx:$room")

@@ -1,19 +1,25 @@
 package dev.solsynth.solian.ui.scaffold
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.rotary.onRotaryScrollEvent
-import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
-import androidx.wear.compose.foundation.lazy.itemsIndexed
+import androidx.compose.ui.focus.FocusRequester
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
+import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
+import androidx.wear.compose.foundation.rotary.rotaryScrollable
+import androidx.wear.compose.material3.AppScaffold
+import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.TimeText
 
 @Composable
 fun WearAppScaffold(content: @Composable () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        TimeText()
+    AppScaffold(
+        timeText = { TimeText() },
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+    ) {
         content()
     }
 }
@@ -24,21 +30,19 @@ fun WearScalingColumn(
     itemCount: Int,
     itemContent: @Composable (index: Int) -> Unit,
 ) {
-    val listState = rememberScalingLazyListState()
+    val listState = rememberTransformingLazyColumnState()
+    val focusRequester = remember { FocusRequester() }
 
-    ScalingLazyColumn(
+    val rotaryBehavior = remember { androidx.wear.compose.foundation.rotary.RotaryScrollableBehavior() }
+
+    TransformingLazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .onRotaryScrollEvent { event ->
-                val delta = event.verticalScrollPixels
-                listState.centerItemIndex = (listState.centerItemIndex + (delta / 100).toInt())
-                    .coerceIn(0, (itemCount - 1).coerceAtLeast(0))
-                true
-            },
+            .background(MaterialTheme.colorScheme.background)
+            .rotaryScrollable(rotaryBehavior, focusRequester),
         state = listState,
-        autoCentering = true,
     ) {
-        itemsIndexed(count = itemCount) { index, _ ->
+        items(itemCount) { index ->
             itemContent(index)
         }
     }
