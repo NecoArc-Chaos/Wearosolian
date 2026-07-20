@@ -1,71 +1,45 @@
-# Solian (Solar Network)
+# Wearosolian
 
 <p align="center">
-  <img src="assets/icons/icon.webp" width="120" alt="Solian Logo">
+  <img src="assets/icons/icon.webp" width="120" alt="Wearosolian Logo">
 </p>
 
 <p align="center">
-  <b>A peaceful social network</b>
+  <b>Solar Network client for Wear OS</b>
 </p>
 
 <p align="center">
-  <a href="LICENSE.txt"><img src="https://img.shields.io/github/license/Solsynth/HyperNet.Surface" alt="License"></a>
-  <a href="https://crowdin.com/project/solian"><img src="https://badges.crowdin.net/solian/localized.svg" alt="Localization Status"></a>
-  <a href="https://github.com/Solsynth/HyperNet.Surface/releases"><img src="https://img.shields.io/github/v/release/Solsynth/HyperNet.Surface?include_prereleases" alt="Latest Release"></a>
+  <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License"></a>
 </p>
 
 ---
 
-Solian (also known as Solar Network) is a social networking platform, designed to help you express yourself freely and connect with others. We're not aiming to replace any major platform—just providing another peaceful community for you to be part of.
+**Wearosolian** is a Wear OS fork of [Solian (Solar Network)](https://github.com/Solsynth/HyperNet.Surface) — a peaceful social networking platform. This fork strips all desktop (Windows/macOS/Linux), iOS, and web code, targeting **Android / Wear OS** exclusively.
 
-Note: Fediverse support is currently experimental and limited.
-
-> **Help us translate!** Click the Crowdin badge above to contribute translations.
->
-> If you read Chinese, visit our documentation: [Suki - Solar Network](https://kb.solsynth.dev/zh/solar-network) | [中文 README](./README_CN.md)
-
----
-
-## Table of Contents
-
-- [Features](#features)
-- [Getting Started](#getting-started)
-  - [For Users](#for-users)
-  - [For Developers](#for-developers)
-- [Packages](#packages)
-- [Server](#server)
-- [Tech Stack](#tech-stack)
-- [Contributing](#contributing)
+> This is a third-party fork. The official project is at [Solsynth/HyperNet.Surface](https://github.com/Solsynth/HyperNet.Surface).
 
 ---
 
 ## Features
 
-### Available Now
-
-| Feature | Status | Description |
-|---------|--------|-------------|
-| Timeline | Done | Chronological feed of posts |
-| Posts, Articles & Moments | Done | Multiple content types for different needs |
-| Instant Messaging | Done | Real-time chat with group support |
-| Realms | Done | Communities organized by shared interests |
-| OAuth Integration | Done | Secure third-party authentication |
-| Check-in | Done | Location and status sharing |
-| Countdown | Done | Track special dates and festivals |
-| RSS Reader | Done | Subscribe to external feeds |
-| Wallet | Done | Credit system for transactions |
-| Stickers | Done | Express yourself with custom stickers |
-| Rich Text Editor | Done | Markdown-based with extended syntax |
-| Social Features | Done | Friends list and blocklist management |
-| File Management | Done | Upload and organize files |
-| AI Features | Done | Smart assistance throughout the app |
-| Fitness & Health | Beta | Track your fitness goal and share with your friends |
-| Progressions | Done | Make your move on Solar Network memorizable |
-| Fediverse | Beta | Interact with other fediverse instances |
-
-### Coming Soon
-
-- **SolarWatt Ideask** - An todo and task management app
+| Feature | Description |
+|---------|-------------|
+| Timeline | Chronological feed of posts |
+| Posts, Articles & Moments | Multiple content types |
+| Instant Messaging | Real-time chat with group support |
+| Realms | Communities organized by shared interests |
+| OAuth Integration | Secure third-party authentication |
+| Check-in | Location and status sharing |
+| Countdown | Track special dates and festivals |
+| RSS Reader | Subscribe to external feeds |
+| Wallet | Credit system for transactions |
+| Stickers | Custom sticker expressions |
+| Rich Text Editor | Markdown-based with extended syntax |
+| Social Features | Friends list and blocklist |
+| File Management | Upload and organize files |
+| AI Features | Smart assistance throughout the app |
+| Fitness & Health | Track fitness goals on your wrist |
+| Fediverse | Interact with other fediverse instances (experimental) |
 
 ---
 
@@ -73,74 +47,55 @@ Note: Fediverse support is currently experimental and limited.
 
 ### For Users
 
-1. **Download the App**
-   - Visit [GitHub Releases](https://github.com/Solsynth/HyperNet.Surface/releases) to download the latest version for your platform
-   - **Stable vs Pre-release:** Pre-releases include cutting-edge features but may have untested changes. Since we don't use API versioning, breaking changes may affect stable releases—consider using pre-releases for the best experience.
-
-2. **Create an Account**
-   - Sign up on the Solar Network
-   - Verify your email address
-   - Start exploring!
+1. **Download the APK** from [GitHub Releases](https://github.com/NecoArc-Chaos/Wearosolian/releases)
+2. **Sideload** to your Wear OS device via ADB or a companion app
+3. **Sign up** on Solar Network and start exploring from your wrist!
 
 ### For Developers
 
 #### Prerequisites
 
-- [Flutter SDK](https://flutter.dev) installed
-- For Windows development, install [NASM](https://www.nasm.us) (required by `webcrypto` native assets):
-  ```powershell
-  winget install NASM.NASM
-  ```
-- For Linux development, install additional dependencies:
+- [Flutter SDK](https://flutter.dev) (≥3.10.0)
+- Android SDK with Wear OS system images (if using emulator)
 
-```bash
-sudo apt-get update -y
-sudo apt-get install -y \
-  ninja-build \
-  libgtk-3-dev \
-  libmpv-dev \
-  mpv \
-  libayatana-appindicator3-dev \
-  keybinder-3.0 \
-  libnotify-dev \
-  libgstreamer1.0-dev \
-  libgstreamer-plugins-base1.0-dev \
-  gstreamer-1.0
-```
-
-#### Running the App
+#### Running
 
 ```bash
 # Install dependencies
 flutter pub get
 
-# Run in debug mode
-flutter run
+# Generate code
+dart run build_runner build
 
-# Build release version
-flutter build <platform>
+# Run on connected Wear OS device/emulator
+flutter run
 ```
 
-See the [Flutter documentation](https://docs.flutter.dev) for more build options.
+#### Building
+
+```bash
+# Build APK
+flutter build apk
+
+# Build App Bundle
+flutter build appbundle
+```
 
 ---
 
-## Packages
+## Differences from Upstream
 
-This repository is organized as a monorepo containing useful Dart packages under the `packages/` directory.
-
-Want to build with Solar Network? Check out:
-
-- [Documentation](https://kb.solsynth.dev)
-- [API Reference](https://api.solsynth.dev)
-- [`packages/solar_network_sdk`](./packages/solar_network_sdk) - Official Dart SDK
+- ✅ **Android / Wear OS only** — all desktop (Windows/macOS/Linux), iOS, and web code removed
+- ✅ Minimal dependencies — no `window_manager`, `desktop_drop`, `tray_manager`, etc.
+- ✅ Apple Sign-In → OIDC web flow (native `sign_in_with_apple` removed)
+- ✅ Desktop RPC / Discord presence stubbed out
+- ✅ Call window / multi-window code stubbed out
 
 ---
 
 ## Server
 
-The backend powering Solar Network is available at:
-**[Solsynth/DysonNetwork](https://github.com/Solsynth/DysonNetwork)**
+The backend is the same as upstream: **[Solsynth/DysonNetwork](https://github.com/Solsynth/DysonNetwork)**
 
 ---
 
@@ -148,51 +103,24 @@ The backend powering Solar Network is available at:
 
 | Layer | Technology |
 |-------|------------|
-| **Frontend** | Flutter - Cross-platform UI framework |
-| **Backend** | .NET with PostgreSQL database |
+| **Frontend** | Flutter (Dart) — Wear OS target |
+| **State** | Riverpod + Hooks |
+| **Local DB** | Drift (SQLite) |
+| **Backend** | .NET + PostgreSQL |
 | **Protocols** | ActivityPub (Fediverse), WebSockets, REST API |
 
 ---
 
-## Contributing
+## License
 
-We welcome contributions! Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) before participating.
+This project is licensed under **AGPL-3.0**, same as upstream. See [LICENSE.txt](./LICENSE.txt).
 
-- [Report bugs](https://github.com/Solsynth/HyperNet.Surface/issues)
-- [Suggest features](https://github.com/Solsynth/HyperNet.Surface/discussions)
-- [Translate the app](https://crowdin.com/project/solian)
+Original authorship and copyright attribution to **LittleSheep, Solsynth**, and the Solar Network contributors must be retained.
 
-## Licensing
-
-This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
-
-If you deploy an instance of DysonNetwork, fork the Island project, or redistribute modified versions of this software, you must comply with the AGPL-3.0 license terms, including:
-
-- Including a copy of the original license
-- Preserving existing copyright notices and attribution
-- Clearly stating any modifications you made
-- Providing corresponding source code to users interacting with the service over a network
-
-Original authorship and copyright attribution to LittleSheep, Solsynth, and this repository’s contributors must be retained where applicable.
-
-Please note that the AGPL-3.0 license applies to the software source code only. Certain assets, logos, icons, branding materials, and trademarks may be licensed separately and are not automatically covered under the same terms.
-
-Third-party deployments, forks, and derivative services must not impersonate or present themselves as the official Solar Network service operated by Solsynth.
-
-The names “Solar Network”, “Solian”, related logos, and associated branding may not be used to market, advertise, or identify third-party deployments without prior permission from Solsynth.
-
-References to the underlying DysonNetwork software or the Island project for descriptive or compatibility purposes are permitted.
-
-Besides, if your fork project is an 3rd party client of the Solar Network,
-make sure you've read and understand the [Solar Network Developer Agreement](https://solsynth.dev/en/legal/solar-network-dev/)
-
-See:
-
-- [LICENSE.txt](./LICENSE.txt)
-- [assets/LICENSE.md](./assets/icons/LICENSE.md) (if applicable)
+Third-party deployments must not impersonate the official Solar Network service.
 
 ---
 
 <p align="center">
-  Made with love by the Solar Network Team
+  Forked with ❤️ from <a href="https://github.com/Solsynth/HyperNet.Surface">Solsynth/HyperNet.Surface</a>
 </p>

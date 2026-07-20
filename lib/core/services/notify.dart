@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:island/core/config.dart';
 
-// Conditional imports based on platform
-import 'notify.windows.dart' as windows_notify;
 import 'notify.universal.dart' as universal_notify;
 import 'push_provider.dart';
 
@@ -18,11 +16,7 @@ Future<void> initializeLocalNotifications(WidgetRef ref) async {
     // No local notifications on web
     return;
   }
-  if (Platform.isWindows) {
-    return windows_notify.initializeLocalNotifications(ref);
-  } else {
-    return universal_notify.initializeLocalNotifications(ref);
-  }
+  return universal_notify.initializeLocalNotifications(ref);
 }
 
 StreamSubscription? setupNotificationListener(
@@ -33,22 +27,14 @@ StreamSubscription? setupNotificationListener(
     // No notification listener on web
     return null;
   }
-  if (Platform.isWindows) {
-    return windows_notify.setupNotificationListener(context, ref);
-  } else {
-    return universal_notify.setupNotificationListener(context, ref);
-  }
+  return universal_notify.setupNotificationListener(context, ref);
 }
 
 Future<void> showDebugLocalNotification(WidgetRef ref) async {
   if (kIsWeb) {
     return;
   }
-  if (Platform.isWindows) {
-    return windows_notify.showDebugLocalNotification(ref);
-  } else {
-    return universal_notify.showDebugLocalNotification(ref);
-  }
+  return universal_notify.showDebugLocalNotification(ref);
 }
 
 Future<void> subscribePushNotification(
@@ -73,15 +59,8 @@ Future<void> subscribePushNotification(
   ).read(sharedPreferencesProvider);
   await resolvePushProvider(effectiveContext, prefs);
 
-  if (Platform.isWindows) {
-    return windows_notify.subscribePushNotification(
-      apiClient,
-      detailedErrors: detailedErrors,
-    );
-  } else {
-    return universal_notify.subscribePushNotification(
-      apiClient,
-      detailedErrors: detailedErrors,
-    );
-  }
+  return universal_notify.subscribePushNotification(
+    apiClient,
+    detailedErrors: detailedErrors,
+  );
 }

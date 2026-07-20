@@ -1,5 +1,5 @@
 import "dart:async";
-import "package:desktop_drop/desktop_drop.dart";
+import 'package:island/shared/widgets/desktop_drop_stub.dart';
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";

@@ -27,7 +27,7 @@ import 'package:island/misc/about_content.dart';
 import 'package:island/shared/widgets/alert.dart';
 import 'package:island/shared/widgets/app_scaffold.dart' hide PageBackButton;
 import 'package:island/shared/widgets/layouts/sheet_scaffold.dart';
-import 'package:island_desktop_presence/island_desktop_presence.dart';
+import 'package:island/shared/stubs/island_desktop_presence_stub.dart';
 import 'package:logging/logging.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path_provider/path_provider.dart';

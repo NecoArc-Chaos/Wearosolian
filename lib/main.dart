@@ -35,13 +35,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:island/shared/stubs/window_manager_stub.dart';
 import 'package:protocol_handler/protocol_handler.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 // ponytail: desktop_multi_window for call window support
-import 'package:desktop_multi_window/desktop_multi_window.dart';
-import 'package:island/chat/widgets/call_window.dart';
 
 final List<LogRecord> _earlyLogs = [];
 const _sentryDsn = String.fromEnvironment('SENTRY_DSN');
@@ -71,66 +69,7 @@ void main(List<String> args) async {
 
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  // ponytail: detect sub-window on desktop before heavy init
-  if (!kIsWeb && (Platform.isMacOS || Platform.isLinux || Platform.isWindows)) {
-    try {
-      final windowController = await WindowController.fromCurrentEngine();
-      final rawArgs = windowController.arguments;
-      if (rawArgs.isNotEmpty) {
-        final callArgs = parseCallWindowArgs(rawArgs);
-        if (callArgs != null) {
-          // Minimal init for call window — skip Firebase, plugins, full router
-          await windowManager.ensureInitialized();
-          final callPrefs = await SharedPreferences.getInstance();
-          final savedSize = callPrefs.getString('callWindowSize');
-          Size initialSize = const Size(1100, 760);
-          if (savedSize != null) {
-            try {
-              final parts = savedSize.split(',');
-              if (parts.length == 2) {
-                initialSize = Size(
-                  double.parse(parts[0]),
-                  double.parse(parts[1]),
-                );
-              }
-            } catch (_) {}
-          }
-          WindowOptions windowOptions = WindowOptions(
-            size: initialSize,
-            minimumSize: const Size(720, 520),
-            maximumSize: const Size(1200, 900),
-            alwaysOnTop: true,
-            center: true,
-            backgroundColor: Colors.transparent,
-            skipTaskbar: false,
-            titleBarStyle: TitleBarStyle.hidden,
-            windowButtonVisibility: true,
-          );
-          await windowManager.waitUntilReadyToShow(windowOptions, () async {
-            await windowManager.show();
-            await windowManager.focus();
-            await windowManager.setAlwaysOnTop(true);
-            await windowManager.setResizable(true);
-            // ponytail: prevent maximize — call window should stay compact
-            await windowManager.setMaximizable(false);
-          });
-          await EasyLocalization.ensureInitialized();
-          EasyLocalization.logger.enableBuildModes = [];
-          runApp(
-            ProviderScope(
-              overrides: [
-                sharedPreferencesProvider.overrideWithValue(callPrefs),
-              ],
-              child: CallWindowApp(args: callArgs),
-            ),
-          );
-          return;
-        }
-      }
-    } catch (_) {
-      // Not a sub-window or parse failed — continue with normal init
-    }
-  }
+  // ponytail: desktop sub-window detection removed (WearOS only)
 
   MediaKit.ensureInitialized();
 
@@ -139,12 +78,6 @@ void main(List<String> args) async {
       "[SplashScreen] Keeping the flash screen to loading other resources...",
     );
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  }
-
-  if (!kIsWeb && (Platform.isLinux || Platform.isMacOS || Platform.isWindows)) {
-    Logger.root.info("[SplashScreen] Initializing desktop window manager...");
-    await protocolHandler.register('solian');
-    Logger.root.info("[SplashScreen] Desktop window manager is ready!");
   }
 
   Future<void> appRunner() async {
@@ -257,62 +190,6 @@ void main(List<String> args) async {
     }
 
     HttpOverrides.global = createAppHttpOverridesFromPrefs(prefs);
-
-    if (!kIsWeb &&
-        (Platform.isMacOS || Platform.isLinux || Platform.isWindows)) {
-      await windowManager.ensureInitialized();
-
-      const defaultSize = Size(360, 640);
-      final savedSizeString = prefs.getString(kAppWindowSize);
-      Size initialSize = defaultSize;
-
-      if (savedSizeString != null) {
-        try {
-          final parts = savedSizeString.split(',');
-          if (parts.length == 2) {
-            final width = double.parse(parts[0]);
-            final height = double.parse(parts[1]);
-            initialSize = Size(width, height);
-          }
-        } catch (e) {
-          Logger.root.severe(
-            "[SplashScreen] Failed to parse saved window size",
-            e,
-          );
-          initialSize = defaultSize;
-        }
-      }
-
-      WindowOptions windowOptions = WindowOptions(
-        size: initialSize,
-        center: true,
-        backgroundColor: Colors.transparent,
-        skipTaskbar: false,
-        titleBarStyle: TitleBarStyle.hidden,
-        windowButtonVisibility: true,
-      );
-      windowManager.waitUntilReadyToShow(windowOptions, () async {
-        final env = Platform.environment;
-        final isWayland = env.containsKey('WAYLAND_DISPLAY');
-
-        if (isWayland) {
-          try {
-            await windowManager.setAsFrameless();
-          } catch (e) {
-            debugPrint('[Wayland] setAsFrameless failed: $e');
-          }
-        }
-        await windowManager.setMinimumSize(defaultSize);
-        await windowManager.show();
-        await windowManager.focus();
-        final opacity = prefs.getDouble(kAppWindowOpacity) ?? 1.0;
-        await windowManager.setOpacity(opacity);
-        Logger.root.info(
-          "[SplashScreen] Desktop window is ready with size: ${initialSize.width}x${initialSize.height}"
-          "${isWayland ? " (Wayland frameless fix applied)" : ""}",
-        );
-      });
-    }
 
     if (!kIsWeb && Platform.isAndroid) {
       final ImagePickerPlatform imagePickerImplementation =

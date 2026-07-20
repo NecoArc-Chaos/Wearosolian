@@ -8,7 +8,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:island/core/services/analytics_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:window_manager/window_manager.dart';
 
 part 'config.freezed.dart';
 part 'config.g.dart';
@@ -718,7 +717,6 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     final prefs = ref.read(sharedPreferencesProvider);
     prefs.setDouble(kAppWindowOpacity, value);
     state = state.copyWith(windowOpacity: value);
-    Future(() => windowManager.setOpacity(value));
   }
 
   void setThemeMode(String value) {

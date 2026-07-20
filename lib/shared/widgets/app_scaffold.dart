@@ -23,7 +23,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shake/shake.dart';
 import 'package:wear/wear.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:island/shared/stubs/window_manager_stub.dart';
 
 class AppScrollBehavior extends MaterialScrollBehavior {
   @override

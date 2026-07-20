@@ -27,7 +27,6 @@ import 'package:passkeys/authenticator.dart';
 import 'package:passkeys/types.dart';
 import 'package:pinput/pinput.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:solar_network_sdk/solar_network_sdk.dart';
 
@@ -1026,46 +1025,7 @@ class _LoginLookupScreen extends HookConsumerWidget {
     }
 
     Future<void> withApple() async {
-      final client = ref.watch(solarNetworkClientProvider);
-      try {
-        final credential = await SignInWithApple.getAppleIDCredential(
-          scopes: [AppleIDAuthorizationScopes.email],
-          webAuthenticationOptions: WebAuthenticationOptions(
-            clientId: 'dev.solsynth.solarpass',
-            redirectUri: Uri.parse('https://nt.solian.app/auth/callback/apple'),
-          ),
-        );
-
-        if (context.mounted) showLoadingModal(context);
-        final resp = await client.dio.post(
-          '/padlock/auth/login/apple/mobile',
-          data: {
-            'identity_token': credential.identityToken!,
-            'authorization_code': credential.authorizationCode,
-            'device_id': await getUdid(),
-            'device_name': await getDeviceName(),
-          },
-        );
-
-        final token = resp.data['token'];
-        setToken(
-          ref.watch(sharedPreferencesProvider),
-          token,
-          refreshToken: resp.data['refresh_token'] as String?,
-          expiresIn: (resp.data['expires_in'] as num?)?.toInt(),
-          refreshExpiresIn: (resp.data['refresh_expires_in'] as num?)?.toInt(),
-        );
-        ref.invalidate(tokenProvider);
-        if (!context.mounted) return;
-
-        // Do post login tasks
-        await performPostLogin(context, ref);
-      } catch (err) {
-        if (err is SignInWithAppleAuthorizationException) return;
-        showErrorAlert(err);
-      } finally {
-        if (context.mounted) hideLoadingModal(context);
-      }
+      return withOidc('apple');
     }
 
     Future<void> performDiscoverablePasskeyLogin() async {

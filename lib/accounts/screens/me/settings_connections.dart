@@ -13,7 +13,6 @@ import 'package:island/shared/widgets/alert.dart';
 import 'package:island/shared/widgets/layouts/sheet_scaffold.dart';
 import 'package:island/shared/widgets/response.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:solar_network_sdk/solar_network_sdk.dart';
@@ -234,35 +233,6 @@ class AccountConnectionNewSheet extends HookConsumerWidget {
       final client = ref.watch(apiClientProvider);
 
       switch (selectedProvider.value.toLowerCase()) {
-        case 'apple':
-          try {
-            final credential = await SignInWithApple.getAppleIDCredential(
-              scopes: [AppleIDAuthorizationScopes.email],
-              webAuthenticationOptions: WebAuthenticationOptions(
-                clientId: 'dev.solsynth.solarpass',
-                redirectUri: Uri.parse('https://solian.app/auth/callback'),
-              ),
-            );
-
-            if (context.mounted) showLoadingModal(context);
-
-            await client.post(
-              '/padlock/auth/connect/apple/mobile',
-              data: {
-                'identity_token': credential.identityToken!,
-                'authorization_code': credential.authorizationCode,
-              },
-            );
-            if (context.mounted) {
-              showSnackBar('accountConnectionAddSuccess'.tr());
-              Navigator.pop(context, true);
-            }
-          } catch (err) {
-            if (err is SignInWithAppleAuthorizationException) return;
-            showErrorAlert(err);
-          } finally {
-            if (context.mounted) hideLoadingModal(context);
-          }
         default:
           final serverUrl = ref.watch(serverUrlProvider);
           final accessToken = ref.watch(tokenProvider);
