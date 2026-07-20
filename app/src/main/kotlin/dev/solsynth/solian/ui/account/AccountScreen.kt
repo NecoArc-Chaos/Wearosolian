@@ -32,7 +32,6 @@ fun AccountScreen(onLogout: () -> Unit) {
     ) {
         item { Spacer(Modifier.height(16.dp)) }
 
-        // Avatar placeholder
         item {
             Card(
                 onClick = {},
@@ -47,14 +46,10 @@ fun AccountScreen(onLogout: () -> Unit) {
             }
         }
 
-        // Display name
-        item {
-            Text("User", style = MaterialTheme.typography.titleSmall)
-        }
+        item { Text("User", style = MaterialTheme.typography.titleSmall) }
 
         item { Spacer(Modifier.height(12.dp)) }
 
-        // ── Quick Status Toggle ──
         item {
             Text("Quick Status", style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -66,22 +61,19 @@ fun AccountScreen(onLogout: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(0.9f),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                FilterChip(
-                    selected = presence,
+                CompactChip(
                     onClick = { presence = !presence },
-                    label = { Text(if (presence) "🟢 Online" else "⚫ Away") },
+                    label = { Text(if (presence) "🟢 On" else "⚫ Off") },
                 )
-                FilterChip(
-                    selected = statusText == "Busy",
+                CompactChip(
                     onClick = { statusText = if (statusText == "Busy") "Online" else "Busy" },
-                    label = { Text("🔴 Busy") },
+                    label = { Text("🔴 $statusText") },
                 )
             }
         }
 
         item { Spacer(Modifier.height(16.dp)) }
 
-        // Logout
         item {
             Button(
                 onClick = onLogout,
@@ -89,9 +81,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error
                 ),
-            ) {
-                Text("Logout")
-            }
+            ) { Text("Logout") }
         }
 
         item { Spacer(Modifier.height(16.dp)) }

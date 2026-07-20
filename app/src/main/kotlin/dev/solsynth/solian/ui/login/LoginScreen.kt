@@ -18,7 +18,7 @@ import dev.solsynth.solian.data.model.TokenExchangeRequest
 fun LoginScreen(onLoginSuccess: () -> Unit) {
     var serverUrl by remember { mutableStateOf(TokenStore.serverUrl) }
     var account by remember { mutableStateOf("") }
-    var step by remember { mutableStateOf(0) } // 0=input, 1=pending, 2=approved
+    var step by remember { mutableStateOf(0) }
     var challengeId by remember { mutableStateOf<String?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
@@ -32,23 +32,20 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
         when (step) {
             0 -> {
-                // Step 0: Enter email/username
                 Spacer(Modifier.height(12.dp))
 
-                OutlinedTextField(
+                TextField(
                     value = serverUrl,
                     onValueChange = { serverUrl = it },
                     label = { Text("Server") },
-                    singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(Modifier.height(8.dp))
 
-                OutlinedTextField(
+                TextField(
                     value = account,
                     onValueChange = { account = it },
-                    label = { Text("Username or Email") },
-                    singleLine = true,
+                    label = { Text("Name or Email") },
                     modifier = Modifier.fillMaxWidth(),
                 )
 
@@ -61,35 +58,36 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
                 Button(
                     onClick = {
+                        error = null
+                        TokenStore.serverUrl = serverUrl
                         scope.launch {
-                            error = null
-                            TokenStore.serverUrl = serverUrl
                             try {
-                                val challenge = ApiClient.api.createChallenge(
+                                val c = ApiClient.api.createChallenge(
                                     ChallengeRequest(account = account)
                                 )
-                                challengeId = challenge.id
+                                challengeId = c.id
                                 step = 1
-                                // Start polling
-                                pollForApproval(challenge.id) { result ->
+                                pollForApproval(c.id) { result ->
                                     when (result) {
                                         is PollResult.Approved -> {
                                             step = 2
-                                            delay(500)
-                                            onLoginSuccess()
+                                            scope.launch {
+                                                delay(500)
+                                                onLoginSuccess()
+                                            }
                                         }
                                         is PollResult.Error -> {
                                             error = result.message
                                             step = 0
                                         }
                                         is PollResult.Expired -> {
-                                            error = "Challenge expired. Try again."
+                                            error = "Expired. Try again."
                                             step = 0
                                         }
                                     }
                                 }
                             } catch (e: Exception) {
-                                error = e.message ?: "Connection failed"
+                                error = e.message ?: "Failed"
                             }
                         }
                     },
@@ -99,20 +97,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             }
 
             1 -> {
-                // Step 1: Waiting for phone approval
                 CircularProgressIndicator(modifier = Modifier.size(32.dp))
                 Spacer(Modifier.height(8.dp))
                 Text("Check your phone",
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center)
-                Text("Approve the login request",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center)
             }
 
             2 -> {
-                // Step 2: Approved, logging in
                 Text("Approved!", style = MaterialTheme.typography.bodySmall)
                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
             }
@@ -130,29 +122,19 @@ private suspend fun pollForApproval(
     challengeId: String,
     onResult: (PollResult) -> Unit,
 ) {
-    repeat(60) { // ~1 minute timeout
+    repeat(60) {
         delay(2000)
         try {
             val challenge = ApiClient.api.getChallenge(challengeId)
-            when {
-                challenge.status == "approved" || challenge.stepTotal == 0 -> {
-                    // Exchange challenge for token
-                    val tokenResp = ApiClient.api.exchangeToken(
-                        // The "code" is the challenge ID itself for token exchange
-                        TokenExchangeRequest(code = challengeId)
-                    )
-                    TokenStore.token = tokenResp.token
-                    onResult(PollResult.Approved)
-                    return
-                }
-                challenge.status == "declined" -> {
-                    onResult(PollResult.Error("Login declined"))
-                    return
-                }
+            if (challenge.approvedAt != null) {
+                val tokenResp = ApiClient.api.exchangeToken(
+                    TokenExchangeRequest(code = challengeId)
+                )
+                TokenStore.token = tokenResp.token
+                onResult(PollResult.Approved)
+                return
             }
-        } catch (e: Exception) {
-            // Continue polling on transient errors
-        }
+        } catch (_: Exception) { }
     }
     onResult(PollResult.Expired)
 }

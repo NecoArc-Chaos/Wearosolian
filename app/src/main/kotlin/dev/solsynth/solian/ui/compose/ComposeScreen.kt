@@ -32,7 +32,7 @@ fun ComposeScreen() {
 
         Spacer(Modifier.height(8.dp))
 
-        OutlinedTextField(
+        TextField(
             value = text,
             onValueChange = { text = it },
             label = { Text("What's on your mind?") },
