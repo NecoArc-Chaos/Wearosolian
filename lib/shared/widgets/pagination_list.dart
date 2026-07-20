@@ -12,7 +12,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:solar_network_sdk/solar_network_sdk.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'package:island/shared/wear/scaling_list.dart';
+import 'package:island/core/services/wear_os.dart';
 
 class PaginationList<T> extends HookConsumerWidget {
   final ProviderListenable<AsyncValue<PaginationState<T>>> provider;
@@ -147,37 +148,55 @@ class PaginationList<T> extends HookConsumerWidget {
         return SizedBox(key: const ValueKey('error'), child: content);
       }
 
-      final listView = SuperListView.separated(
-        padding: padding,
-        itemCount: (data.value?.items.length ?? 0) + 1,
-        itemBuilder: (context, idx) {
-          if (idx == data.value?.items.length) {
-            return PaginationListFooter(
-              noti: noti,
-              data: data,
-              skeletonChild: footerSkeletonChild,
-              skeletonMaxWidth: footerSkeletonMaxWidth,
+      final listView = isWearDevice(context)
+          ? WearScalingList(
+              itemCount: (data.value?.items.length ?? 0) + 1,
+              padding: padding,
+              itemBuilder: (context, idx) {
+                if (idx == data.value?.items.length) {
+                  return PaginationListFooter(
+                    noti: noti,
+                    data: data,
+                    skeletonChild: footerSkeletonChild,
+                    skeletonMaxWidth: footerSkeletonMaxWidth,
+                  );
+                }
+                final entry = data.value?.items[idx];
+                if (entry != null) return itemBuilder(context, idx, entry);
+                return null;
+              },
+            )
+          : SuperListView.separated(
+              padding: padding,
+              itemCount: (data.value?.items.length ?? 0) + 1,
+              itemBuilder: (context, idx) {
+                if (idx == data.value?.items.length) {
+                  return PaginationListFooter(
+                    noti: noti,
+                    data: data,
+                    skeletonChild: footerSkeletonChild,
+                    skeletonMaxWidth: footerSkeletonMaxWidth,
+                  );
+                }
+                final entry = data.value?.items[idx];
+                if (entry != null) return itemBuilder(context, idx, entry);
+                return null;
+              },
+              separatorBuilder: (context, index) {
+                if (seperatorBuilder != null) {
+                  final entry = data.value?.items[index];
+                  if (entry != null) {
+                    return seperatorBuilder!(context, index, entry) ??
+                        const SizedBox();
+                  }
+                  return const SizedBox();
+                }
+                if (spacing != null && spacing! > 0) {
+                  return Gap(spacing!);
+                }
+                return const SizedBox();
+              },
             );
-          }
-          final entry = data.value?.items[idx];
-          if (entry != null) return itemBuilder(context, idx, entry);
-          return null;
-        },
-        separatorBuilder: (context, index) {
-          if (seperatorBuilder != null) {
-            final entry = data.value?.items[index];
-            if (entry != null) {
-              return seperatorBuilder!(context, index, entry) ??
-                  const SizedBox();
-            }
-            return const SizedBox();
-          }
-          if (spacing != null && spacing! > 0) {
-            return Gap(spacing!);
-          }
-          return const SizedBox();
-        },
-      );
 
       return SizedBox(
         key: const ValueKey('data'),

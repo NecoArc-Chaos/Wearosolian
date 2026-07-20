@@ -23,6 +23,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shake/shake.dart';
 import 'package:wear/wear.dart';
+import 'package:island/shared/wear/swipe_back.dart';
 import 'package:island/shared/stubs/window_manager_stub.dart';
 
 class AppScrollBehavior extends MaterialScrollBehavior {
@@ -252,7 +253,7 @@ class AppScaffold extends HookConsumerWidget {
                 height: topReservedHeight,
               ),
             ),
-            if (body != null) Expanded(child: body!),
+            if (body != null) Expanded(child: WearSwipeBack(child: body!)),
           ],
         ),
         appBar: appBar,

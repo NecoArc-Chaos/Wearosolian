@@ -37,6 +37,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:island/shared/stubs/window_manager_stub.dart';
 import 'package:island/core/services/wear_os.dart';
+import 'package:island/shared/wear/ambient.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 // ponytail: desktop_multi_window for call window support
@@ -369,7 +370,8 @@ class IslandApp extends HookConsumerWidget {
       return null;
     }, []);
 
-    return MaterialApp.router(
+    return WearAmbientMode(
+      child: MaterialApp.router(
       title: 'Solar Network',
       scaffoldMessengerKey: globalScaffoldMessengerKey,
       color: Colors.transparent,
@@ -409,6 +411,7 @@ class IslandApp extends HookConsumerWidget {
           ],
         );
       },
+      ),
     );
   }
 }
