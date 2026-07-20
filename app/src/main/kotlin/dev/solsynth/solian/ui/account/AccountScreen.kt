@@ -62,11 +62,13 @@ fun AccountScreen(onLogout: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(0.9f),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                CompactChip(
+                FilterChip(
+                    selected = presence,
                     onClick = { presence = !presence },
                     label = { Text(if (presence) "🟢 On" else "⚫ Off") },
                 )
-                CompactChip(
+                FilterChip(
+                    selected = statusText == "Busy",
                     onClick = { statusText = if (statusText == "Busy") "Online" else "Busy" },
                     label = { Text("🔴 $statusText") },
                 )
