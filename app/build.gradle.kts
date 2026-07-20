@@ -42,17 +42,22 @@ android {
 }
 
 dependencies {
-    // ── Wear OS Compose M3 ──
-    val wearCompose = "1.3.1"
-    implementation("androidx.wear.compose:compose-material3:$wearCompose")
-    implementation("androidx.wear.compose:compose-foundation:$wearCompose")
-    implementation("androidx.wear.compose:compose-navigation:$wearCompose")
+    // ── BOMs ──
+    val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
+    val wearComposeBom = platform("androidx.wear.compose:compose-bom:2024.10.00")
+    implementation(composeBom)
+    implementation(wearComposeBom)
 
-    // ── Core AndroidX ──
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.activity:activity-compose:1.10.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    // ── Wear OS Compose M3 (version from BOM) ──
+    implementation("androidx.wear.compose:compose-material3")
+    implementation("androidx.wear.compose:compose-foundation")
+    implementation("androidx.wear.compose:compose-navigation")
+
+    // ── Core AndroidX (version from BOM where applicable) ──
+    implementation("androidx.core:core-ktx")
+    implementation("androidx.activity:activity-compose")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose")
 
     // ── Networking ──
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
