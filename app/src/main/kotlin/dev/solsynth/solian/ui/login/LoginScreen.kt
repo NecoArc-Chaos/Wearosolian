@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.FilterChip
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,18 +35,20 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             0 -> {
                 Spacer(Modifier.height(12.dp))
 
-                TextField(
+                OutlinedTextField(
                     value = serverUrl,
                     onValueChange = { serverUrl = it },
                     label = { Text("Server") },
+                    singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(Modifier.height(8.dp))
 
-                TextField(
+                OutlinedTextField(
                     value = account,
                     onValueChange = { account = it },
                     label = { Text("Name or Email") },
+                    singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
 

@@ -33,10 +33,11 @@ fun ComposeScreen() {
 
         Spacer(Modifier.height(8.dp))
 
-        TextField(
+        OutlinedTextField(
             value = text,
             onValueChange = { text = it },
             label = { Text("What's on your mind?") },
+            singleLine = false,
             modifier = Modifier.fillMaxWidth().height(80.dp),
             maxLines = 3,
             enabled = !isPosting,
