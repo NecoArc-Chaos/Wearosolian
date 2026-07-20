@@ -42,22 +42,20 @@ android {
 }
 
 dependencies {
-    // ── BOMs ──
-    val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
-    val wearComposeBom = platform("androidx.wear.compose:compose-bom:2024.10.00")
+    // ── Compose BOM (core AndroidX versions) ──
+    val composeBom = platform("androidx.compose:compose-bom:2024.09.00")
     implementation(composeBom)
-    implementation(wearComposeBom)
 
-    // ── Wear OS Compose M3 (version from BOM) ──
-    implementation("androidx.wear.compose:compose-material3")
-    implementation("androidx.wear.compose:compose-foundation")
-    implementation("androidx.wear.compose:compose-navigation")
+    // ── Wear OS Compose M3 ──
+    implementation("androidx.wear.compose:compose-material3:1.3.1")
+    implementation("androidx.wear.compose:compose-foundation:1.3.1")
+    implementation("androidx.wear.compose:compose-navigation:1.3.1")
 
-    // ── Core AndroidX (version from BOM where applicable) ──
-    implementation("androidx.core:core-ktx")
-    implementation("androidx.activity:activity-compose")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose")
+    // ── Core AndroidX ──
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
 
     // ── Networking ──
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
@@ -73,9 +71,6 @@ dependencies {
     implementation("androidx.room:room-runtime:$room")
     implementation("androidx.room:room-ktx:$room")
     ksp("androidx.room:room-compiler:$room")
-
-    // ── WebSocket ──
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
 
 kotlin {
