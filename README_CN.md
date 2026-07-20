@@ -107,7 +107,9 @@ flutter build appbundle
 |------|------|
 | **表冠旋转滚动** | Flutter Wear OS engine 自动将表冠旋转映射为 `PointerScrollEvent`，所有 `Scrollable` 组件原生支持 |
 | **圆表适配** | `app_scaffold.dart` 根据 `WatchShape` 自动裁剪为圆形并注入安全边距 |
-| **缩放列表** | `WearScalingList` — 参考 Orbit 的 `TransformingLazyColumn`，边缘项目缩放至 70% |
+| **缩放列表** | `WearScalingList` — 边缘项目缩至 70%；`PaginationList` 在手表上自动启用 |
+| **滑动手势返回** | `WearSwipeBack` — 左边缘滑动返回（类似 Orbit 的 `SwipeDismissableNavHost`） |
+| **常亮模式** | `WearAmbientMode` — 始终显示，简化暗色 UI |
 | **表形检测** | `wear_os.dart` 提供 `isWearDevice()` / `isRoundWatch()` / `WearAwareBuilder` |
 | **大触摸目标** | 主题确保最小 48dp 触摸区域 |
 

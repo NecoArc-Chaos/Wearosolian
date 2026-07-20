@@ -107,7 +107,9 @@ This fork is optimized for Wear OS smartwatches:
 |---------|---------------|
 | **Crown scrolling** | Flutter Wear OS engine auto-maps crown rotation to `PointerScrollEvent` on all `Scrollable` widgets |
 | **Round watch** | `app_scaffold.dart` clips to circle via `WatchShape` and injects safe insets |
-| **Scaling list** | `WearScalingList` — inspired by Orbit's `TransformingLazyColumn`, items scale down to 70% at edges |
+| **Scaling list** | `WearScalingList` — items scale down to 70% at edges; `PaginationList` auto-uses it on wear devices |
+| **Swipe-to-back** | `WearSwipeBack` — left-edge swipe pops navigation (like Orbit's `SwipeDismissableNavHost`) |
+| **Ambient mode** | `WearAmbientMode` — always-on display with simplified dark UI |
 | **Shape detection** | `wear_os.dart` provides `isWearDevice()` / `isRoundWatch()` / `WearAwareBuilder` |
 | **Large targets** | Theme enforces minimum 48dp touch targets |
 
