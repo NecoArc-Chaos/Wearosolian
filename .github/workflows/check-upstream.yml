@@ -1,0 +1,95 @@
+name: Check Upstream API Changes
+
+on:
+  schedule:
+    # Every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Scan upstream for API changes
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch upstream commits
+        run: |
+          git remote add upstream https://github.com/Solsynth/Solian.git 2>/dev/null || true
+          git fetch upstream v3 --depth 50 2>/dev/null || git fetch upstream main --depth 50
+
+      - name: Check for API-relevant changes
+        id: check
+        run: |
+          # Files that indicate API/datamodel/auth changes
+          PATTERNS=(
+            "packages/solar_network_sdk/"
+            "lib/data/"
+            "lib/core/network"
+            "lib/auth/"
+            "lib/core/websocket"
+            "lib/accounts/"
+          )
+
+          LAST_CHECK=$(cat .github/upstream-check-sha 2>/dev/null || echo "origin/v3")
+
+          echo "Last checked SHA: $LAST_CHECK"
+          echo "Current upstream HEAD: $(git rev-parse upstream/v3 2>/dev/null || git rev-parse upstream/main)"
+
+          CHANGES=$(git diff --name-only "$LAST_CHECK" upstream/v3 -- 2>/dev/null || git diff --name-only "$LAST_CHECK" upstream/main --)
+
+          RELEVANT=""
+          for pattern in "${PATTERNS[@]}"; do
+            MATCHES=$(echo "$CHANGES" | grep "^$pattern" || true)
+            if [ -n "$MATCHES" ]; then
+              RELEVANT="$RELEVANT"$'\n'"$MATCHES"
+            fi
+          done
+
+          if [ -n "$RELEVANT" ]; then
+            echo "## API-relevant changes detected:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "$RELEVANT" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "relevant=true" >> $GITHUB_OUTPUT
+
+            # Format detailed log
+            {
+              echo "### 🔔 Upstream API Changes Detected"
+              echo ""
+              echo "Commit range: \`$LAST_CHECK..HEAD\`"
+              echo ""
+              echo "Changed files:"
+              echo '```'
+              echo "$RELEVANT"
+              echo '```'
+              echo ""
+              git log "$LAST_CHECK..upstream/v3" --oneline -- 2>/dev/null | head -20 || \
+                git log "$LAST_CHECK..upstream/main" --oneline -- | head -20
+            } > upstream-report.md
+          else
+            echo "✅ No API-relevant changes found." >> $GITHUB_STEP_SUMMARY
+            echo "relevant=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update checkpoint
+        run: |
+          UPSTREAM_HEAD=$(git rev-parse upstream/v3 2>/dev/null || git rev-parse upstream/main)
+          mkdir -p .github
+          echo "$UPSTREAM_HEAD" > .github/upstream-check-sha
+
+      - name: Create Issue
+        if: steps.check.outputs.relevant == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('upstream-report.md', 'utf8');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔔 Upstream API changes detected — needs sync',
+              body: body,
+              labels: ['upstream', 'api']
+            });
