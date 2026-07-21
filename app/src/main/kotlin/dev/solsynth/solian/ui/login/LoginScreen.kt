@@ -120,6 +120,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     error = null
                     isLoading = true
                     TokenStore.serverUrl = serverUrl
+                    ApiClient.recreate()
                     scope.launch {
                         try {
                             // 1. Create challenge

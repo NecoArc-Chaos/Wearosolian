@@ -10,7 +10,12 @@ import java.util.concurrent.TimeUnit
 
 object ApiClient {
 
-    val api: SolianApi by lazy { build().create(SolianApi::class.java) }
+    var api: SolianApi = build().create(SolianApi::class.java)
+        private set
+
+    fun recreate() {
+        api = build().create(SolianApi::class.java)
+    }
 
     private fun build(): Retrofit {
         val logging = HttpLoggingInterceptor().apply {
