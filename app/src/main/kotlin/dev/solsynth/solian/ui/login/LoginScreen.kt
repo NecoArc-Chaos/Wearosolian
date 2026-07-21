@@ -38,8 +38,10 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             .fillMaxSize()
             .rotaryScrollable(rotaryBehavior, focusRequester),
         state = listState,
-        topPadding = if (isRound) 36f else 8f,
-        bottomPadding = if (isRound) 36f else 8f,
+        contentPadding = PaddingValues(
+            top = if (isRound) 36.dp else 8.dp,
+            bottom = if (isRound) 36.dp else 8.dp
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
