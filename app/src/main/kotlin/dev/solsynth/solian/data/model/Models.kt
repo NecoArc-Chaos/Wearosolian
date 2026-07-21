@@ -6,20 +6,23 @@ import com.google.gson.annotations.SerializedName
 
 data class ChallengeRequest(
     val account: String,
-    val platform: Int = 0,
-    @SerializedName("device_id") val deviceId: String = "wearos",
-    @SerializedName("device_name") val deviceName: String = "Wear OS",
+    // Backend ClientPlatform enum: 0=Unidentified, 1=Web, 2=Ios, 3=Android, 4=MacOs...
+    val platform: Int = 3, // Android
+    @SerializedName("device_id") val deviceId: String = "wearos-client",
+    @SerializedName("device_name") val deviceName: String? = "Wear OS",
 )
 
 data class SnAuthChallenge(
     val id: String,
+    @SerializedName("step_remain") val stepRemain: Int = 1,
     @SerializedName("approved_at") val approvedAt: String?,
 )
 
 data class SnAuthFactor(
     val id: String,
-    val type: Int,         // 0=password, 1=totp, 2=email, etc.
+    val type: Int,         // 0=Password, 1=EmailCode, 2=InAppCode, 3=TimedCode(TOTP), 4=PinCode, ...
     val name: String?,
+    @SerializedName("enabled_at") val enabledAt: String?,
 )
 
 data class PerformChallengeRequest(

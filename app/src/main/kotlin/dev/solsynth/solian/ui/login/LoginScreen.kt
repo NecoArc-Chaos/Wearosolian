@@ -25,7 +25,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     var serverUrl by remember { mutableStateOf(TokenStore.serverUrl) }
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(value = false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
@@ -40,7 +40,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         state = listState,
         contentPadding = PaddingValues(
             top = if (isRound) 36.dp else 8.dp,
-            bottom = if (isRound) 36.dp else 8.dp
+            bottom = if (isRound) 36.dp else 8.dp,
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -48,9 +48,11 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             Text("Solian", style = MaterialTheme.typography.titleMedium)
         }
         item {
-            Text("Solar Network",
+            Text(
+                text = "Solar Network",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
 
         item { Spacer(Modifier.height(16.dp)) }
@@ -101,13 +103,18 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     onClick = {},
                     modifier = Modifier.fillMaxWidth(0.85f),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
                     ),
                 ) {
-                    Text(error!!, style = MaterialTheme.typography.bodySmall,
+                    Text(
+                        text = error!!,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp).fillMaxWidth())
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                    )
                 }
             }
         }
@@ -123,26 +130,34 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     ApiClient.recreate()
                     scope.launch {
                         try {
-                            // 1. Create challenge
+                            // 1. Create challenge (Platform=3=Android)
                             val ch = ApiClient.api.createChallenge(
-                                ChallengeRequest(account = account)
+                                ChallengeRequest(account = account),
                             )
-                            // 2. Get factors, find password factor (type=0)
+                            // 2. Get factors, find enabled password factor (type=0)
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
-                            val pwFactor = factors.firstOrNull { it.type == 0 }
-                                ?: throw Exception("No password factor configured")
+                            val pwFactor = factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
+                                ?: factors.firstOrNull { it.type == 0 }
+                                ?: throw Exception("No password factor found. Factors: ${factors.map { it.type }}")
 
-                            // 3. Verify password
-                            ApiClient.api.performChallenge(
+                            // 3. Verify password (PATCH challenge/{id})
+                            val result = ApiClient.api.performChallenge(
                                 ch.id,
-                                PerformChallengeRequest(factorId = pwFactor.id, password = password)
+                                PerformChallengeRequest(factorId = pwFactor.id, password = password),
                             )
-                            // 4. Exchange for token
+                            if (result.stepRemain > 0) {
+                                throw Exception("Multi-factor auth required (${result.stepRemain} step(s) remaining)")
+                            }
+
+                            // 4. Exchange challenge code for token
                             val tokenResp = ApiClient.api.exchangeToken(
-                                TokenExchangeRequest(code = ch.id)
+                                TokenExchangeRequest(code = ch.id),
                             )
                             TokenStore.token = tokenResp.token
                             onLoginSuccess()
+                        } catch (e: retrofit2.HttpException) {
+                            val body = e.response()?.errorBody()?.string()
+                            error = "HTTP ${e.code()}: ${body ?: e.message()}"
                         } catch (e: Exception) {
                             error = e.message ?: "Login failed"
                         } finally {

@@ -13,7 +13,7 @@ interface SolianApi {
     @GET("api/auth/challenge/{id}/factors")
     suspend fun getChallengeFactors(@Path("id") challengeId: String): List<SnAuthFactor>
 
-    @POST("api/auth/challenge/{id}")
+    @PATCH("api/auth/challenge/{id}")
     suspend fun performChallenge(
         @Path("id") challengeId: String,
         @Body request: PerformChallengeRequest,
