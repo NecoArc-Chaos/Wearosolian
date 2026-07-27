@@ -124,10 +124,13 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                             val ch = ApiClient.api.createChallenge(
                                 ChallengeRequest(account = account)
                             )
-                            // 2. Get factors, find password factor (type=0)
+                            // 2. Get factors, find password factor by name (not type int)
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
-                            val pwFactor = factors.firstOrNull { it.type == 0 }
-                                ?: throw Exception("No password factor configured")
+                            val pwFactor = factors.firstOrNull {
+                                it.name?.contains("password", ignoreCase = true) == true
+                                    || it.name?.contains("密码", ignoreCase = true) == true
+                            } ?: factors.firstOrNull()
+                                ?: throw Exception("No auth factor configured")
 
                             // 3. Verify password
                             ApiClient.api.performChallenge(

@@ -18,8 +18,8 @@ data class SnAuthChallenge(
 
 data class SnAuthFactor(
     val id: String,
-    val type: Int,         // 0=password, 1=totp, 2=email, etc.
-    val name: String?,
+    val type: Int,
+    val name: String? = null,
 )
 
 data class PerformChallengeRequest(
