@@ -42,9 +42,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         bottomPadding = if (isRound) 36f else 8f,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        item {
-            Text("Solian", style = MaterialTheme.typography.titleMedium)
-        }
+        item { Text("Solian", style = MaterialTheme.typography.titleMedium) }
         item {
             Text("Solar Network",
                 style = MaterialTheme.typography.labelSmall,
@@ -53,7 +51,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
         item { Spacer(Modifier.height(16.dp)) }
 
-        // Server URL
         item {
             OutlinedTextField(
                 value = serverUrl,
@@ -65,7 +62,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
-        // Account
         item { Spacer(Modifier.height(6.dp)) }
         item {
             OutlinedTextField(
@@ -78,7 +74,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
-        // Password
         item { Spacer(Modifier.height(6.dp)) }
         item {
             OutlinedTextField(
@@ -92,7 +87,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
-        // Error
         if (error != null) {
             item {
                 Card(
@@ -102,15 +96,17 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
                     ),
                 ) {
-                    Text(error!!, style = MaterialTheme.typography.bodySmall,
+                    Text(
+                        error!!,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp).fillMaxWidth())
+                        modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                    )
                 }
             }
         }
 
-        // Login button
         item { Spacer(Modifier.height(12.dp)) }
         item {
             Button(
@@ -120,28 +116,29 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     TokenStore.serverUrl = serverUrl
                     scope.launch {
                         try {
-                            // 1. Create challenge
+                            // 1. Challenge
                             val ch = ApiClient.api.createChallenge(
                                 ChallengeRequest(account = account)
                             )
-                            // 2. Get factors, find password factor by name (not type int)
+                            // 2. Get factors - find password by name, not type
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
-                            val pwFactor = factors.firstOrNull {
-                                it.name?.contains("password", ignoreCase = true) == true
-                                    || it.name?.contains("密码", ignoreCase = true) == true
-                            } ?: factors.firstOrNull()
-                                ?: throw Exception("No auth factor configured")
+                            val pwFactor = factors.firstOrNull { it.name?.contains("password", true) == true }
+                                ?: throw Exception("Password factor not found")
 
-                            // 3. Verify password
+                            // 3. Perform challenge
                             ApiClient.api.performChallenge(
                                 ch.id,
                                 PerformChallengeRequest(factorId = pwFactor.id, password = password)
                             )
-                            // 4. Exchange for token
+                            // 4. Get JWT
                             val tokenResp = ApiClient.api.exchangeToken(
                                 TokenExchangeRequest(code = ch.id)
                             )
                             TokenStore.token = tokenResp.token
+                            TokenStore.refreshToken = tokenResp.refreshToken
+                            tokenResp.expiresIn?.let {
+                                TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                            }
                             onLoginSuccess()
                         } catch (e: Exception) {
                             error = e.message ?: "Login failed"

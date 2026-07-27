@@ -4,9 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyColumnState
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.AppScaffold
@@ -21,27 +20,28 @@ fun WearAppScaffold(content: @Composable () -> Unit) {
     ) {
         content()
     }
-}
 
-@Composable
-fun WearScalingColumn(
-    modifier: Modifier = Modifier,
-    itemCount: Int,
-    itemContent: @Composable (index: Int) -> Unit,
-) {
-    val listState = rememberScalingLazyColumnState()
-    val focusRequester = FocusRequester()
-    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
-
-    ScalingLazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .rotaryScrollable(rotaryBehavior, focusRequester),
-        state = listState,
+    // ── Helper: scalable rotary column ──
+    @Composable
+    fun WearScalingColumn(
+        modifier: Modifier = Modifier,
+        itemCount: Int,
+        itemContent: @Composable (index: Int) -> Unit,
     ) {
-        items(itemCount) { index ->
-            itemContent(index)
+        val listState = rememberScalingLazyListState()
+        val focusRequester = androidx.compose.ui.focus.FocusRequester()
+        val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
+
+        ScalingLazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .rotaryScrollable(rotaryBehavior, focusRequester),
+            state = listState,
+        ) {
+            items(itemCount) { index ->
+                itemContent(index)
+            }
         }
     }
 }
