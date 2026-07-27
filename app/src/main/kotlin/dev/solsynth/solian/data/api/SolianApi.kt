@@ -49,6 +49,14 @@ interface SolianApi {
         @Path("roomId") roomId: String,
         @Query("take") take: Int = 20,
     ): List<SnChatMessage>
+
+    // ── Account Status ──
+
+    @GET("api/accounts/me/statuses")
+    suspend fun getMyStatus(): SnAccountStatus
+
+    @PATCH("api/accounts/me/statuses")
+    suspend fun updateStatus(@Body request: AccountStatusRequest): SnAccountStatus
 }
 
 data class ChatRoomsResponse(

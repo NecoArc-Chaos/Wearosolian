@@ -13,6 +13,13 @@ import androidx.wear.compose.material3.MaterialTheme
 
 val LocalScreenRound = staticCompositionLocalOf { false }
 
+@Composable
+fun rememberIsScreenRound(): Boolean {
+    val themeRound = LocalScreenRound.current
+    val configRound = LocalConfiguration.current.isScreenRound
+    return themeRound || configRound
+}
+
 /** OLED-optimized color scheme, matching Wear Compose M3 1.6.2 API. */
 val wearColorScheme = ColorScheme(
     primary = SolianViolet,

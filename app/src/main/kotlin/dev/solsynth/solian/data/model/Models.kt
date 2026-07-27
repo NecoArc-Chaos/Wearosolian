@@ -76,3 +76,21 @@ data class SnChatMessage(
     val sender: SnAuthor?,
     @SerializedName("created_at") val createdAt: String?,
 )
+
+// ── Account Status ──
+
+data class SnAccountStatus(
+    val id: String,
+    val type: String?,
+    val attitude: String?,
+    val label: String?,
+    val symbol: String?,
+    @SerializedName("is_online") val isOnline: Boolean?,
+)
+
+data class AccountStatusRequest(
+    val type: String? = "Default",
+    val attitude: String? = "Neutral",
+    val label: String? = null,
+    val symbol: String? = null,
+)
