@@ -31,7 +31,7 @@ fun ChatScreen() {
     LaunchedEffect(Unit) {
         scope.launch {
             try {
-                val resp = ApiClient.api.getChatRooms("Bearer ${TokenStore.token}")
+                val resp = ApiClient.api.getChatRooms()
                 rooms = resp.rooms
             } catch (e: Exception) {
                 error = e.message

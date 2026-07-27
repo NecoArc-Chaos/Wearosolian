@@ -13,7 +13,7 @@ interface SolianApi {
     @GET("api/auth/challenge/{id}/factors")
     suspend fun getChallengeFactors(@Path("id") challengeId: String): List<SnAuthFactor>
 
-    @PATCH("api/auth/challenge/{id}")
+    @POST("api/auth/challenge/{id}")
     suspend fun performChallenge(
         @Path("id") challengeId: String,
         @Body request: PerformChallengeRequest,
@@ -29,7 +29,6 @@ interface SolianApi {
 
     @GET("api/posts")
     suspend fun getTimeline(
-        @Header("Authorization") token: String,
         @Query("take") take: Int = 20,
     ): List<SnPost>
 
@@ -37,18 +36,16 @@ interface SolianApi {
 
     @POST("api/posts")
     suspend fun createPost(
-        @Header("Authorization") token: String,
         @Body request: PostRequest,
     ): SnPost
 
     // ── Chat ──
 
     @GET("api/chat")
-    suspend fun getChatRooms(@Header("Authorization") token: String): ChatRoomsResponse
+    suspend fun getChatRooms(): ChatRoomsResponse
 
     @GET("api/chat/{roomId}/messages")
     suspend fun getMessages(
-        @Header("Authorization") token: String,
         @Path("roomId") roomId: String,
         @Query("take") take: Int = 20,
     ): List<SnChatMessage>

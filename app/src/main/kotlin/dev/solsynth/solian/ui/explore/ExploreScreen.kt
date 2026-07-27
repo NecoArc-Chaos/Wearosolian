@@ -32,8 +32,7 @@ fun ExploreScreen() {
     LaunchedEffect(Unit) {
         scope.launch {
             try {
-                val token = "Bearer ${TokenStore.token}"
-                posts = ApiClient.api.getTimeline(token)
+                posts = ApiClient.api.getTimeline()
             } catch (e: Exception) {
                 error = e.message
             } finally {

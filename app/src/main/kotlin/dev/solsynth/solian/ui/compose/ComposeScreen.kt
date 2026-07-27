@@ -58,8 +58,7 @@ fun ComposeScreen() {
                     isPosting = true
                     result = null
                     try {
-                        val token = "Bearer ${TokenStore.token}"
-                        ApiClient.api.createPost(token, PostRequest(content = text))
+                        ApiClient.api.createPost(PostRequest(content = text))
                         text = ""
                         result = "Posted!"
                     } catch (e: Exception) {

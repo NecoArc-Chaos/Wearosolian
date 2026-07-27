@@ -32,12 +32,14 @@ object ApiClient {
             .followSslRedirects(true)
             .retryOnConnectionFailure(true)
             .authenticator(tokenAuthenticator)
-            .addInterceptor(logging)
             .addInterceptor { chain ->
-                val request = chain.request()
+                val original = chain.request()
+                val request = if (TokenStore.isLoggedIn) {
+                    original.newBuilder()
+                        .header("Authorization", "Bearer ${TokenStore.token}")
+                        .build()
+                } else original
                 val method = request.method
-                // Only auto-retry on connection failure for idempotent requests
-                // to avoid duplicate POST/PATCH/DELETE actions
                 if (method !in listOf("GET", "HEAD", "OPTIONS")) {
                     chain.proceed(request)
                 } else {
@@ -46,6 +48,7 @@ object ApiClient {
                         .build()
                     chain.proceed(newRequest)
                 }
+            }
             }
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
