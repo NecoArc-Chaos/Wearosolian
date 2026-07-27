@@ -35,9 +35,16 @@ fun ChatScreen() {
     val wsClient = remember {
         ChatWebSocketClient(
             serverUrl = TokenStore.serverUrl,
-            onMessage = { content, sender, _ ->
-                // New message received - could update UI or show notification
-                Log.d("ChatScreen", "New message: $sender: $content")
+            onMessage = { content, sender, messageId ->
+                // Update last message for the relevant room
+                if (content.isNotBlank() && rooms.isNotEmpty()) {
+                    val updated = rooms.toMutableList()
+                    val firstRoom = updated[0]
+                    updated[0] = firstRoom.copy(
+                        lastMessage = "$sender: $content",
+                    )
+                    rooms = updated
+                }
             },
             onStatusChanged = { connected ->
                 wsConnected = connected
@@ -71,7 +78,7 @@ fun ChatScreen() {
     // Cleanup
     DisposableEffect(Unit) {
         onDispose {
-            wsClient.disconnect()
+            wsClient.cleanup()
         }
     }
 
