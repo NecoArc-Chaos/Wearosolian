@@ -14,6 +14,8 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
@@ -28,10 +30,15 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    var pollJob by remember { mutableStateOf<Job?>(null) }
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
     val isRound = LocalScreenRound.current
+
+    DisposableEffect(Unit) {
+        onDispose { pollJob?.cancel() }
+    }
 
     ScalingLazyColumn(
         modifier = Modifier
@@ -55,7 +62,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
         item { Spacer(Modifier.height(16.dp)) }
 
-        // Server URL
         item {
             OutlinedTextField(
                 value = serverUrl,
@@ -67,7 +73,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
-        // Account
         item { Spacer(Modifier.height(6.dp)) }
         item {
             OutlinedTextField(
@@ -80,7 +85,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
-        // Password
         item { Spacer(Modifier.height(6.dp)) }
         item {
             OutlinedTextField(
@@ -94,7 +98,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
-        // Error
         if (error != null) {
             item {
                 Card(
@@ -117,7 +120,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             }
         }
 
-        // Login button
         item { Spacer(Modifier.height(12.dp)) }
         item {
             Button(
@@ -127,25 +129,21 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     TokenStore.serverUrl = serverUrl
                     scope.launch {
                         try {
-                            // 1. Create challenge
                             val ch = ApiClient.api.createChallenge(
                                 ChallengeRequest(account = account),
                             )
-                            // 2. Get factors, find password by name or type
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
                             val pwFactor = factors.firstOrNull {
                                 it.name?.contains("password", true) == true
                             } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
                                 ?: factors.firstOrNull { it.type == 0 }
-                                ?: throw Exception("No password factor found. Factors: ${factors.map { it.type }}")
+                                ?: throw Exception("No password factor found")
 
-                            // 3. Verify password
                             val result = ApiClient.api.performChallenge(
                                 ch.id,
                                 PerformChallengeRequest(factorId = pwFactor.id, password = password),
                             )
 
-                            // 4. Exchange for token
                             val tokenResp = ApiClient.api.exchangeToken(
                                 TokenExchangeRequest(code = ch.id),
                             )
@@ -156,8 +154,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                             }
                             onLoginSuccess()
                         } catch (e: retrofit2.HttpException) {
-                            val body = e.response()?.errorBody()?.string()
-                            error = "HTTP ${e.code()}: ${body ?: e.message()}"
+                            val apiError = parseApiError(e)
+                            error = apiError ?: "HTTP ${e.code()}: ${e.message()}"
                         } catch (e: Exception) {
                             error = e.message ?: "Login failed"
                         } finally {
@@ -178,5 +176,17 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+private fun parseApiError(e: retrofit2.HttpException): String? {
+    return try {
+        val body = e.response()?.errorBody()?.string()
+        if (body.isNullOrBlank()) return null
+        // Try parse as ApiError JSON
+        val regex = """"message"\s*:\s*"([^"]+)"""".toRegex()
+        regex.find(body)?.groupValues?.get(1)
+    } catch (_: Exception) {
+        null
     }
 }

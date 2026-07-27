@@ -34,10 +34,18 @@ object ApiClient {
             .authenticator(tokenAuthenticator)
             .addInterceptor(logging)
             .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .header("Connection", "close")
-                    .build()
-                chain.proceed(request)
+                val request = chain.request()
+                val method = request.method
+                // Only auto-retry on connection failure for idempotent requests
+                // to avoid duplicate POST/PATCH/DELETE actions
+                if (method !in listOf("GET", "HEAD", "OPTIONS")) {
+                    chain.proceed(request)
+                } else {
+                    val newRequest = request.newBuilder()
+                        .header("Connection", "close")
+                        .build()
+                    chain.proceed(newRequest)
+                }
             }
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
