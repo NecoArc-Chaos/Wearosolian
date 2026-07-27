@@ -1,6 +1,5 @@
 package dev.solsynth.solian.ui.chat
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -19,10 +18,12 @@ import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.SnChatRoom
 import dev.solsynth.solian.data.ws.ChatWebSocketClient
+import dev.solsynth.solian.theme.rememberIsScreenRound
 
 @Composable
 fun ChatScreen() {
-    var rooms by remember { mutableStateOf<List<SnChatRoom>>(emptyList()) }
+    // Use mutableStateListOf so WebSocket callback sees latest value
+    val rooms = mutableStateListOf<SnChatRoom>()
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var wsConnected by remember { mutableStateOf(false) }
@@ -30,20 +31,18 @@ fun ChatScreen() {
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
+    val isRound = rememberIsScreenRound()
 
     // WebSocket client for real-time messages
     val wsClient = remember {
         ChatWebSocketClient(
             serverUrl = TokenStore.serverUrl,
-            onMessage = { content, sender, messageId ->
-                // Update last message for the relevant room
+            onMessage = { content, sender, _ ->
                 if (content.isNotBlank() && rooms.isNotEmpty()) {
-                    val updated = rooms.toMutableList()
-                    val firstRoom = updated[0]
-                    updated[0] = firstRoom.copy(
+                    val firstRoom = rooms[0]
+                    rooms[0] = firstRoom.copy(
                         lastMessage = "$sender: $content",
                     )
-                    rooms = updated
                 }
             },
             onStatusChanged = { connected ->
@@ -57,7 +56,8 @@ fun ChatScreen() {
         scope.launch {
             try {
                 val resp = ApiClient.api.getChatRooms()
-                rooms = resp.rooms
+                rooms.clear()
+                rooms.addAll(resp.rooms)
             } catch (e: Exception) {
                 error = e.message
             } finally {
@@ -88,6 +88,10 @@ fun ChatScreen() {
             .background(Color.Black)
             .rotaryScrollable(rotaryBehavior, focusRequester),
         state = listState,
+        contentPadding = PaddingValues(
+            top = if (isRound) 36.dp else 8.dp,
+            bottom = if (isRound) 36.dp else 16.dp,
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item { Spacer(Modifier.height(8.dp)) }

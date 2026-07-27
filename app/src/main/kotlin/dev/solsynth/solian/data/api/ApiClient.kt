@@ -30,7 +30,8 @@ object ApiClient {
             .protocols(listOf(Protocol.HTTP_1_1))
             .followRedirects(true)
             .followSslRedirects(true)
-            .retryOnConnectionFailure(true)
+            // Disable OkHttp's built-in retry to prevent duplicate POST/PATCH/DELETE
+            .retryOnConnectionFailure(false)
             .authenticator(tokenAuthenticator)
             .addInterceptor { chain ->
                 val original = chain.request()
@@ -48,7 +49,6 @@ object ApiClient {
                         .build()
                     chain.proceed(newRequest)
                 }
-            }
             }
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)

@@ -15,7 +15,7 @@ import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
-import dev.solsynth.solian.data.TokenStore
+import dev.solsynth.solian.theme.rememberIsScreenRound
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.SnPost
 
@@ -28,6 +28,7 @@ fun ExploreScreen() {
     val focusRequester = remember { FocusRequester() }
     val listState = rememberScalingLazyListState()
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
+    val isRound = rememberIsScreenRound()
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -47,6 +48,10 @@ fun ExploreScreen() {
             .background(Color.Black)
             .rotaryScrollable(rotaryBehavior, focusRequester),
         state = listState,
+        contentPadding = PaddingValues(
+            top = if (isRound) 36.dp else 8.dp,
+            bottom = if (isRound) 36.dp else 16.dp,
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item { Spacer(Modifier.height(8.dp)) }

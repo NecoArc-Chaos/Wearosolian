@@ -18,7 +18,7 @@ fun WearApp() {
         WearAppScaffold {
             MainPagerScreen(
                 onLogout = {
-                    TokenStore.token = null
+                    TokenStore.clear()
                     isLoggedIn = false
                 },
             )

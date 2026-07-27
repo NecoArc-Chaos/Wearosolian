@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.AccountStatusRequest
+import dev.solsynth.solian.theme.rememberIsScreenRound
 
 @Composable
 fun AccountScreen(onLogout: () -> Unit) {
@@ -51,6 +52,10 @@ fun AccountScreen(onLogout: () -> Unit) {
             .background(Color.Black)
             .rotaryScrollable(rotaryBehavior, focusRequester),
         state = listState,
+        contentPadding = PaddingValues(
+            top = if (isRound) 36.dp else 16.dp,
+            bottom = if (isRound) 36.dp else 16.dp,
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item { Spacer(Modifier.height(16.dp)) }
