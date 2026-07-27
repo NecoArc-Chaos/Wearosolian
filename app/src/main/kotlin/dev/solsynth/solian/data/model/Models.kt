@@ -60,3 +60,19 @@ data class PostRequest(
     val type: Int? = 0,
     val visibility: Int? = 0,
 )
+
+// ── Chat ──
+
+data class SnChatRoom(
+    val id: String,
+    val name: String?,
+    val lastMessage: String?,
+    @SerializedName("updated_at") val updatedAt: String?,
+)
+
+data class SnChatMessage(
+    val id: String,
+    val content: String?,
+    val sender: SnAuthor?,
+    @SerializedName("created_at") val createdAt: String?,
+)

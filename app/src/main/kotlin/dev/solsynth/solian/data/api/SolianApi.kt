@@ -40,4 +40,20 @@ interface SolianApi {
         @Header("Authorization") token: String,
         @Body request: PostRequest,
     ): SnPost
+
+    // ── Chat ──
+
+    @GET("api/chat")
+    suspend fun getChatRooms(@Header("Authorization") token: String): ChatRoomsResponse
+
+    @GET("api/chat/{roomId}/messages")
+    suspend fun getMessages(
+        @Header("Authorization") token: String,
+        @Path("roomId") roomId: String,
+        @Query("take") take: Int = 20,
+    ): List<SnChatMessage>
 }
+
+data class ChatRoomsResponse(
+    val rooms: List<SnChatRoom>,
+)

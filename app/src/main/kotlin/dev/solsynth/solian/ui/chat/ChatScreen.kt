@@ -13,20 +13,32 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
+import kotlinx.coroutines.launch
+import dev.solsynth.solian.data.TokenStore
+import dev.solsynth.solian.data.api.ApiClient
+import dev.solsynth.solian.data.model.SnChatRoom
 
 @Composable
 fun ChatScreen() {
+    var rooms by remember { mutableStateOf<List<SnChatRoom>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
 
-    // Placeholder chat rooms — will be replaced with real API data
-    val rooms = remember {
-        listOf(
-            Triple("General", "Alice: See you there!", "2m ago"),
-            Triple("Project X", "Bob: PR merged ✅", "15m ago"),
-            Triple("Random", "Carol: lol nice one 😂", "1h ago"),
-        )
+    LaunchedEffect(Unit) {
+        scope.launch {
+            try {
+                val resp = ApiClient.api.getChatRooms("Bearer ${TokenStore.token}")
+                rooms = resp.rooms
+            } catch (e: Exception) {
+                error = e.message
+            } finally {
+                isLoading = false
+            }
+        }
     }
 
     ScalingLazyColumn(
@@ -44,20 +56,41 @@ fun ChatScreen() {
                 modifier = Modifier.fillMaxWidth(0.9f))
         }
 
-        items(rooms.size) { index ->
-            val (name, preview, time) = rooms[index]
-            Card(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(0.9f).padding(vertical = 4.dp),
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(name, style = MaterialTheme.typography.labelSmall)
-                        Text(time, style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (isLoading) {
+            item {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+        } else if (error != null) {
+            item {
+                Text(error!!, color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall)
+            }
+        } else if (rooms.isEmpty()) {
+            item {
+                Text("No chat rooms",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        } else {
+            items(rooms.size) { index ->
+                val room = rooms[index]
+                Card(
+                    onClick = {},
+                    modifier = Modifier.fillMaxWidth(0.9f).padding(vertical = 4.dp),
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        if (!room.name.isNullOrBlank()) {
+                            Text(room.name, style = MaterialTheme.typography.labelSmall)
+                        }
+                        if (!room.lastMessage.isNullOrBlank()) {
+                            Text(room.lastMessage,
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 1,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
-                    Text(preview, style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
