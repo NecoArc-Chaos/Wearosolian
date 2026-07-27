@@ -1,5 +1,6 @@
 package dev.solsynth.solian.ui.chat
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -13,40 +14,38 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.SnChatRoom
+import dev.solsynth.solian.data.ws.ChatWebSocketClient
 
 @Composable
 fun ChatScreen() {
     var rooms by remember { mutableStateOf<List<SnChatRoom>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
+    var wsConnected by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
 
-    // Auto-refresh chat rooms every 30s
-    LaunchedEffect(Unit) {
-        scope.launch {
-            while (true) {
-                try {
-                    val resp = ApiClient.api.getChatRooms()
-                    rooms = resp.rooms
-                } catch (e: Exception) {
-                    error = e.message
-                } finally {
-                    isLoading = false
-                }
-                delay(30_000)
-            }
-        }
+    // WebSocket client for real-time messages
+    val wsClient = remember {
+        ChatWebSocketClient(
+            serverUrl = TokenStore.serverUrl,
+            onMessage = { content, sender, _ ->
+                // New message received - could update UI or show notification
+                Log.d("ChatScreen", "New message: $sender: $content")
+            },
+            onStatusChanged = { connected ->
+                wsConnected = connected
+            },
+        )
     }
 
-    // Initial load
+    // Initial load of chat rooms
     LaunchedEffect(Unit) {
         scope.launch {
             try {
@@ -57,6 +56,22 @@ fun ChatScreen() {
             } finally {
                 isLoading = false
             }
+        }
+    }
+
+    // Connect WebSocket when logged in
+    LaunchedEffect(TokenStore.isLoggedIn) {
+        if (TokenStore.isLoggedIn) {
+            wsClient.connect()
+        } else {
+            wsClient.disconnect()
+        }
+    }
+
+    // Cleanup
+    DisposableEffect(Unit) {
+        onDispose {
+            wsClient.disconnect()
         }
     }
 
@@ -73,6 +88,13 @@ fun ChatScreen() {
         item {
             Text("Messages", style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.fillMaxWidth(0.9f))
+        }
+
+        if (wsConnected) {
+            item {
+                Text("● Live", style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary)
+            }
         }
 
         if (isLoading && rooms.isEmpty()) {
