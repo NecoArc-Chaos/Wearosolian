@@ -1,7 +1,7 @@
 package dev.solsynth.solian.data
 
 import android.content.Context
-import android.contentSharedPreferences
+import android.content.SharedPreferences
 
 object TokenStore {
     private const val PREFS_NAME = "solian_auth"
@@ -35,38 +35,13 @@ object TokenStore {
     fun isTokenValid(): Boolean {
         if (token.isNullOrBlank()) return false
         val expires = tokenExpiresAt
-        if (expires == 0L) return true // no expiration
+        if (expires == 0L) return true
         return System.currentTimeMillis() / 1000 < expires
     }
 
-    val isLoggedIn: Boolean get() = token.isNotNullOrBlank() && isTokenValid() && refreshToken.isNotNullOrBlank()
+    val isLoggedIn: Boolean get() = !token.isNullOrBlank() && !refreshToken.isNullOrBlank()
 
     fun clear() {
         prefs.edit().clear().apply()
     }
-
-    // Helper: refresh token using refresh grant if available
-    fun refreshTokenOrNull(): String? {
-        if (!refreshToken.isNotNullOrBlank()) return null
-        try {
-            // Call refresh endpoint
-            val resp = dev.solsynth.solian.data.api.ApiClient.api.refreshToken(
-                mapOf(
-                    "grant_type" to "refresh_token",
-                    "refresh_token" to refreshToken!!
-                )
-            )
-            if (!resp.token.isNullOrBlank()) {
-                token = resp.token
-                refreshToken = resp.refreshToken
-                tokenExpiresAt = resp.expiresIn?.let { System.currentTimeMillis() / 1000 + it } ?: 0L
-                return resp.token
-            }
-        } catch (e: Exception) {
-            clear()
-        }
-        return null
-    }
 }
-
-private fun String.isNotNullOrBlank() = !this.isNullOrBlank()

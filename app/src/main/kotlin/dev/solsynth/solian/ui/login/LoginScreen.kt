@@ -38,19 +38,24 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             .fillMaxSize()
             .rotaryScrollable(rotaryBehavior, focusRequester),
         state = listState,
-        topPadding = if (isRound) 36f else 8f,
-        bottomPadding = if (isRound) 36f else 8f,
+        contentPadding = PaddingValues(
+            top = if (isRound) 36.dp else 8.dp,
+            bottom = if (isRound) 36.dp else 8.dp,
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item { Text("Solian", style = MaterialTheme.typography.titleMedium) }
         item {
-            Text("Solar Network",
+            Text(
+                text = "Solar Network",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
 
         item { Spacer(Modifier.height(16.dp)) }
 
+        // Server URL
         item {
             OutlinedTextField(
                 value = serverUrl,
@@ -62,6 +67,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
+        // Account
         item { Spacer(Modifier.height(6.dp)) }
         item {
             OutlinedTextField(
@@ -74,6 +80,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
+        // Password
         item { Spacer(Modifier.height(6.dp)) }
         item {
             OutlinedTextField(
@@ -87,26 +94,30 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             )
         }
 
+        // Error
         if (error != null) {
             item {
                 Card(
                     onClick = {},
                     modifier = Modifier.fillMaxWidth(0.85f),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
                     ),
                 ) {
                     Text(
-                        error!!,
+                        text = error!!,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
                     )
                 }
             }
         }
 
+        // Login button
         item { Spacer(Modifier.height(12.dp)) }
         item {
             Button(
@@ -116,23 +127,27 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     TokenStore.serverUrl = serverUrl
                     scope.launch {
                         try {
-                            // 1. Challenge
+                            // 1. Create challenge
                             val ch = ApiClient.api.createChallenge(
-                                ChallengeRequest(account = account)
+                                ChallengeRequest(account = account),
                             )
-                            // 2. Get factors - find password by name, not type
+                            // 2. Get factors, find password by name or type
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
-                            val pwFactor = factors.firstOrNull { it.name?.contains("password", true) == true }
-                                ?: throw Exception("Password factor not found")
+                            val pwFactor = factors.firstOrNull {
+                                it.name?.contains("password", true) == true
+                            } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
+                                ?: factors.firstOrNull { it.type == 0 }
+                                ?: throw Exception("No password factor found. Factors: ${factors.map { it.type }}")
 
-                            // 3. Perform challenge
-                            ApiClient.api.performChallenge(
+                            // 3. Verify password
+                            val result = ApiClient.api.performChallenge(
                                 ch.id,
-                                PerformChallengeRequest(factorId = pwFactor.id, password = password)
+                                PerformChallengeRequest(factorId = pwFactor.id, password = password),
                             )
-                            // 4. Get JWT
+
+                            // 4. Exchange for token
                             val tokenResp = ApiClient.api.exchangeToken(
-                                TokenExchangeRequest(code = ch.id)
+                                TokenExchangeRequest(code = ch.id),
                             )
                             TokenStore.token = tokenResp.token
                             TokenStore.refreshToken = tokenResp.refreshToken
@@ -140,6 +155,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                                 TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
                             }
                             onLoginSuccess()
+                        } catch (e: retrofit2.HttpException) {
+                            val body = e.response()?.errorBody()?.string()
+                            error = "HTTP ${e.code()}: ${body ?: e.message()}"
                         } catch (e: Exception) {
                             error = e.message ?: "Login failed"
                         } finally {
