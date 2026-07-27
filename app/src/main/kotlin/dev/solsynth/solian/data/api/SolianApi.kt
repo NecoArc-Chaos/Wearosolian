@@ -22,6 +22,9 @@ interface SolianApi {
     @POST("api/auth/token")
     suspend fun exchangeToken(@Body request: TokenExchangeRequest): TokenExchangeResponse
 
+    @POST("api/auth/refresh")
+    suspend fun refreshToken(@Body body: Map<String, String>): TokenExchangeResponse
+
     // ── Timeline ──
 
     @GET("api/posts")

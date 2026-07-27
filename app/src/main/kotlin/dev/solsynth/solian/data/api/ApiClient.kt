@@ -1,8 +1,12 @@
 package dev.solsynth.solian.data.api
 
 import dev.solsynth.solian.data.TokenStore
+import okhttp3.Authenticator
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,29 +27,56 @@ object ApiClient {
         }
 
         val client = OkHttpClient.Builder()
-            // Force HTTP/1.1 to avoid proxy connection resets on Wear OS
             .protocols(listOf(Protocol.HTTP_1_1))
             .followRedirects(true)
             .followSslRedirects(true)
-            // Auto-retry on transient socket drops
             .retryOnConnectionFailure(true)
+            .authenticator(tokenAuthenticator)
             .addInterceptor(logging)
-            // Close connection after each request to prevent stale socket errors
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
                     .header("Connection", "close")
                     .build()
                 chain.proceed(request)
             }
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
             .build()
 
         return Retrofit.Builder()
             .baseUrl(TokenStore.serverUrl.ensureTrailingSlash())
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    private val tokenAuthenticator = Authenticator { route: okhttp3.Route?, response: Response ->
+        val refreshToken = TokenStore.refreshToken ?: return@Authenticator null
+        if (response.request.header("Authorization")?.startsWith("Bearer ") != true) {
+            return@Authenticator null
+        }
+
+        val newToken = try {
+            val tokenResp = api.refreshToken(
+                mapOf(
+                    "grant_type" to "refresh_token",
+                    "refresh_token" to refreshToken
+                )
+            )
+            TokenStore.token = tokenResp.token
+            tokenResp.refreshToken?.let { TokenStore.refreshToken = it }
+            tokenResp.expiresIn?.let {
+                TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+            }
+            tokenResp.token
+        } catch (e: Exception) {
+            TokenStore.clear()
+            null
+        } ?: return@Authenticator null
+
+        response.request.newBuilder()
+            .header("Authorization", "Bearer $newToken")
             .build()
     }
 

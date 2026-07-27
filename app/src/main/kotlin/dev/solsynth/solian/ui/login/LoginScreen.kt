@@ -25,7 +25,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     var serverUrl by remember { mutableStateOf(TokenStore.serverUrl) }
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(value = false) }
+    var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
@@ -44,9 +44,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        item {
-            Text("Solian", style = MaterialTheme.typography.titleMedium)
-        }
+        item { Text("Solian", style = MaterialTheme.typography.titleMedium) }
         item {
             Text(
                 text = "Solar Network",
@@ -127,33 +125,35 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     error = null
                     isLoading = true
                     TokenStore.serverUrl = serverUrl
-                    ApiClient.recreate()
                     scope.launch {
                         try {
-                            // 1. Create challenge (Platform=3=Android)
+                            // 1. Create challenge
                             val ch = ApiClient.api.createChallenge(
                                 ChallengeRequest(account = account),
                             )
-                            // 2. Get factors, find enabled password factor (type=0)
+                            // 2. Get factors, find password by name or type
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
-                            val pwFactor = factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
+                            val pwFactor = factors.firstOrNull {
+                                it.name?.contains("password", true) == true
+                            } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
                                 ?: factors.firstOrNull { it.type == 0 }
                                 ?: throw Exception("No password factor found. Factors: ${factors.map { it.type }}")
 
-                            // 3. Verify password (PATCH challenge/{id})
+                            // 3. Verify password
                             val result = ApiClient.api.performChallenge(
                                 ch.id,
                                 PerformChallengeRequest(factorId = pwFactor.id, password = password),
                             )
-                            if (result.stepRemain > 0) {
-                                throw Exception("Multi-factor auth required (${result.stepRemain} step(s) remaining)")
-                            }
 
-                            // 4. Exchange challenge code for token
+                            // 4. Exchange for token
                             val tokenResp = ApiClient.api.exchangeToken(
                                 TokenExchangeRequest(code = ch.id),
                             )
                             TokenStore.token = tokenResp.token
+                            TokenStore.refreshToken = tokenResp.refreshToken
+                            tokenResp.expiresIn?.let {
+                                TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                            }
                             onLoginSuccess()
                         } catch (e: retrofit2.HttpException) {
                             val body = e.response()?.errorBody()?.string()

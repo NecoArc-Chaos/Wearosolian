@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
-import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyColumnState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.AppScaffold
@@ -29,11 +29,11 @@ fun WearScalingColumn(
     itemCount: Int,
     itemContent: @Composable (index: Int) -> Unit,
 ) {
-    val listState = rememberTransformingLazyColumnState()
+    val listState = rememberScalingLazyColumnState()
     val focusRequester = FocusRequester()
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
 
-    TransformingLazyColumn(
+    ScalingLazyColumn(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
