@@ -21,6 +21,7 @@ import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.*
 import dev.solsynth.solian.theme.LocalScreenRound
+import dev.solsynth.solian.theme.rememberIsScreenRound
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
@@ -34,7 +35,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
-    val isRound = LocalScreenRound.current
+    val isRound = rememberIsScreenRound()
 
     DisposableEffect(Unit) {
         onDispose { pollJob?.cancel() }

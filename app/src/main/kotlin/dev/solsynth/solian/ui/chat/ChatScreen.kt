@@ -13,6 +13,7 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
@@ -28,6 +29,24 @@ fun ChatScreen() {
     val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
 
+    // Auto-refresh chat rooms every 30s
+    LaunchedEffect(Unit) {
+        scope.launch {
+            while (true) {
+                try {
+                    val resp = ApiClient.api.getChatRooms()
+                    rooms = resp.rooms
+                } catch (e: Exception) {
+                    error = e.message
+                } finally {
+                    isLoading = false
+                }
+                delay(30_000)
+            }
+        }
+    }
+
+    // Initial load
     LaunchedEffect(Unit) {
         scope.launch {
             try {
@@ -56,13 +75,13 @@ fun ChatScreen() {
                 modifier = Modifier.fillMaxWidth(0.9f))
         }
 
-        if (isLoading) {
+        if (isLoading && rooms.isEmpty()) {
             item {
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-        } else if (error != null) {
+        } else if (error != null && rooms.isEmpty()) {
             item {
                 Text(error!!, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall)
