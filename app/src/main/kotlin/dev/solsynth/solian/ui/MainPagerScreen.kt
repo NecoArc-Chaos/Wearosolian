@@ -45,7 +45,8 @@ fun MainPagerScreen(
             pagerState = pagerState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp),
+                .padding(bottom = 12.dp)
+                .graphicsLayer { clip = false },
         )
     }
 }
