@@ -51,13 +51,13 @@ android {
 }
 
 dependencies {
-    // ── Same as Orbit ──
+    // ── Wear Compose ──
     implementation(platform("androidx.compose:compose-bom:2026.06.01"))
     implementation("androidx.compose.material3:material3")
     implementation("androidx.wear.compose:compose-material3:1.6.2")
     implementation("androidx.wear.compose:compose-foundation:1.6.2")
     implementation("androidx.wear.compose:compose-navigation:1.6.2")
-    implementation("androidx.wear:wear-ambient:1.0.0")
+    implementation("androidx.wear:wear-ambient:1.0.0-alpha10")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
 
@@ -69,9 +69,6 @@ dependencies {
 
     // ── Image Loading ──
     implementation("io.coil-kt:coil-compose:2.7.0")
-
-    // ── Security ──
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }
 
 kotlin {
