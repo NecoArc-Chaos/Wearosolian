@@ -69,12 +69,15 @@ object ApiClient {
         }
 
         val newToken = try {
-            val tokenResp = api.refreshToken(
-                mapOf(
-                    "grant_type" to "refresh_token",
-                    "refresh_token" to refreshToken
+            // Use runBlocking to call suspend refreshToken from OkHttp Authenticator
+            val tokenResp = kotlinx.coroutines.runBlocking {
+                api.refreshToken(
+                    mapOf(
+                        "grant_type" to "refresh_token",
+                        "refresh_token" to refreshToken
+                    )
                 )
-            )
+            }
             TokenStore.token = tokenResp.token
             tokenResp.refreshToken?.let { TokenStore.refreshToken = it }
             tokenResp.expiresIn?.let {

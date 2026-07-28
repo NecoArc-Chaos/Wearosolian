@@ -13,17 +13,7 @@ object TokenStore {
     private lateinit var prefs: SharedPreferences
 
     fun init(context: Context) {
-        // Use encrypted SharedPreferences for token storage
-        val masterKey = androidx.security.crypto.MasterKey.Builder(context)
-            .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
-            .build()
-        prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
-            context,
-            PREFS_NAME,
-            masterKey,
-            androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
     var token: String?
