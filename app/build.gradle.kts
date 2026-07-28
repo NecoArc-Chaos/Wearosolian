@@ -56,8 +56,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.wear.compose:compose-material3:1.6.2")
     implementation("androidx.wear.compose:compose-foundation:1.6.2")
-    implementation("androidx.activity:activity-compose")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
+    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
 
     // ── Networking ──
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
