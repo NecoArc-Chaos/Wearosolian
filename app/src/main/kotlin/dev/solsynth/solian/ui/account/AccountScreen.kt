@@ -25,6 +25,7 @@ fun AccountScreen(onLogout: () -> Unit) {
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
+    val isRound = rememberIsScreenRound()
     var statusText by remember { mutableStateOf("Online") }
     var presence by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(false) }
