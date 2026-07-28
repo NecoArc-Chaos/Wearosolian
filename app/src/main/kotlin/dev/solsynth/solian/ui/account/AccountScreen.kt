@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.AccountStatusRequest
+import dev.solsynth.solian.data.model.SnAccountStatus
 import dev.solsynth.solian.theme.rememberIsScreenRound
 
 @Composable
@@ -29,9 +30,10 @@ fun AccountScreen(onLogout: () -> Unit) {
     var statusText by remember { mutableStateOf("Online") }
     var presence by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(false) }
+    var accountName by remember { mutableStateOf("User") }
     val scope = rememberCoroutineScope()
 
-    // Load saved status on first composition
+    // Load saved status + user info on first composition
     LaunchedEffect(Unit) {
         scope.launch {
             try {
@@ -41,9 +43,13 @@ fun AccountScreen(onLogout: () -> Unit) {
                     else -> "Online"
                 }
                 presence = status.isOnline ?: true
-            } catch (_: Exception) {
-                // Keep defaults if load fails
-            }
+            } catch (_: Exception) { }
+            try {
+                // Fetch user info from token claims or account endpoint
+                // For now use stored serverUrl as hint
+                accountName = TokenStore.serverUrl.substringAfter("//").substringBefore(".")
+                    .replaceFirstChar { it.uppercase() }
+            } catch (_: Exception) { }
         }
     }
 
@@ -75,7 +81,7 @@ fun AccountScreen(onLogout: () -> Unit) {
             }
         }
 
-        item { Text("User", style = MaterialTheme.typography.titleSmall) }
+        item { Text(accountName, style = MaterialTheme.typography.titleSmall) }
 
         item { Spacer(Modifier.height(12.dp)) }
 

@@ -2,10 +2,8 @@ package dev.solsynth.solian.data.api
 
 import dev.solsynth.solian.data.TokenStore
 import okhttp3.Authenticator
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
-import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -30,7 +28,6 @@ object ApiClient {
             .protocols(listOf(Protocol.HTTP_1_1))
             .followRedirects(true)
             .followSslRedirects(true)
-            // Disable OkHttp's built-in retry to prevent duplicate POST/PATCH/DELETE
             .retryOnConnectionFailure(false)
             .authenticator(tokenAuthenticator)
             .addInterceptor { chain ->
@@ -62,19 +59,19 @@ object ApiClient {
             .build()
     }
 
-    private val tokenAuthenticator = Authenticator { route: okhttp3.Route?, response: Response ->
+    private val tokenAuthenticator = Authenticator { _, response: Response ->
         val refreshToken = TokenStore.refreshToken ?: return@Authenticator null
         if (response.request.header("Authorization")?.startsWith("Bearer ") != true) {
             return@Authenticator null
         }
 
         val newToken = try {
-            // Use runBlocking to call suspend refreshToken from OkHttp Authenticator
+            // Refresh uses same /api/auth/token endpoint with grant_type=refresh_token
             val tokenResp = kotlinx.coroutines.runBlocking {
-                api.refreshToken(
-                    mapOf(
-                        "grant_type" to "refresh_token",
-                        "refresh_token" to refreshToken
+                api.exchangeToken(
+                    dev.solsynth.solian.data.model.TokenExchangeRequest(
+                        grantType = "refresh_token",
+                        code = refreshToken,
                     )
                 )
             }

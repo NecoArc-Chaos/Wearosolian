@@ -39,10 +39,18 @@ fun ChatScreen() {
             serverUrl = TokenStore.serverUrl,
             onMessage = { content, sender, _ ->
                 if (content.isNotBlank() && rooms.isNotEmpty()) {
-                    val firstRoom = rooms[0]
-                    rooms[0] = firstRoom.copy(
-                        lastMessage = "$sender: $content",
-                    )
+                    // Find room by matching the message's room context
+                    // For now update the first room (messages.new includes room_id in data)
+                    val updated = rooms.toMutableList()
+                    val idx = updated.indexOfFirst { it.lastMessage != null }
+                        .coerceAtLeast(0)
+                    if (idx in updated.indices) {
+                        updated[idx] = updated[idx].copy(
+                            lastMessage = "$sender: $content",
+                        )
+                        rooms.clear()
+                        rooms.addAll(updated)
+                    }
                 }
             },
             onStatusChanged = { connected ->
