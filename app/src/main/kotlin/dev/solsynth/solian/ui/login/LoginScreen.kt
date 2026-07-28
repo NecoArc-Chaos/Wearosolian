@@ -22,6 +22,23 @@ import dev.solsynth.solian.theme.rememberIsScreenRound
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
+    var showQrLogin by remember { mutableStateOf(false) }
+
+    if (showQrLogin) {
+        QrLoginScreen(
+            onLoginSuccess = onLoginSuccess,
+            onBack = { showQrLogin = false },
+        )
+    } else {
+        PasswordLoginScreen(
+            onLoginSuccess = onLoginSuccess,
+            onShowQrLogin = { showQrLogin = true },
+        )
+    }
+}
+
+@Composable
+private fun PasswordLoginScreen(onLoginSuccess: () -> Unit, onShowQrLogin: () -> Unit) {
     var serverUrl by remember { mutableStateOf(TokenStore.serverUrl) }
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -114,6 +131,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         }
 
         item { Spacer(Modifier.height(12.dp)) }
+
+        // Login button
         item {
             Button(
                 onClick = {
@@ -170,6 +189,23 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 }
             }
         }
+
+        item { Spacer(Modifier.height(8.dp)) }
+
+        // QR Login button
+        item {
+            Button(
+                onClick = {
+                    TokenStore.serverUrl = serverUrl
+                    ApiClient.recreate()
+                    onShowQrLogin()
+                },
+                modifier = Modifier.fillMaxWidth(0.7f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ),
+            ) { Text("Scan QR") }
+        }
     }
 }
 
@@ -177,7 +213,6 @@ private fun parseApiError(e: retrofit2.HttpException): String? {
     return try {
         val body = e.response()?.errorBody()?.string()
         if (body.isNullOrBlank()) return null
-        // Try parse as ApiError JSON
         val regex = """"message"\s*:\s*"([^"]+)"""".toRegex()
         regex.find(body)?.groupValues?.get(1)
     } catch (_: Exception) {

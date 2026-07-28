@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ChallengeRequest(
     val account: String,
-    val platform: Int = 3, // Android (confirmed: 1=Web, 2=Ios, 3=Android, 4=MacOs, 5=Windows, 6=Linux)
+    val platform: Int = 3, // Android
     @SerializedName("device_id") val deviceId: String = "wearos-client",
     @SerializedName("device_name") val deviceName: String? = "Wear OS",
 )
@@ -19,7 +19,7 @@ data class SnAuthChallenge(
 
 data class SnAuthFactor(
     val id: String,
-    val type: Int,         // 0=Password, 1=EmailCode, 2=InAppCode, 3=TimedCode, 4=PinCode, 5=Passkey, 6=NfcToken
+    val type: Int,
     val name: String?,
     @SerializedName("enabled_at") val enabledAt: String?,
 )
@@ -41,14 +41,40 @@ data class TokenExchangeResponse(
     @SerializedName("refresh_expires_in") val refreshExpiresIn: Long?,
 )
 
+// ── QR Login ──
+
+data class QrGenerateRequest(
+    @SerializedName("device_id") val deviceId: String = "wearos-client",
+    @SerializedName("device_name") val deviceName: String? = "Wear OS",
+    val platform: Int = 3,
+    val audiences: List<String> = emptyList(),
+    val scopes: List<String> = emptyList(),
+)
+
+data class QrGenerateResponse(
+    @SerializedName("qr_challenge_id") val qrChallengeId: String,
+    @SerializedName("auth_challenge_id") val authChallengeId: String,
+    @SerializedName("qr_data") val qrData: String,
+    @SerializedName("expires_at") val expiresAt: String?,
+    @SerializedName("expires_in_seconds") val expiresInSeconds: Int?,
+)
+
+data class QrStatusResponse(
+    @SerializedName("qr_challenge_id") val qrChallengeId: String,
+    @SerializedName("auth_challenge_id") val authChallengeId: String,
+    val status: Int, // 0=Pending, 1=Scanned, 2=Approved, 3=Declined
+    @SerializedName("expires_at") val expiresAt: String?,
+    @SerializedName("approved_at") val approvedAt: String?,
+)
+
 // ── Post ──
 
 data class SnPost(
     val id: String,
     val title: String?,
     val content: String?,
-    val type: Int?,          // 0=Moment, 1=Article, etc.
-    val visibility: Int?,    // 0=Public, 1=Followers, 2=Friends, 3=Private
+    val type: Int?,
+    val visibility: Int?,
     val author: SnAuthor?,
     @SerializedName("created_at") val createdAt: String?,
 )

@@ -67,6 +67,9 @@ dependencies {
 
     // ── Image Loading ──
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    // ── QR Code ──
+    implementation("io.github.alexzhirkevich:qrose:1.0.1")
 }
 
 kotlin {

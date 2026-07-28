@@ -22,6 +22,14 @@ interface SolianApi {
     @POST("api/auth/token")
     suspend fun exchangeToken(@Body request: TokenExchangeRequest): TokenExchangeResponse
 
+    // ── QR Login ──
+
+    @POST("api/auth/qr/generate")
+    suspend fun generateQrChallenge(@Body request: QrGenerateRequest): QrGenerateResponse
+
+    @GET("api/auth/qr/{id}")
+    suspend fun getQrStatus(@Path("id") qrChallengeId: String): QrStatusResponse
+
     // ── Timeline ──
 
     @GET("api/posts")
