@@ -14,13 +14,10 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.*
-import dev.solsynth.solian.theme.LocalScreenRound
 import dev.solsynth.solian.theme.rememberIsScreenRound
 
 @Composable
@@ -31,15 +28,10 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    var pollJob by remember { mutableStateOf<Job?>(null) }
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
     val isRound = rememberIsScreenRound()
-
-    DisposableEffect(Unit) {
-        onDispose { pollJob?.cancel() }
-    }
 
     ScalingLazyColumn(
         modifier = Modifier
