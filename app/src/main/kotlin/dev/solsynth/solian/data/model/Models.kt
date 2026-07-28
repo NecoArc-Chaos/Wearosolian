@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ChallengeRequest(
     val account: String,
-    val platform: Int = 3, // Android
+    val platform: Int = 3,
     @SerializedName("device_id") val deviceId: String = "wearos-client",
     @SerializedName("device_name") val deviceName: String? = "Wear OS",
 )
@@ -67,52 +67,14 @@ data class QrStatusResponse(
     @SerializedName("approved_at") val approvedAt: String?,
 )
 
-// ── Post ──
+// ── Account ──
 
-data class SnPost(
-    val id: String,
-    val title: String?,
-    val content: String?,
-    val type: Int?,
-    val visibility: Int?,
-    val author: SnAuthor?,
-    @SerializedName("created_at") val createdAt: String?,
-)
-
-data class SnAuthor(
-    val id: String?,
-    val name: String,
-    val avatar: String?,
-)
-
-data class PostRequest(
-    val content: String,
-    val title: String? = null,
-    val type: Int? = 0,
-    val visibility: Int? = 0,
-)
-
-// ── Chat ──
-
-data class SnChatRoom(
+data class SnAccount(
     val id: String,
     val name: String?,
-    val lastMessage: String?,
-    @SerializedName("updated_at") val updatedAt: String?,
+    @SerializedName("nick") val nick: String?,
+    @SerializedName("avatar_url") val avatarUrl: String?,
 )
-
-data class SnChatMessage(
-    val id: String,
-    val content: String?,
-    val sender: SnAuthor?,
-    @SerializedName("created_at") val createdAt: String?,
-)
-
-data class ChatRoomsResponse(
-    val rooms: List<SnChatRoom>,
-)
-
-// ── Account Status ──
 
 data class SnAccountStatus(
     val id: String,
@@ -128,4 +90,65 @@ data class AccountStatusRequest(
     val attitude: String? = "Neutral",
     val label: String? = null,
     val symbol: String? = null,
+)
+
+// ── Post ──
+
+data class SnPost(
+    val id: String,
+    val title: String?,
+    val content: String?,
+    val description: String?,
+    val type: Int?,
+    val visibility: Int?,
+    val author: SnAuthor?,
+    @SerializedName("created_at") val createdAt: String?,
+)
+
+data class SnAuthor(
+    val id: String?,
+    val name: String,
+    @SerializedName("nick") val nick: String?,
+    val avatar: String?,
+)
+
+data class PostRequest(
+    val content: String,
+    val title: String? = null,
+    val type: Int? = 0,
+    val visibility: Int? = 0,
+)
+
+// ── Chat ──
+
+data class SnChatRoom(
+    val id: String,
+    val name: String?,
+    val description: String?,
+    val type: Int?,
+    @SerializedName("updated_at") val updatedAt: String?,
+    val members: List<SnChatMember>?,
+)
+
+data class SnChatMember(
+    val id: String,
+    val name: String?,
+    @SerializedName("nick") val nick: String?,
+)
+
+data class SnChatMessage(
+    val id: String,
+    val content: String?,
+    val type: String?,
+    @SerializedName("sender_id") val senderId: String?,
+    @SerializedName("chat_room_id") val chatRoomId: String?,
+    val sender: SnChatMember?,
+    @SerializedName("created_at") val createdAt: String?,
+)
+
+/** Backend /api/chat/summary returns Map<roomId, {unread_count, last_message, room}> */
+data class ChatSummaryEntry(
+    @SerializedName("unread_count") val unreadCount: Int = 0,
+    @SerializedName("last_message") val lastMessage: SnChatMessage?,
+    val room: SnChatRoom? = null,
 )

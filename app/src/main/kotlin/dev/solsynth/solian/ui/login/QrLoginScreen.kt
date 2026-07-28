@@ -1,6 +1,6 @@
 package dev.solsynth.solian.ui.login
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.QrGenerateRequest
-import dev.solsynth.solian.data.model.QrStatusResponse
 import dev.solsynth.solian.data.model.TokenExchangeRequest
 import dev.solsynth.solian.theme.rememberIsScreenRound
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
@@ -27,33 +26,42 @@ import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 @Composable
 fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
     var qrData by remember { mutableStateOf<String?>(null) }
+    var qrChallengeId by remember { mutableStateOf<String?>(null) }
     var authChallengeId by remember { mutableStateOf<String?>(null) }
-    var status by remember { mutableStateOf(0) } // 0=Pending, 1=Scanned, 2=Approved, 3=Declined
+    var status by remember { mutableStateOf(0) }
     var remainingSeconds by remember { mutableStateOf(0) }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
+    val focusRequester = remember { FocusRequester() }
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
     val isRound = rememberIsScreenRound()
 
-    // Generate QR challenge
-    LaunchedEffect(Unit) {
+    fun generateQr() {
+        error = null
         isLoading = true
-        try {
-            val resp = ApiClient.api.generateQrChallenge(QrGenerateRequest())
-            qrData = resp.qrData
-            authChallengeId = resp.authChallengeId
-            remainingSeconds = resp.expiresInSeconds ?: 300
-        } catch (e: Exception) {
-            error = e.message ?: "Failed to generate QR"
-        } finally {
-            isLoading = false
+        scope.launch {
+            try {
+                val resp = ApiClient.api.generateQrChallenge(QrGenerateRequest())
+                qrData = resp.qrData
+                qrChallengeId = resp.qrChallengeId
+                authChallengeId = resp.authChallengeId
+                remainingSeconds = resp.expiresInSeconds ?: 300
+                status = 0
+            } catch (e: Exception) {
+                error = e.message ?: "Failed to generate QR"
+            } finally {
+                isLoading = false
+            }
         }
     }
 
+    // Generate on first load
+    LaunchedEffect(Unit) { generateQr() }
+
     // Countdown timer
-    LaunchedEffect(remainingSeconds) {
+    LaunchedEffect(remainingSeconds, status) {
         while (remainingSeconds > 0 && status < 2) {
             delay(1000)
             remainingSeconds--
@@ -61,16 +69,14 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
     }
 
     // Poll for QR status every 2s
-    LaunchedEffect(qrData, status) {
-        if (qrData == null || status >= 2) return@LaunchedEffect
-        while (status < 2 && remainingSeconds > 0) {
+    LaunchedEffect(qrChallengeId, status) {
+        val id = qrChallengeId ?: return@LaunchedEffect
+        while (status < 2 && status != 3 && remainingSeconds > 0) {
             delay(2000)
             try {
-                val qrId = qrData!!.substringAfterLast("/")
-                val qrStatus = ApiClient.api.getQrStatus(qrId)
+                val qrStatus = ApiClient.api.getQrStatus(id)
                 status = qrStatus.status
                 if (status == 2 && authChallengeId != null) {
-                    // Approved — exchange for token
                     val tokenResp = ApiClient.api.exchangeToken(
                         TokenExchangeRequest(code = authChallengeId!!)
                     )
@@ -88,7 +94,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
     ScalingLazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .rotaryScrollable(rotaryBehavior, remember { FocusRequester() }),
+            .rotaryScrollable(rotaryBehavior, focusRequester),
         state = listState,
         contentPadding = PaddingValues(
             top = if (isRound) 36.dp else 8.dp,
@@ -96,18 +102,14 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        item {
-            Text("Scan to Login", style = MaterialTheme.typography.titleSmall)
-        }
-
+        item { Text("Scan to Login", style = MaterialTheme.typography.titleSmall) }
         item { Spacer(Modifier.height(8.dp)) }
 
-        if (isLoading) {
-            item {
+        when {
+            isLoading -> item {
                 CircularProgressIndicator(modifier = Modifier.size(32.dp))
             }
-        } else if (error != null) {
-            item {
+            error != null -> item {
                 Card(
                     onClick = {},
                     modifier = Modifier.fillMaxWidth(0.85f),
@@ -115,89 +117,56 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                         containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
                     ),
                 ) {
-                    Text(
-                        error!!, style = MaterialTheme.typography.bodySmall,
+                    Text(error!!, style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp).fillMaxWidth(),
-                    )
+                        modifier = Modifier.padding(8.dp).fillMaxWidth())
                 }
             }
-        } else if (qrData != null) {
-            item {
-                val painter = rememberQrCodePainter(qrData!!)
-                Card(
-                    onClick = {},
-                    modifier = Modifier.size(120.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
-                    ),
-                ) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        androidx.compose.foundation.Image(
-                            painter = painter,
-                            contentDescription = "QR Code",
-                            modifier = Modifier.size(100.dp),
-                        )
+            qrData != null -> {
+                item {
+                    val painter = rememberQrCodePainter(qrData!!)
+                    Card(onClick = {}, modifier = Modifier.size(120.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White)) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Image(painter, "QR Code", Modifier.size(100.dp))
+                        }
                     }
                 }
-            }
-
-            item { Spacer(Modifier.height(8.dp)) }
-
-            // Status chip
-            item {
-                val (label, color) = when (status) {
-                    1 -> "Scanned" to MaterialTheme.colorScheme.tertiary
-                    2 -> "Approved" to MaterialTheme.colorScheme.primary
-                    3 -> "Declined" to MaterialTheme.colorScheme.error
-                    else -> "Waiting..." to MaterialTheme.colorScheme.onSurfaceVariant
+                item { Spacer(Modifier.height(8.dp)) }
+                // Status
+                item {
+                    val (label, color) = when (status) {
+                        1 -> "Scanned" to MaterialTheme.colorScheme.tertiary
+                        2 -> "Approved" to MaterialTheme.colorScheme.primary
+                        3 -> "Declined" to MaterialTheme.colorScheme.error
+                        else -> "Waiting..." to MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                    Text(label, style = MaterialTheme.typography.labelSmall, color = color)
                 }
-                Text(label, style = MaterialTheme.typography.labelSmall, color = color)
-            }
-
-            // Countdown
-            item {
-                if (remainingSeconds > 0) {
-                    Text("${remainingSeconds}s", style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                } else {
-                    Text("Expired", style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error)
+                // Countdown
+                item {
+                    if (remainingSeconds > 0) {
+                        Text("${remainingSeconds}s", style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    } else {
+                        Text("Expired", style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error)
+                    }
                 }
-            }
-
-            item { Spacer(Modifier.height(8.dp)) }
-
-            // Refresh button
-            item {
-                Button(
-                    onClick = {
-                        error = null
-                        scope.launch {
-                            isLoading = true
-                            try {
-                                val resp = ApiClient.api.generateQrChallenge(QrGenerateRequest())
-                                qrData = resp.qrData
-                                authChallengeId = resp.authChallengeId
-                                remainingSeconds = resp.expiresInSeconds ?: 300
-                                status = 0
-                            } catch (e: Exception) {
-                                error = e.message ?: "Failed"
-                            } finally {
-                                isLoading = false
-                            }
-                        }
-                    },
-                    enabled = !isLoading && (remainingSeconds <= 0 || status == 3),
-                    modifier = Modifier.fillMaxWidth(0.7f),
-                ) { Text("Refresh") }
+                item { Spacer(Modifier.height(8.dp)) }
+                // Refresh button (only when expired or declined)
+                item {
+                    Button(
+                        onClick = { generateQr() },
+                        enabled = !isLoading && (remainingSeconds <= 0 || status == 3),
+                        modifier = Modifier.fillMaxWidth(0.7f),
+                    ) { Text("Refresh") }
+                }
             }
         }
 
         item { Spacer(Modifier.height(8.dp)) }
-
-        // Back button
         item {
             Button(
                 onClick = onBack,

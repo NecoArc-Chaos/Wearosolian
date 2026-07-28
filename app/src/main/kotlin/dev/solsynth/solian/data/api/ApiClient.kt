@@ -29,6 +29,7 @@ object ApiClient {
             .followRedirects(true)
             .followSslRedirects(true)
             .retryOnConnectionFailure(false)
+            .addInterceptor(logging)
             .authenticator(tokenAuthenticator)
             .addInterceptor { chain ->
                 val original = chain.request()

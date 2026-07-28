@@ -17,13 +17,14 @@ import kotlinx.coroutines.launch
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.SnChatRoom
+import dev.solsynth.solian.data.model.ChatSummaryEntry
 import dev.solsynth.solian.data.ws.ChatWebSocketClient
 import dev.solsynth.solian.theme.rememberIsScreenRound
 
 @Composable
 fun ChatScreen() {
-    // Use mutableStateListOf so WebSocket callback sees latest value
-    val rooms = mutableStateListOf<SnChatRoom>()
+    // roomId → summary (includes room info + lastMessage + unreadCount)
+    val summaries = mutableStateMapOf<String, ChatSummaryEntry>()
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var wsConnected by remember { mutableStateOf(false) }
@@ -33,39 +34,32 @@ fun ChatScreen() {
     val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
     val isRound = rememberIsScreenRound()
 
-    // WebSocket client for real-time messages
+    // WebSocket client — matches messages.new by chatRoomId
     val wsClient = remember {
         ChatWebSocketClient(
             serverUrl = TokenStore.serverUrl,
-            onMessage = { content, sender, _ ->
-                if (content.isNotBlank() && rooms.isNotEmpty()) {
-                    // Find room by matching the message's room context
-                    // For now update the first room (messages.new includes room_id in data)
-                    val updated = rooms.toMutableList()
-                    val idx = updated.indexOfFirst { it.lastMessage != null }
-                        .coerceAtLeast(0)
-                    if (idx in updated.indices) {
-                        updated[idx] = updated[idx].copy(
-                            lastMessage = "$sender: $content",
+            onMessage = { content, sender, chatRoomId ->
+                if (content.isNotBlank() && chatRoomId != null) {
+                    val existing = summaries[chatRoomId]
+                    if (existing != null) {
+                        summaries[chatRoomId] = existing.copy(
+                            lastMessage = existing.lastMessage?.copy(content = content),
+                            unreadCount = existing.unreadCount + 1,
                         )
-                        rooms.clear()
-                        rooms.addAll(updated)
                     }
                 }
             },
-            onStatusChanged = { connected ->
-                wsConnected = connected
-            },
+            onStatusChanged = { wsConnected = it },
         )
     }
 
-    // Initial load of chat rooms
+    // Load chat summary on first composition
     LaunchedEffect(Unit) {
         scope.launch {
             try {
-                val resp = ApiClient.api.getChatRooms()
-                rooms.clear()
-                rooms.addAll(resp.rooms)
+                val data = ApiClient.api.getChatSummary()
+                summaries.clear()
+                summaries.putAll(data)
             } catch (e: Exception) {
                 error = e.message
             } finally {
@@ -76,19 +70,15 @@ fun ChatScreen() {
 
     // Connect WebSocket when logged in
     LaunchedEffect(TokenStore.isLoggedIn) {
-        if (TokenStore.isLoggedIn) {
-            wsClient.connect()
-        } else {
-            wsClient.disconnect()
-        }
+        if (TokenStore.isLoggedIn) wsClient.connect() else wsClient.disconnect()
     }
 
-    // Cleanup
     DisposableEffect(Unit) {
-        onDispose {
-            wsClient.cleanup()
-        }
+        onDispose { wsClient.cleanup() }
     }
+
+    val sortedRooms = summaries.entries
+        .sortedByDescending { it.value.lastMessage?.createdAt ?: "" }
 
     ScalingLazyColumn(
         modifier = Modifier
@@ -103,52 +93,58 @@ fun ChatScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item { Spacer(Modifier.height(8.dp)) }
-
         item {
-            Text("Messages", style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.fillMaxWidth(0.9f))
-        }
-
-        if (wsConnected) {
-            item {
-                Text("● Live", style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary)
+            Row(Modifier.fillMaxWidth(0.9f), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Messages", style = MaterialTheme.typography.titleSmall)
+                if (wsConnected) {
+                    Text("● Live", style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary)
+                }
             }
         }
 
-        if (isLoading && rooms.isEmpty()) {
-            item {
+        when {
+            isLoading -> item {
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-        } else if (error != null && rooms.isEmpty()) {
-            item {
+            error != null -> item {
                 Text(error!!, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall)
             }
-        } else if (rooms.isEmpty()) {
-            item {
-                Text("No chat rooms",
-                    style = MaterialTheme.typography.bodySmall,
+            sortedRooms.isEmpty() -> item {
+                Text("No chat rooms", style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-        } else {
-            items(rooms.size) { index ->
-                val room = rooms[index]
+            else -> items(sortedRooms.size) { index ->
+                val (roomId, entry) = sortedRooms[index]
+                val room = entry.room
+                val lastMsg = entry.lastMessage
                 Card(
                     onClick = {},
                     modifier = Modifier.fillMaxWidth(0.9f).padding(vertical = 4.dp),
                 ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        if (!room.name.isNullOrBlank()) {
-                            Text(room.name, style = MaterialTheme.typography.labelSmall)
+                    Row(
+                        modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            val displayName = room?.name
+                                ?: lastMsg?.sender?.nick
+                                ?: lastMsg?.sender?.name
+                                ?: "Chat"
+                            Text(displayName, style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1)
+                            if (lastMsg?.content != null) {
+                                Text(lastMsg.content, style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
                         }
-                        if (!room.lastMessage.isNullOrBlank()) {
-                            Text(room.lastMessage,
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        if (entry.unreadCount > 0) {
+                            Text("${entry.unreadCount}", style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }

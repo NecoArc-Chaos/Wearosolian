@@ -15,7 +15,6 @@ import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.compose.material3.FilterChip
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
-import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.AccountStatusRequest
 import dev.solsynth.solian.data.model.SnAccountStatus
@@ -31,11 +30,17 @@ fun AccountScreen(onLogout: () -> Unit) {
     var presence by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(false) }
     var accountName by remember { mutableStateOf("User") }
+    var avatarUrl by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
 
-    // Load saved status + user info on first composition
+    // Load user info + status
     LaunchedEffect(Unit) {
         scope.launch {
+            try {
+                val me = ApiClient.api.getMe()
+                accountName = me.nick ?: me.name ?: "User"
+                avatarUrl = me.avatarUrl
+            } catch (_: Exception) { }
             try {
                 val status = ApiClient.api.getMyStatus()
                 statusText = when (status.type) {
@@ -43,12 +48,6 @@ fun AccountScreen(onLogout: () -> Unit) {
                     else -> "Online"
                 }
                 presence = status.isOnline ?: true
-            } catch (_: Exception) { }
-            try {
-                // Fetch user info from token claims or account endpoint
-                // For now use stored serverUrl as hint
-                accountName = TokenStore.serverUrl.substringAfter("//").substringBefore(".")
-                    .replaceFirstChar { it.uppercase() }
             } catch (_: Exception) { }
         }
     }

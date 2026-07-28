@@ -30,6 +30,17 @@ interface SolianApi {
     @GET("api/auth/qr/{id}")
     suspend fun getQrStatus(@Path("id") qrChallengeId: String): QrStatusResponse
 
+    // ── Account ──
+
+    @GET("api/accounts/me")
+    suspend fun getMe(): SnAccount
+
+    @GET("api/accounts/me/statuses")
+    suspend fun getMyStatus(): SnAccountStatus
+
+    @PATCH("api/accounts/me/statuses")
+    suspend fun updateStatus(@Body request: AccountStatusRequest): SnAccountStatus
+
     // ── Timeline ──
 
     @GET("api/posts")
@@ -40,30 +51,16 @@ interface SolianApi {
     // ── Post Creation ──
 
     @POST("api/posts")
-    suspend fun createPost(
-        @Body request: PostRequest,
-    ): SnPost
+    suspend fun createPost(@Body request: PostRequest): SnPost
 
     // ── Chat ──
 
-    @GET("api/chat")
-    suspend fun getChatRooms(): ChatRoomsResponse
+    @GET("api/chat/summary")
+    suspend fun getChatSummary(): Map<String, ChatSummaryEntry>
 
     @GET("api/chat/{roomId}/messages")
     suspend fun getMessages(
         @Path("roomId") roomId: String,
         @Query("take") take: Int = 20,
     ): List<SnChatMessage>
-
-    // ── Account Status ──
-
-    @GET("api/accounts/me/statuses")
-    suspend fun getMyStatus(): SnAccountStatus
-
-    @PATCH("api/accounts/me/statuses")
-    suspend fun updateStatus(@Body request: AccountStatusRequest): SnAccountStatus
 }
-
-data class ChatRoomsResponse(
-    val rooms: List<SnChatRoom>,
-)

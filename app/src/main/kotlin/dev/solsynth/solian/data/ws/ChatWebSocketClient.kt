@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import okhttp3.*
 import okio.ByteString
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 
 /**
  * WebSocket client for real-time chat messages.
@@ -19,17 +18,19 @@ import java.util.concurrent.TimeUnit
  * - Namespace: query param namespace=dev.solsynth.solian
  * - Packet types: messages.new, messages.update, messages.delete
  * - Heartbeat: client sends ping every 30s, server responds pong
+ *
+ * onMessage callback: (content, senderName, chatRoomId)
  */
 class ChatWebSocketClient(
     private val serverUrl: String,
     private val onMessage: (String, String?, String?) -> Unit,
     private val onStatusChanged: (Boolean) -> Unit,
 ) {
-    private val client = OkHttpClient.Builder()
-        .build()
+    private val client = OkHttpClient.Builder().build()
     private var webSocket: WebSocket? = null
     private var isConnected = false
     private var heartbeatJob: Job? = null
+    private var reconnectJob: Job? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val _statusFlow = MutableStateFlow(false)
@@ -62,18 +63,19 @@ class ChatWebSocketClient(
 
                     when (type) {
                         "messages.new" -> {
-                            val content = data?.optString("content")
+                            val content = data?.optString("content") ?: ""
                             val sender = data?.optJSONObject("sender")?.optString("name")
-                            onMessage(content ?: "", sender, null)
+                            val chatRoomId = data?.optString("chat_room_id")
+                            onMessage(content, sender, chatRoomId)
                         }
                         "messages.update" -> {
-                            val messageId = data?.optString("id")
-                            val content = data?.optString("content")
-                            onMessage(content ?: "", null, messageId)
+                            val content = data?.optString("content") ?: ""
+                            val chatRoomId = data?.optString("chat_room_id")
+                            onMessage(content, null, chatRoomId)
                         }
                         "messages.delete" -> {
-                            val messageId = data?.optString("id")
-                            onMessage("", null, messageId)
+                            val chatRoomId = data?.optString("chat_room_id")
+                            onMessage("", null, chatRoomId)
                         }
                         "pong" -> { /* heartbeat response */ }
                         else -> Log.d(TAG, "Unhandled packet: $type")
@@ -137,7 +139,6 @@ class ChatWebSocketClient(
         }
     }
 
-    private var reconnectJob: Job? = null
     private fun scheduleReconnect() {
         if (reconnectJob?.isActive == true) return
         reconnectJob = scope.launch {
@@ -161,9 +162,7 @@ class ChatWebSocketClient(
 
     private fun Request.Builder.addAuthHeader(): Request.Builder {
         val token = TokenStore.token
-        if (!token.isNullOrBlank()) {
-            header("Authorization", "Bearer $token")
-        }
+        if (!token.isNullOrBlank()) header("Authorization", "Bearer $token")
         return this
     }
 

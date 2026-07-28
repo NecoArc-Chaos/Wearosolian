@@ -32,6 +32,7 @@ fun ExploreScreen() {
     val isRound = rememberIsScreenRound()
 
     LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
         scope.launch {
             try {
                 posts = ApiClient.api.getTimeline()
