@@ -22,14 +22,11 @@ jobs:
 
       - uses: android-actions/setup-android@v3
         with:
-          packages: 'platforms;android-35 build-tools;35.0.0'
+          packages: 'platforms;android-36 build-tools;36.0.0'
 
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.14.4'
           cache-read-only: ${{ github.event_name == 'pull_request' }}
-
-      - run: gradle wrapper
 
       - name: Decode keystore
         env:
