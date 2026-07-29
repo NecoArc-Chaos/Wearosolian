@@ -22,7 +22,7 @@
         <domain includeSubdomains="true">solian.app</domain>
         <pin-set>
             <!-- TODO: Replace with actual production certificate SHA-256 hash -->
-            <pin digest="SHA-256">PLACEHOLDER_SOLIAN_APP_CERT_HASH</pin>
+            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
         </pin-set>
     </domain-config>
 
@@ -30,7 +30,7 @@
         <domain includeSubdomains="true">nt.solian.app</domain>
         <pin-set>
             <!-- TODO: Replace with actual production certificate SHA-256 hash -->
-            <pin digest="SHA-256">PLACEHOLDER_NT_SOLIAN_APP_CERT_HASH</pin>
+            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
         </pin-set>
     </domain-config>
 
