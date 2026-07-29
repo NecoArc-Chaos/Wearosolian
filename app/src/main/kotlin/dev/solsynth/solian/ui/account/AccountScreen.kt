@@ -53,7 +53,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                 ),
             ) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("👤", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.account_avatar), style = MaterialTheme.typography.titleMedium)
                 }
             }
         }

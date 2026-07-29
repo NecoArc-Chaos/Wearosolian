@@ -42,8 +42,8 @@ fun ComposeScreen() {
 
         if (result != null) {
             item {
-                Text(result!!, style = MaterialTheme.typography.labelSmall,
-                    color = if (result?.startsWith("Error") == true)
+                Text(result, style = MaterialTheme.typography.labelSmall,
+                    color = if (result.startsWith("Error"))
                         MaterialTheme.colorScheme.error
                     else MaterialTheme.colorScheme.primary)
             }

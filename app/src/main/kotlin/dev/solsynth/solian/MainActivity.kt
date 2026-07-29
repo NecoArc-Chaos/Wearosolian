@@ -3,6 +3,7 @@ package dev.solsynth.solian
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -13,7 +14,7 @@ import dev.solsynth.solian.theme.WearosolianTheme
 class MainActivity : ComponentActivity(), LifecycleEventObserver {
 
     private var ambientObserver: AmbientLifecycleObserver? = null
-    private var isAmbient = false
+    private var isAmbient by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

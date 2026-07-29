@@ -114,7 +114,7 @@ private fun PasswordLoginScreen(
                     ),
                 ) {
                     Text(
-                        text = error!!,
+                        text = error,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
@@ -202,7 +202,7 @@ private fun PasswordLoginScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ),
-            ) { Text("Scan QR") }
+            ) { Text(stringResource(R.string.login_scan_qr)) }
         }
     }
 }

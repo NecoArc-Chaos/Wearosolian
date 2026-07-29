@@ -78,7 +78,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 status = qrStatus.status
                 if (status == 2 && authChallengeId != null) {
                     val tokenResp = ApiClient.api.exchangeToken(
-                        TokenExchangeRequest(code = authChallengeId!!)
+                        TokenExchangeRequest(code = authChallengeId)
                     )
                     TokenStore.token = tokenResp.token
                     TokenStore.refreshToken = tokenResp.refreshToken
@@ -102,7 +102,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        item { Text("Scan to Login", style = MaterialTheme.typography.titleSmall) }
+        item { Text(stringResource(R.string.qr_scan_title), style = MaterialTheme.typography.titleSmall) }
         item { Spacer(Modifier.height(8.dp)) }
 
         when {
@@ -117,7 +117,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                         containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
                     ),
                 ) {
-                    Text(error!!, style = MaterialTheme.typography.bodySmall,
+                    Text(error, style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp).fillMaxWidth())
@@ -125,7 +125,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
             }
             qrData != null -> {
                 item {
-                    val painter = rememberQrCodePainter(qrData!!)
+                    val painter = rememberQrCodePainter(qrData)
                     Card(onClick = {}, modifier = Modifier.size(120.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White)) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -147,10 +147,10 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 // Countdown
                 item {
                     if (remainingSeconds > 0) {
-                        Text("${remainingSeconds}s", style = MaterialTheme.typography.labelSmall,
+                        Text(stringResource(R.string.qr_remaining_seconds, remainingSeconds), style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     } else {
-                        Text("Expired", style = MaterialTheme.typography.labelSmall,
+                        Text(stringResource(R.string.qr_expired), style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error)
                     }
                 }
@@ -161,7 +161,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                         onClick = { generateQr() },
                         enabled = !isLoading && (remainingSeconds <= 0 || status == 3),
                         modifier = Modifier.fillMaxWidth(0.7f),
-                    ) { Text("Refresh") }
+                    ) { Text(stringResource(R.string.qr_refresh)) }
                 }
             }
         }
@@ -174,7 +174,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ),
-            ) { Text("Back") }
+            ) { Text(stringResource(R.string.qr_back)) }
         }
     }
 }

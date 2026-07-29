@@ -38,11 +38,22 @@
 
     <!-- Account -->
     <string name="account_title">User</string>
+    <string name="account_avatar">👤</string>
     <string name="account_quick_status">Quick Status</string>
     <string name="account_logout">Logout</string>
     <string name="account_status_online">🟢 On</string>
     <string name="account_status_offline">⚫ Off</string>
     <string name="account_status_busy">🔴 Busy</string>
+
+    <!-- Login -->
+    <string name="login_scan_qr">Scan QR</string>
+
+    <!-- QR Login -->
+    <string name="qr_scan_title">Scan to Login</string>
+    <string name="qr_remaining_seconds">%1$ds</string>
+    <string name="qr_expired">Expired</string>
+    <string name="qr_refresh">Refresh</string>
+    <string name="qr_back">Back</string>
 
     <!-- Errors -->
     <string name="error_login_failed">Login failed</string>

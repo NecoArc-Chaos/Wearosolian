@@ -42,7 +42,7 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel()) {
             }
         } else if (error != null && rooms.isEmpty()) {
             item {
-                Text(error!!, color = MaterialTheme.colorScheme.error,
+                Text(error, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall)
             }
         } else if (rooms.isEmpty()) {
@@ -81,7 +81,7 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel()) {
                         }
                         if (!entry.lastMessage?.content.isNullOrBlank()) {
                             Text(
-                                entry.lastMessage!!.content!!,
+                                entry.lastMessage?.content.orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,

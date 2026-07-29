@@ -43,7 +43,7 @@ fun ExploreScreen() {
             }
         } else if (error != null) {
             item {
-                Text(error!!, color = MaterialTheme.colorScheme.error,
+                Text(error, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall)
             }
         } else if (posts.isEmpty()) {
