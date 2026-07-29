@@ -63,7 +63,7 @@ dependencies {
     implementation("androidx.wear.compose:compose-navigation:1.6.2")
     implementation("androidx.activity:activity-compose:1.10.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
-    implementation("androidx.wear:wear-ambient:1.0.0")
+    implementation("androidx.wear:wear:1.4.0")
 
     // ── Security ──
     implementation("androidx.security:security-crypto:1.1.0-alpha06")

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.compose.runtime.snapshotFlow
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
-import dev.solsynth.solian.data.model.SnChatRoom
+import dev.solsynth.solian.data.model.ChatSummaryEntry
 import dev.solsynth.solian.data.ws.ChatWebSocketClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
