@@ -3,36 +3,24 @@
     <!-- Default: block cleartext (already enforced by targetSdk >= 28) -->
     <base-config cleartextTrafficPermitted="false" />
 
-    <!-- Certificate pinning for official Solar Network domains -->
+    <!-- Certificate pinning is disabled until real hashes are provided.
+         To enable, uncomment the domain-config blocks below and replace
+         the placeholder hashes with actual SHA-256 SPKI hashes. -->
     <!--
-    IMPORTANT: Replace the placeholder SHA-256 hashes below with the actual
-    certificate hashes from the production servers.
-
-    To extract the SHA-256 hash of a certificate:
-      echo | openssl s_client -connect solian.app:443 -servername solian.app 2>/dev/null \
-        | openssl x509 -pubkey -noout \
-        | openssl pkey -pubin -outform der \
-        | openssl dgst -sha256 -binary \
-        | openssl enc -base64
-
-    The official instance uses Let's Encrypt. Pin the intermediate or leaf
-    certificate hash, NOT the root CA, to allow for certificate rotation.
-    -->
     <domain-config>
         <domain includeSubdomains="true">solian.app</domain>
         <pin-set>
-            <!-- TODO: Replace with actual production certificate SHA-256 hash -->
-            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
+            <pin digest="SHA-256">REAL_HASH_HERE</pin>
         </pin-set>
     </domain-config>
 
     <domain-config>
         <domain includeSubdomains="true">nt.solian.app</domain>
         <pin-set>
-            <!-- TODO: Replace with actual production certificate SHA-256 hash -->
-            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
+            <pin digest="SHA-256">REAL_HASH_HERE</pin>
         </pin-set>
     </domain-config>
+    -->
 
     <!-- Allow user-configured servers (no pinning) for self-hosted instances -->
     <domain-config cleartextTrafficPermitted="false">

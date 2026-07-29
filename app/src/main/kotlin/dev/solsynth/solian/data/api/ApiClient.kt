@@ -27,6 +27,20 @@ object ApiClient {
         api = createApi()
     }
 
+    /**
+     * Shared OkHttpClient for WebSocket and other non-API uses.
+     *
+     * Uses the same certificate pinner and timeouts as the API client,
+     * but without the auth interceptor (authentication is handled per-connection).
+     */
+    val httpClient: OkHttpClient = OkHttpClient.Builder()
+        .protocols(listOf(Protocol.HTTP_1_1))
+        .certificatePinner(NetworkConfig.certificatePinner)
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .build()
+
     private fun createApi(): SolianApi {
         return build().create(SolianApi::class.java)
     }
@@ -115,6 +129,9 @@ object ApiClient {
             }
 
             return try {
+                // OkHttp Interceptors run on the IO thread pool, so runBlocking here
+                // blocks an IO thread, not the main thread. The ReentrantLock above
+                // ensures only one request performs the refresh at a time.
                 val tokenResp = runBlocking {
                     withTimeout(10_000) {
                         api.refreshToken(

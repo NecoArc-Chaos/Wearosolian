@@ -3,6 +3,7 @@ package dev.solsynth.solian.data.ws
 import android.util.Log
 import dev.solsynth.solian.data.NetworkConfig
 import dev.solsynth.solian.data.TokenStore
+import dev.solsynth.solian.data.api.ApiClient
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,8 +27,10 @@ class ChatWebSocketClient(
     private val onMessage: (String, String?, String?) -> Unit,
     private val onStatusChanged: (Boolean) -> Unit,
 ) {
-    private val client = OkHttpClient.Builder()
-        .certificatePinner(NetworkConfig.certificatePinner)
+    // Reuse the shared OkHttpClient from ApiClient so that connection pools,
+    // DNS cache, and certificate pinning are shared with the REST client.
+    private val client = ApiClient.httpClient.newBuilder()
+        .pingInterval(30, TimeUnit.SECONDS)
         .build()
     private var webSocket: WebSocket? = null
     private var isConnected = false

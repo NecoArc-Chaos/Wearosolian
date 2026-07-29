@@ -57,3 +57,6 @@ buildtools/.env
 devcert.pfx
 .agents/
 keystore.jks
+
+# Android SDK local properties
+local.properties
