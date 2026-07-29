@@ -6,7 +6,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel()
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material3.*
 import dev.solsynth.solian.R
 import dev.solsynth.solian.ui.scaffold.WearScreen

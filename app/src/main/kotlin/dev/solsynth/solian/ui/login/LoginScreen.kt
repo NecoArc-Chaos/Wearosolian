@@ -22,6 +22,7 @@ import dev.solsynth.solian.ui.scaffold.WearScreen
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
     var showQrLogin by remember { mutableStateOf(false) }
+    val loginFailedMessage = stringResource(R.string.error_login_failed)
 
     if (showQrLogin) {
         QrLoginScreen(
@@ -32,6 +33,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         PasswordLoginScreen(
             onLoginSuccess = onLoginSuccess,
             onShowQrLogin = { showQrLogin = true },
+            loginFailedMessage = loginFailedMessage,
         )
     }
 }
@@ -40,6 +42,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 private fun PasswordLoginScreen(
     onLoginSuccess: () -> Unit,
     onShowQrLogin: () -> Unit,
+    loginFailedMessage: String,
 ) {
     val context = LocalContext.current
     var serverUrl by remember { mutableStateOf(TokenStore.serverUrl) }
@@ -144,7 +147,7 @@ private fun PasswordLoginScreen(
                                 it.name?.contains("password", true) == true
                             } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
                                 ?: factors.firstOrNull { it.type == 0 }
-                                ?: throw Exception(stringResource(R.string.error_no_password_factor))
+                                ?: throw Exception(getString(R.string.error_no_password_factor))
 
                             val result = ApiClient.api.performChallenge(
                                 ch.id,
@@ -164,7 +167,7 @@ private fun PasswordLoginScreen(
                             val apiError = parseApiError(e)
                             error = apiError ?: "HTTP ${e.code()}: ${e.message()}"
                         } catch (e: Exception) {
-                            error = e.message ?: stringResource(R.string.error_login_failed)
+                            error = e.message ?: loginFailedMessage
                         } finally {
                             isLoading = false
                         }

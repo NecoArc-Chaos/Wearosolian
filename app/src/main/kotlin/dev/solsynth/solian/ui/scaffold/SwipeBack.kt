@@ -2,13 +2,16 @@ package dev.solsynth.solian.ui.scaffold
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.pointerInput
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.consumePositionChange
+import androidx.compose.ui.input.pointer.horizontalDrag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -37,16 +40,15 @@ fun SwipeBack(
 ) {
     val scope = rememberCoroutineScope()
     val offsetX = remember { Animatable(0f) }
-    val thresholdPx = with(androidx.compose.ui.platform.LocalDensity.current) { swipeThreshold.toPx() }
-    val maxOffsetPx = with(androidx.compose.ui.platform.LocalDensity.current) { maxSwipeOffset.toPx() }
+    val thresholdPx = swipeThreshold.toPx()
+    val maxOffsetPx = maxSwipeOffset.toPx()
 
     Box(
         modifier = modifier
             .fillMaxSize()
             .pointerInput(Unit) {
-                detectHorizontalDragGestures(
-                    onDragStart = { offsetX.stop() },
-                    onDrag = { _, dragAmount ->
+                horizontalDrag(
+                    onDrag = { dragAmount ->
                         scope.launch {
                             offsetX.snapTo((offsetX.value + dragAmount).coerceIn(0f, maxOffsetPx))
                         }

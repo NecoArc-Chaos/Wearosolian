@@ -23,7 +23,6 @@ fun ExploreScreen() {
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
         scope.launch {
             try {
                 posts = ApiClient.api.getTimeline()

@@ -58,7 +58,7 @@ fun ComposeScreen() {
                         try {
                             ApiClient.api.createPost(PostRequest(content = text))
                             text = ""
-                            result = stringResource(R.string.compose_success)
+                            result = "Posted!"
                         } catch (e: Exception) {
                             result = "Error: ${e.message}"
                         } finally {
