@@ -79,7 +79,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 val qrStatus = ApiClient.api.getQrStatus(id)
                 status = qrStatus.status
                 if (status == 2 && authChallengeId != null) {
-                    val challengeId = authChallengeId
+                    val challengeId = authChallengeId!!
                     val tokenResp = ApiClient.api.exchangeToken(
                         TokenExchangeRequest(code = challengeId)
                     )
@@ -112,27 +112,23 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
             isLoading -> item {
                 CircularProgressIndicator(modifier = Modifier.size(32.dp))
             }
-            error != null -> {
-                val errorMessage = error
-                item {
-                    Card(
-                        onClick = {},
-                        modifier = Modifier.fillMaxWidth(0.85f),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
-                        ),
-                    ) {
-                        Text(errorMessage, style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(8.dp).fillMaxWidth())
-                    }
+            error != null -> item {
+                Card(
+                    onClick = {},
+                    modifier = Modifier.fillMaxWidth(0.85f),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
+                    ),
+                ) {
+                    Text(error!!, style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(8.dp).fillMaxWidth())
                 }
             }
             qrData != null -> {
-                val qrDataText = qrData
                 item {
-                    val painter = rememberQrCodePainter(qrDataText)
+                    val painter = rememberQrCodePainter(qrData!!)
                     Card(onClick = {}, modifier = Modifier.size(120.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White)) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
