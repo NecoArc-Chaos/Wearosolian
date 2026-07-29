@@ -41,6 +41,7 @@ fun SwipeBack(
 
     Box(
         modifier = modifier
+            .fillMaxSize()
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
                     onDragStart = { offsetX.stop() },
@@ -63,10 +64,12 @@ fun SwipeBack(
             }
     ) {
         androidx.compose.foundation.layout.Box(
-            modifier = Modifier.graphicsLayer(
-                translationX = offsetX.value,
-                alpha = 1f - (offsetX.value / maxOffsetPx) * 0.3f,
-            )
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer(
+                    translationX = offsetX.value,
+                    alpha = 1f - (offsetX.value / maxOffsetPx) * 0.3f,
+                )
         ) {
             content()
         }

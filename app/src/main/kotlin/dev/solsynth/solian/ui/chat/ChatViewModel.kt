@@ -2,7 +2,7 @@ package dev.solsynth.solian.ui.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.withState
+import androidx.compose.runtime.snapshotFlow
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.SnChatRoom
@@ -11,12 +11,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class ChatViewModel : ViewModel() {
-    private val _rooms = MutableStateFlow<List<SnChatRoom>>(emptyList())
-    val rooms: StateFlow<List<SnChatRoom>> = _rooms
+    private val _rooms = MutableStateFlow<List<ChatSummaryEntry>>(emptyList())
+    val rooms: StateFlow<List<ChatSummaryEntry>> = _rooms
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -51,8 +50,8 @@ class ChatViewModel : ViewModel() {
     fun loadRooms() {
         viewModelScope.launch {
             try {
-                val resp = ApiClient.api.getChatRooms()
-                _rooms.value = resp.rooms
+                val summaryMap = ApiClient.api.getChatSummary()
+                _rooms.value = summaryMap.values.toList()
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {

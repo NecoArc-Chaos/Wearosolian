@@ -4,10 +4,16 @@ import com.google.gson.annotations.SerializedName
 
 // ── Auth ──
 
+object AuthConstants {
+    const val PLATFORM_ANDROID = 3
+    const val DEFAULT_SERVER_URL = "https://nt.solian.app"
+    const val NAMESPACE = "dev.solsynth.solian"
+}
+
 data class ChallengeRequest(
     val account: String,
-    val platform: Int = 3,
-    @SerializedName("device_id") val deviceId: String = "wearos-client",
+    val platform: Int = AuthConstants.PLATFORM_ANDROID,
+    @SerializedName("device_id") val deviceId: String,
     @SerializedName("device_name") val deviceName: String? = "Wear OS",
 )
 
@@ -19,7 +25,7 @@ data class SnAuthChallenge(
 
 data class SnAuthFactor(
     val id: String,
-    val type: Int,
+    val type: Int,         // 0=Password, 1=EmailCode, 2=InAppCode, 3=TimedCode(TOTP), 4=PinCode, ...
     val name: String?,
     @SerializedName("enabled_at") val enabledAt: String?,
 )

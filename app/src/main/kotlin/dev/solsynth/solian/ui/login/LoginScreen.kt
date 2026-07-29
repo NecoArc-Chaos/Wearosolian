@@ -1,24 +1,23 @@
 package dev.solsynth.solian.ui.login
 
+import android.provider.Settings.Secure
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.OutlinedTextField
-import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
-import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
-import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
+import dev.solsynth.solian.R
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.*
-import dev.solsynth.solian.theme.rememberIsScreenRound
+import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
@@ -38,33 +37,26 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 }
 
 @Composable
-private fun PasswordLoginScreen(onLoginSuccess: () -> Unit, onShowQrLogin: () -> Unit) {
+private fun PasswordLoginScreen(
+    onLoginSuccess: () -> Unit,
+    onShowQrLogin: () -> Unit,
+) {
+    val context = LocalContext.current
     var serverUrl by remember { mutableStateOf(TokenStore.serverUrl) }
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val listState = rememberScalingLazyListState()
-    val focusRequester = remember { FocusRequester() }
-    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
-    val isRound = rememberIsScreenRound()
+    val deviceId = remember {
+        Secure.getString(context.contentResolver, Secure.ANDROID_ID) ?: "wearos-unknown"
+    }
 
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .rotaryScrollable(rotaryBehavior, focusRequester),
-        state = listState,
-        contentPadding = PaddingValues(
-            top = if (isRound) 36.dp else 8.dp,
-            bottom = if (isRound) 36.dp else 8.dp,
-        ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        item { Text("Solian", style = MaterialTheme.typography.titleMedium) }
+    WearScreen {
+        item { Text(stringResource(R.string.login_title), style = MaterialTheme.typography.titleMedium) }
         item {
             Text(
-                text = "Solar Network",
+                text = stringResource(R.string.login_subtitle),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -76,7 +68,7 @@ private fun PasswordLoginScreen(onLoginSuccess: () -> Unit, onShowQrLogin: () ->
             OutlinedTextField(
                 value = serverUrl,
                 onValueChange = { serverUrl = it },
-                label = { Text("Server") },
+                label = { Text(stringResource(R.string.login_server)) },
                 singleLine = true,
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(0.9f),
@@ -88,7 +80,7 @@ private fun PasswordLoginScreen(onLoginSuccess: () -> Unit, onShowQrLogin: () ->
             OutlinedTextField(
                 value = account,
                 onValueChange = { account = it },
-                label = { Text("Name or Email") },
+                label = { Text(stringResource(R.string.login_account)) },
                 singleLine = true,
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(0.9f),
@@ -100,7 +92,7 @@ private fun PasswordLoginScreen(onLoginSuccess: () -> Unit, onShowQrLogin: () ->
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text(stringResource(R.string.login_password)) },
                 singleLine = true,
                 enabled = !isLoading,
                 visualTransformation = PasswordVisualTransformation(),
@@ -139,18 +131,20 @@ private fun PasswordLoginScreen(onLoginSuccess: () -> Unit, onShowQrLogin: () ->
                     error = null
                     isLoading = true
                     TokenStore.serverUrl = serverUrl
-                    ApiClient.recreate()
                     scope.launch {
                         try {
                             val ch = ApiClient.api.createChallenge(
-                                ChallengeRequest(account = account),
+                                ChallengeRequest(
+                                    account = account,
+                                    deviceId = deviceId,
+                                ),
                             )
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
                             val pwFactor = factors.firstOrNull {
                                 it.name?.contains("password", true) == true
                             } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
                                 ?: factors.firstOrNull { it.type == 0 }
-                                ?: throw Exception("No password factor found")
+                                ?: throw Exception(stringResource(R.string.error_no_password_factor))
 
                             val result = ApiClient.api.performChallenge(
                                 ch.id,
@@ -170,7 +164,7 @@ private fun PasswordLoginScreen(onLoginSuccess: () -> Unit, onShowQrLogin: () ->
                             val apiError = parseApiError(e)
                             error = apiError ?: "HTTP ${e.code()}: ${e.message()}"
                         } catch (e: Exception) {
-                            error = e.message ?: "Login failed"
+                            error = e.message ?: stringResource(R.string.error_login_failed)
                         } finally {
                             isLoading = false
                         }
@@ -185,7 +179,7 @@ private fun PasswordLoginScreen(onLoginSuccess: () -> Unit, onShowQrLogin: () ->
                         strokeWidth = 2.dp,
                     )
                 } else {
-                    Text("Login")
+                    Text(stringResource(R.string.login_button))
                 }
             }
         }

@@ -1,22 +1,33 @@
 package dev.solsynth.solian.data.api
 
+import dev.solsynth.solian.data.NetworkConfig
 import dev.solsynth.solian.data.TokenStore
-import okhttp3.Authenticator
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
+import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.locks.ReentrantLock
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 
 object ApiClient {
 
-    var api: SolianApi = build().create(SolianApi::class.java)
+    var api: SolianApi = createApi()
         private set
 
+    private val refreshApi: SolianApi by lazy { createApi() }
+
     fun recreate() {
-        api = build().create(SolianApi::class.java)
+        api = createApi()
+    }
+
+    private fun createApi(): SolianApi {
+        return build().create(SolianApi::class.java)
     }
 
     private fun build(): Retrofit {
@@ -29,8 +40,9 @@ object ApiClient {
             .followRedirects(true)
             .followSslRedirects(true)
             .retryOnConnectionFailure(false)
+            .certificatePinner(NetworkConfig.certificatePinner)
             .addInterceptor(logging)
-            .authenticator(tokenAuthenticator)
+            .addInterceptor(AuthInterceptor(TokenStore, refreshApi))
             .addInterceptor { chain ->
                 val original = chain.request()
                 val request = if (TokenStore.isLoggedIn) {
@@ -60,36 +72,69 @@ object ApiClient {
             .build()
     }
 
-    private val tokenAuthenticator = Authenticator { _, response: Response ->
-        val refreshToken = TokenStore.refreshToken ?: return@Authenticator null
-        if (response.request.header("Authorization")?.startsWith("Bearer ") != true) {
-            return@Authenticator null
+    private class AuthInterceptor(
+        private val tokenStore: TokenStore,
+        private val refreshApi: SolianApi,
+    ) : Interceptor {
+
+        private val lock = ReentrantLock()
+
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val original = chain.request()
+            val requestBuilder = original.newBuilder()
+
+            if (tokenStore.isLoggedIn) {
+                requestBuilder.header("Authorization", "Bearer ${tokenStore.token}")
+            }
+
+            var response = chain.proceed(requestBuilder.build())
+
+            if (response.code == 401 && original.header("X-Auth-Retry") != "true") {
+                val newToken = lock.withLock {
+                    refreshToken(refreshApi, tokenStore)
+                }
+
+                if (newToken != null) {
+                    response.close()
+                    val newRequest = original.newBuilder()
+                        .header("Authorization", "Bearer $newToken")
+                        .header("X-Auth-Retry", "true")
+                        .build()
+                    return chain.proceed(newRequest)
+                }
+            }
+
+            return response
         }
 
-        val newToken = try {
-            // Refresh uses same /api/auth/token endpoint with grant_type=refresh_token
-            val tokenResp = kotlinx.coroutines.runBlocking {
-                api.exchangeToken(
-                    dev.solsynth.solian.data.model.TokenExchangeRequest(
-                        grantType = "refresh_token",
-                        code = refreshToken,
-                    )
-                )
+        private fun refreshToken(api: SolianApi, store: TokenStore): String? {
+            val refreshToken = store.refreshToken ?: run {
+                store.clear()
+                return null
             }
-            TokenStore.token = tokenResp.token
-            tokenResp.refreshToken?.let { TokenStore.refreshToken = it }
-            tokenResp.expiresIn?.let {
-                TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
-            }
-            tokenResp.token
-        } catch (e: Exception) {
-            TokenStore.clear()
-            null
-        } ?: return@Authenticator null
 
-        response.request.newBuilder()
-            .header("Authorization", "Bearer $newToken")
-            .build()
+            return try {
+                val tokenResp = runBlocking {
+                    withTimeout(10_000) {
+                        api.refreshToken(
+                            mapOf(
+                                "grant_type" to "refresh_token",
+                                "refresh_token" to refreshToken
+                            )
+                        )
+                    }
+                }
+                store.token = tokenResp.token
+                tokenResp.refreshToken?.let { store.refreshToken = it }
+                tokenResp.expiresIn?.let {
+                    store.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                }
+                tokenResp.token
+            } catch (e: Exception) {
+                store.clear()
+                null
+            }
+        }
     }
 
     private fun String.ensureTrailingSlash() =
