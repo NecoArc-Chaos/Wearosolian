@@ -55,30 +55,29 @@
 
 #### 前置要求
 
-- [Flutter SDK](https://flutter.dev)（≥3.10.0）
+- Android Studio (Ladybug 或更新版本)
 - Android SDK（使用模拟器需 Wear OS 系统镜像）
+- JDK 17
 
 #### 运行
 
 ```bash
-# 安装依赖
-flutter pub get
+# 克隆仓库
+git clone https://github.com/NecoArc-Chaos/Wearosolian.git
+cd Wearosolian
 
-# 生成代码
-dart run build_runner build
-
-# 在连接的 Wear OS 设备/模拟器上运行
-flutter run
+# 构建并在连接的 Wear OS 设备/模拟器上运行
+./gradlew installDebug
 ```
 
 #### 构建
 
 ```bash
-# 构建 APK
-flutter build apk
+# 构建调试 APK
+./gradlew assembleDebug
 
-# 构建 App Bundle
-flutter build appbundle
+# 构建发布 APK（需要配置 keystore）
+./gradlew assembleRelease
 ```
 
 ---
@@ -87,9 +86,9 @@ flutter build appbundle
 
 - ✅ **仅 Android / Wear OS** — 移除了所有桌面端、iOS 和 Web 代码
 - ✅ 精简依赖 — 无 `window_manager`、`desktop_drop`、`tray_manager` 等
-- ✅ Apple 登录 → OIDC Web 流程（移除了原生 `sign_in_with_apple`）
-- ✅ 桌面 RPC / Discord 在线状态已移除
-- ✅ 通话窗口 / 多窗口代码已移除
+- ✅ 纯 Kotlin + Jetpack Compose (Wear Compose Material 3)
+- ✅ Retrofit + OkHttp 网络层
+- ✅ EncryptedSharedPreferences 安全存储 Token
 
 ---
 
@@ -105,13 +104,11 @@ flutter build appbundle
 
 | 特性 | 实现 |
 |------|------|
-| **表冠旋转滚动** | Flutter Wear OS engine 自动将表冠旋转映射为 `PointerScrollEvent`，所有 `Scrollable` 组件原生支持 |
-| **圆表适配** | `app_scaffold.dart` 根据 `WatchShape` 自动裁剪为圆形并注入安全边距 |
-| **缩放列表** | `WearScalingList` — 边缘项目缩至 70%；`PaginationList` 在手表上自动启用 |
-| **滑动手势返回** | `WearSwipeBack` — 左边缘滑动返回（类似 Orbit 的 `SwipeDismissableNavHost`） |
-| **常亮模式** | `WearAmbientMode` — 始终显示，简化暗色 UI |
-| **表形检测** | `wear_os.dart` 提供 `isWearDevice()` / `isRoundWatch()` / `WearAwareBuilder` |
-| **大触摸目标** | 主题确保最小 48dp 触摸区域 |
+| **表冠旋转滚动** | Wear Compose `RotaryScrollableDefaults` |
+| **圆表适配** | `rememberIsScreenRound()` + 动态边距 |
+| **缩放列表** | `ScalingLazyColumn` + 表冠滚动 |
+| **常亮模式** | 待实现 |
+| **滑动手势返回** | 待实现 |
 
 ---
 
@@ -119,9 +116,10 @@ flutter build appbundle
 
 | 层级 | 技术 |
 |------|------|
-| **前端** | Flutter (Dart) — Wear OS 目标 |
-| **状态管理** | Riverpod + Hooks |
-| **本地数据库** | Drift (SQLite) |
+| **语言** | Kotlin |
+| **UI** | Jetpack Compose + Wear Compose Material 3 |
+| **网络** | Retrofit + OkHttp + WebSocket |
+| **本地存储** | EncryptedSharedPreferences |
 | **后端** | .NET + PostgreSQL |
 | **协议** | ActivityPub (联邦宇宙)、WebSockets、REST API |
 

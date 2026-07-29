@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Solian</string>
+
+    <!-- Login -->
+    <string name="login_title">Solian</string>
+    <string name="login_subtitle">Solar Network</string>
+    <string name="login_server">Server</string>
+    <string name="login_account">Name or Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_button">Login</string>
+
+    <!-- Home -->
+    <string name="home_checkin_title">🏮 今日签文</string>
+    <string name="home_checkin_fortune">大吉 · 诸事顺遂</string>
+    <string name="home_checkin_advice">宜：出行、交友、创作</string>
+    <string name="home_countdown_title">⏳ 重要倒计时</string>
+    <string name="home_countdown_christmas">🎄 圣诞节</string>
+    <string name="home_countdown_days">158天</string>
+    <string name="home_notifications_title">🔔 通知</string>
+    <string name="home_notifications_unread">3 条未读消息</string>
+
+    <!-- Explore -->
+    <string name="explore_title">Explore</string>
+    <string name="explore_empty">No posts yet</string>
+
+    <!-- Compose -->
+    <string name="compose_title">New Post</string>
+    <string name="compose_hint">What\'s on your mind?</string>
+    <string name="compose_button">Publish</string>
+    <string name="compose_success">Posted!</string>
+
+    <!-- Chat -->
+    <string name="chat_title">Messages</string>
+    <string name="chat_live">● Live</string>
+    <string name="chat_empty">No chat rooms</string>
+
+    <!-- Account -->
+    <string name="account_title">User</string>
+    <string name="account_quick_status">Quick Status</string>
+    <string name="account_logout">Logout</string>
+    <string name="account_status_online">🟢 On</string>
+    <string name="account_status_offline">⚫ Off</string>
+    <string name="account_status_busy">🔴 Busy</string>
+
+    <!-- Errors -->
+    <string name="error_login_failed">Login failed</string>
+    <string name="error_no_password_factor">No password factor found</string>
+</resources>

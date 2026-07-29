@@ -1,24 +1,19 @@
 package dev.solsynth.solian.ui.explore
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
-import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
-import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
-import dev.solsynth.solian.theme.rememberIsScreenRound
+import dev.solsynth.solian.R
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.SnPost
+import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
 fun ExploreScreen() {
@@ -26,10 +21,6 @@ fun ExploreScreen() {
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val focusRequester = remember { FocusRequester() }
-    val listState = rememberScalingLazyListState()
-    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
-    val isRound = rememberIsScreenRound()
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -44,20 +35,7 @@ fun ExploreScreen() {
         }
     }
 
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .rotaryScrollable(rotaryBehavior, focusRequester),
-        state = listState,
-        contentPadding = PaddingValues(
-            top = if (isRound) 36.dp else 8.dp,
-            bottom = if (isRound) 36.dp else 16.dp,
-        ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        item { Spacer(Modifier.height(8.dp)) }
-
+    WearScreen {
         if (isLoading) {
             item {
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -71,7 +49,7 @@ fun ExploreScreen() {
             }
         } else if (posts.isEmpty()) {
             item {
-                Text("No posts yet",
+                Text(stringResource(R.string.explore_empty),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -103,7 +81,5 @@ fun ExploreScreen() {
                 }
             }
         }
-
-        item { Spacer(Modifier.height(16.dp)) }
     }
 }

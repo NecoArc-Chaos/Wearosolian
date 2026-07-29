@@ -1,7 +1,8 @@
 package dev.solsynth.solian.data
 
 import android.content.Context
-import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 
 object TokenStore {
     private const val PREFS_NAME = "solian_auth"
@@ -10,10 +11,17 @@ object TokenStore {
     private const val KEY_TOKEN_EXPIRES_AT = "token_expires_at"
     private const val KEY_SERVER = "server_url"
 
-    private lateinit var prefs: SharedPreferences
+    private lateinit var prefs: android.content.SharedPreferences
 
     fun init(context: Context) {
-        prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        prefs = EncryptedSharedPreferences.create(
+            PREFS_NAME,
+            masterKeyAlias,
+            context,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
+        )
     }
 
     var token: String?

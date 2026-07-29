@@ -1,17 +1,17 @@
 package dev.solsynth.solian.theme
 
 import android.app.Activity
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.wear.compose.material3.ColorScheme
 import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.contentColorFor
 
 val LocalScreenRound = staticCompositionLocalOf { false }
+val LocalIsAmbient = staticCompositionLocalOf { false }
 
 @Composable
 fun rememberIsScreenRound(): Boolean {
@@ -20,8 +20,13 @@ fun rememberIsScreenRound(): Boolean {
     return themeRound || configRound
 }
 
+@Composable
+fun rememberIsAmbient(): Boolean {
+    return LocalIsAmbient.current
+}
+
 /** OLED-optimized color scheme, matching Wear Compose M3 1.6.2 API. */
-val wearColorScheme = ColorScheme(
+private val ActiveColorScheme = ColorScheme(
     primary = SolianViolet,
     onPrimary = OledBlack,
     primaryDim = SolianVioletDim,
@@ -35,7 +40,6 @@ val wearColorScheme = ColorScheme(
     tertiary = SolianVioletBright,
     tertiaryDim = SolianVioletDim,
     onTertiary = OledBlack,
-    tertiaryContainer = SolianViolet,
     onTertiaryContainer = OledBlack,
     background = OledBlack,
     onBackground = OnSurfaceHigh,
@@ -48,9 +52,40 @@ val wearColorScheme = ColorScheme(
     onError = OledBlack,
 )
 
+/** Ambient mode color scheme - desaturated, low-power. */
+private val AmbientColorScheme = ColorScheme(
+    primary = OnSurfaceMedium,
+    onPrimary = OledBlack,
+    primaryDim = OnSurfaceLow,
+    primaryContainer = OledSurface,
+    onPrimaryContainer = OnSurfaceMedium,
+    secondary = OnSurfaceMedium,
+    secondaryDim = OnSurfaceLow,
+    onSecondary = OledBlack,
+    secondaryContainer = OledSurface,
+    onSecondaryContainer = OnSurfaceMedium,
+    tertiary = OnSurfaceMedium,
+    tertiaryDim = OnSurfaceLow,
+    onTertiary = OledBlack,
+    onTertiaryContainer = OnSurfaceMedium,
+    background = OledBlack,
+    onBackground = OnSurfaceMedium,
+    onSurface = OnSurfaceMedium,
+    onSurfaceVariant = OnSurfaceLow,
+    surfaceContainerLow = OledSurface,
+    surfaceContainer = OledSurface,
+    surfaceContainerHigh = OledSurfaceVariant,
+    error = ErrorRed,
+    onError = OledBlack,
+)
+
 @Composable
-fun WearosolianTheme(content: @Composable () -> Unit) {
+fun WearosolianTheme(
+    isAmbient: Boolean = false,
+    content: @Composable () -> Unit,
+) {
     val isRound = LocalConfiguration.current.isScreenRound
+    val colorScheme = if (isAmbient) AmbientColorScheme else ActiveColorScheme
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -61,9 +96,12 @@ fun WearosolianTheme(content: @Composable () -> Unit) {
         }
     }
 
-    CompositionLocalProvider(LocalScreenRound provides isRound) {
+    CompositionLocalProvider(
+        LocalScreenRound provides isRound,
+        LocalIsAmbient provides isAmbient,
+    ) {
         MaterialTheme(
-            colorScheme = wearColorScheme,
+            colorScheme = colorScheme,
             content = content
         )
     }
