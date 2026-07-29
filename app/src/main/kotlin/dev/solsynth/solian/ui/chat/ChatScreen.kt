@@ -41,8 +41,9 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel()) {
                 }
             }
         } else if (error != null && rooms.isEmpty()) {
+            val errorMessage = error
             item {
-                Text(error, color = MaterialTheme.colorScheme.error,
+                Text(errorMessage, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall)
             }
         } else if (rooms.isEmpty()) {

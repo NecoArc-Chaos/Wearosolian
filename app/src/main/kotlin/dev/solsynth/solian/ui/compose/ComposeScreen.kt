@@ -41,9 +41,10 @@ fun ComposeScreen() {
         item { Spacer(Modifier.height(8.dp)) }
 
         if (result != null) {
+            val resultText = result
             item {
-                Text(result, style = MaterialTheme.typography.labelSmall,
-                    color = if (result.startsWith("Error"))
+                Text(resultText, style = MaterialTheme.typography.labelSmall,
+                    color = if (resultText.startsWith("Error"))
                         MaterialTheme.colorScheme.error
                     else MaterialTheme.colorScheme.primary)
             }

@@ -42,8 +42,9 @@ fun ExploreScreen() {
                 }
             }
         } else if (error != null) {
+            val errorMessage = error
             item {
-                Text(error, color = MaterialTheme.colorScheme.error,
+                Text(errorMessage, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall)
             }
         } else if (posts.isEmpty()) {

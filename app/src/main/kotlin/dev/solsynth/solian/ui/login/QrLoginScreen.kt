@@ -16,11 +16,13 @@ import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import dev.solsynth.solian.R
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.QrGenerateRequest
 import dev.solsynth.solian.data.model.TokenExchangeRequest
 import dev.solsynth.solian.theme.rememberIsScreenRound
+import androidx.compose.ui.res.stringResource
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 
 @Composable
@@ -77,8 +79,9 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 val qrStatus = ApiClient.api.getQrStatus(id)
                 status = qrStatus.status
                 if (status == 2 && authChallengeId != null) {
+                    val challengeId = authChallengeId
                     val tokenResp = ApiClient.api.exchangeToken(
-                        TokenExchangeRequest(code = authChallengeId)
+                        TokenExchangeRequest(code = challengeId)
                     )
                     TokenStore.token = tokenResp.token
                     TokenStore.refreshToken = tokenResp.refreshToken
@@ -109,23 +112,27 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
             isLoading -> item {
                 CircularProgressIndicator(modifier = Modifier.size(32.dp))
             }
-            error != null -> item {
-                Card(
-                    onClick = {},
-                    modifier = Modifier.fillMaxWidth(0.85f),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
-                    ),
-                ) {
-                    Text(error, style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp).fillMaxWidth())
+            error != null -> {
+                val errorMessage = error
+                item {
+                    Card(
+                        onClick = {},
+                        modifier = Modifier.fillMaxWidth(0.85f),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
+                        ),
+                    ) {
+                        Text(errorMessage, style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(8.dp).fillMaxWidth())
+                    }
                 }
             }
             qrData != null -> {
+                val qrDataText = qrData
                 item {
-                    val painter = rememberQrCodePainter(qrData)
+                    val painter = rememberQrCodePainter(qrDataText)
                     Card(onClick = {}, modifier = Modifier.size(120.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White)) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -105,6 +105,7 @@ private fun PasswordLoginScreen(
         }
 
         if (error != null) {
+            val errorMessage = error
             item {
                 Card(
                     onClick = {},
@@ -114,7 +115,7 @@ private fun PasswordLoginScreen(
                     ),
                 ) {
                     Text(
-                        text = error,
+                        text = errorMessage,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
