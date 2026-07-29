@@ -10,6 +10,7 @@
     <string name="login_account">Name or Email</string>
     <string name="login_password">Password</string>
     <string name="login_button">Login</string>
+    <string name="login_scan_qr">Scan QR</string>
 
     <!-- Home -->
     <string name="home_checkin_title">🏮 今日签文</string>
@@ -45,11 +46,12 @@
     <string name="account_status_offline">⚫ Off</string>
     <string name="account_status_busy">🔴 Busy</string>
 
-    <!-- Login -->
-    <string name="login_scan_qr">Scan QR</string>
-
     <!-- QR Login -->
     <string name="qr_scan_title">Scan to Login</string>
+    <string name="qr_status_scanned">Scanned</string>
+    <string name="qr_status_approved">Approved</string>
+    <string name="qr_status_declined">Declined</string>
+    <string name="qr_status_waiting">Waiting...</string>
     <string name="qr_remaining_seconds">%1$ds</string>
     <string name="qr_expired">Expired</string>
     <string name="qr_refresh">Refresh</string>

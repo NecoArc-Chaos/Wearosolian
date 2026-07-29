@@ -75,16 +75,17 @@ fun AccountScreen(onLogout: () -> Unit) {
             ) {
                 Card(
                     onClick = {
-                        presence = !presence
+                        val newPresence = !presence
                         scope.launch {
                             isLoading = true
                             try {
                                 ApiClient.api.updateStatus(
                                     AccountStatusRequest(
-                                        type = if (presence) "Default" else "Invisible",
+                                        type = if (newPresence) "Default" else "Invisible",
                                         attitude = "Neutral",
                                     )
                                 )
+                                presence = newPresence
                             } catch (_: Exception) { }
                             isLoading = false
                         }
@@ -104,17 +105,18 @@ fun AccountScreen(onLogout: () -> Unit) {
                 }
                 Card(
                     onClick = {
-                        statusText = if (statusText == "Busy") "Online" else "Busy"
+                        val newStatus = if (statusText == "Busy") "Online" else "Busy"
                         scope.launch {
                             isLoading = true
                             try {
                                 ApiClient.api.updateStatus(
                                     AccountStatusRequest(
-                                        type = if (statusText == "Busy") "Default" else "Default",
-                                        attitude = if (statusText == "Busy") "Busy" else "Neutral",
-                                        label = if (statusText == "Busy") "Busy" else null,
+                                        type = "Default",
+                                        attitude = if (newStatus == "Busy") "Busy" else "Neutral",
+                                        label = if (newStatus == "Busy") "Busy" else null,
                                     )
                                 )
+                                statusText = newStatus
                             } catch (_: Exception) { }
                             isLoading = false
                         }

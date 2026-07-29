@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
@@ -15,6 +16,7 @@ import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.R
 import dev.solsynth.solian.data.TokenStore
@@ -22,7 +24,6 @@ import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.QrGenerateRequest
 import dev.solsynth.solian.data.model.TokenExchangeRequest
 import dev.solsynth.solian.theme.rememberIsScreenRound
-import androidx.compose.ui.res.stringResource
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 
 @Composable
@@ -70,28 +71,37 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
         }
     }
 
-    // Poll for QR status every 2s
-    LaunchedEffect(qrChallengeId, status) {
+    // Poll for QR status every 2s using reactive flow
+    LaunchedEffect(qrChallengeId) {
         val id = qrChallengeId ?: return@LaunchedEffect
-        while (status < 2 && status != 3 && remainingSeconds > 0) {
-            delay(2000)
-            try {
-                val qrStatus = ApiClient.api.getQrStatus(id)
-                status = qrStatus.status
-                if (status == 2 && authChallengeId != null) {
-                    val challengeId = authChallengeId!!
-                    val tokenResp = ApiClient.api.exchangeToken(
-                        TokenExchangeRequest(code = challengeId)
-                    )
-                    TokenStore.token = tokenResp.token
-                    TokenStore.refreshToken = tokenResp.refreshToken
-                    tokenResp.expiresIn?.let {
-                        TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+        snapshotFlow { status to remainingSeconds }
+            .filter { (s, r) -> s < 2 && s != 3 && r > 0 }
+            .flatMapLatest {
+                flow {
+                    while (true) {
+                        delay(2000)
+                        emit(Unit)
                     }
-                    onLoginSuccess()
                 }
-            } catch (_: Exception) { }
-        }
+            }
+            .collect {
+                try {
+                    val qrStatus = ApiClient.api.getQrStatus(id)
+                    status = qrStatus.status
+                    if (status == 2 && authChallengeId != null) {
+                        val challengeId = authChallengeId!!
+                        val tokenResp = ApiClient.api.exchangeToken(
+                            TokenExchangeRequest(code = challengeId)
+                        )
+                        TokenStore.token = tokenResp.token
+                        TokenStore.refreshToken = tokenResp.refreshToken
+                        tokenResp.expiresIn?.let {
+                            TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                        }
+                        onLoginSuccess()
+                    }
+                } catch (_: Exception) { }
+            }
     }
 
     ScalingLazyColumn(
@@ -140,10 +150,10 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 // Status
                 item {
                     val (label, color) = when (status) {
-                        1 -> "Scanned" to MaterialTheme.colorScheme.tertiary
-                        2 -> "Approved" to MaterialTheme.colorScheme.primary
-                        3 -> "Declined" to MaterialTheme.colorScheme.error
-                        else -> "Waiting..." to MaterialTheme.colorScheme.onSurfaceVariant
+                        1 -> stringResource(R.string.qr_status_scanned) to MaterialTheme.colorScheme.tertiary
+                        2 -> stringResource(R.string.qr_status_approved) to MaterialTheme.colorScheme.primary
+                        3 -> stringResource(R.string.qr_status_declined) to MaterialTheme.colorScheme.error
+                        else -> stringResource(R.string.qr_status_waiting) to MaterialTheme.colorScheme.onSurfaceVariant
                     }
                     Text(label, style = MaterialTheme.typography.labelSmall, color = color)
                 }

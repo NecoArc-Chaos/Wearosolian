@@ -6,7 +6,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.OutlinedTextField
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.R
