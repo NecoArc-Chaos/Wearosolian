@@ -72,7 +72,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(0.9f),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                FilterChip(
+                Chip(
                     selected = presence,
                     onClick = {
                         presence = !presence
@@ -91,7 +91,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                     },
                     label = { Text(if (presence) stringResource(R.string.account_status_online) else stringResource(R.string.account_status_offline)) },
                 )
-                FilterChip(
+                Chip(
                     selected = statusText == "Busy",
                     onClick = {
                         statusText = if (statusText == "Busy") "Online" else "Busy"
