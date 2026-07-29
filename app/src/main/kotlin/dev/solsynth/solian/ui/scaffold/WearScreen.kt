@@ -14,7 +14,6 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
-import androidx.wear.compose.material3.FlingBehavior
 import androidx.wear.compose.material3.MaterialTheme
 import dev.solsynth.solian.theme.rememberIsAmbient
 import dev.solsynth.solian.theme.rememberIsScreenRound
@@ -26,18 +25,12 @@ fun WearScreen(
 ) {
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
-    val rotaryBehavior = RotaryScrollableDefaults.behavior<FlingBehavior>(scrollableState = listState)
+    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
     val isRound = rememberIsScreenRound()
     val isAmbient = rememberIsAmbient()
 
     val defaultTopPadding = if (isRound) 36.dp else 12.dp
     val defaultBottomPadding = if (isRound) 36.dp else 16.dp
-
-    val scrollAnimationSpec = if (isAmbient) {
-        tween(durationMillis = 0)
-    } else {
-        tween(durationMillis = 200)
-    }
 
     val backgroundColor = MaterialTheme.colorScheme.background
 
@@ -52,8 +45,6 @@ fun WearScreen(
             bottom = defaultBottomPadding,
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        // In ambient mode, disable fling and overscroll for power saving
-        flingBehavior = if (isAmbient) null else null, // Wear Compose handles this internally
     ) {
         item { Spacer(Modifier.height(defaultTopPadding - 12.dp)) }
         content()

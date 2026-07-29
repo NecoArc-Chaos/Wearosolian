@@ -54,6 +54,7 @@ private fun PasswordLoginScreen(
     val deviceId = remember {
         Secure.getString(context.contentResolver, Secure.ANDROID_ID) ?: "wearos-unknown"
     }
+    val noPasswordFactorError = stringResource(R.string.error_no_password_factor)
 
     WearScreen {
         item { Text(stringResource(R.string.login_title), style = MaterialTheme.typography.titleMedium) }
@@ -143,7 +144,6 @@ private fun PasswordLoginScreen(
                                 ),
                             )
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
-                            val noPasswordFactorError = stringResource(R.string.error_no_password_factor)
                             val pwFactor = factors.firstOrNull {
                                 it.name?.contains("password", true) == true
                             } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
