@@ -74,10 +74,7 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel()) {
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.primaryContainer,
-                                            shape = MaterialTheme.shapes.small,
-                                        )
+                                        .background(MaterialTheme.colorScheme.primaryContainer)
                                         .padding(horizontal = 6.dp, vertical = 2.dp),
                                 )
                             }

@@ -143,11 +143,12 @@ private fun PasswordLoginScreen(
                                 ),
                             )
                             val factors = ApiClient.api.getChallengeFactors(ch.id)
+                            val noPasswordFactorError = stringResource(R.string.error_no_password_factor)
                             val pwFactor = factors.firstOrNull {
                                 it.name?.contains("password", true) == true
                             } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
                                 ?: factors.firstOrNull { it.type == 0 }
-                                ?: throw Exception(stringResource(R.string.error_no_password_factor))
+                                ?: throw Exception(noPasswordFactorError)
 
                             val result = ApiClient.api.performChallenge(
                                 ch.id,

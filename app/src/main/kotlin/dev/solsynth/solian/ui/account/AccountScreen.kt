@@ -72,8 +72,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(0.9f),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                Chip(
-                    selected = presence,
+                Card(
                     onClick = {
                         presence = !presence
                         scope.launch {
@@ -89,10 +88,20 @@ fun AccountScreen(onLogout: () -> Unit) {
                             isLoading = false
                         }
                     },
-                    label = { Text(if (presence) stringResource(R.string.account_status_online) else stringResource(R.string.account_status_offline)) },
-                )
-                Chip(
-                    selected = statusText == "Busy",
+                    modifier = Modifier
+                        .fillMaxWidth(0.4f)
+                        .then(if (presence) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (presence) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+                    ),
+                ) {
+                    Text(
+                        text = if (presence) stringResource(R.string.account_status_online) else stringResource(R.string.account_status_offline),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    )
+                }
+                Card(
                     onClick = {
                         statusText = if (statusText == "Busy") "Online" else "Busy"
                         scope.launch {
@@ -109,8 +118,19 @@ fun AccountScreen(onLogout: () -> Unit) {
                             isLoading = false
                         }
                     },
-                    label = { Text(stringResource(R.string.account_status_busy)) },
-                )
+                    modifier = Modifier
+                        .fillMaxWidth(0.4f)
+                        .then(if (statusText == "Busy") Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (statusText == "Busy") MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.account_status_busy),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    )
+                }
             }
         }
 

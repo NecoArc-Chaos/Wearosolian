@@ -14,6 +14,7 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
+import androidx.wear.compose.material3.FlingBehavior
 import androidx.wear.compose.material3.MaterialTheme
 import dev.solsynth.solian.theme.rememberIsAmbient
 import dev.solsynth.solian.theme.rememberIsScreenRound
@@ -25,7 +26,7 @@ fun WearScreen(
 ) {
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
-    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
+    val rotaryBehavior = RotaryScrollableDefaults.behavior<FlingBehavior>(scrollableState = listState)
     val isRound = rememberIsScreenRound()
     val isAmbient = rememberIsAmbient()
 
