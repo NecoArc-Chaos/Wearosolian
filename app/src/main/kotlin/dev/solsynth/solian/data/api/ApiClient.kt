@@ -122,6 +122,7 @@ object ApiClient {
             return response
         }
 
+        @Suppress("BlockingMethodInNonBlockingContext")
         private fun refreshToken(api: SolianApi, store: TokenStore): String? {
             val refreshToken = store.refreshToken ?: run {
                 store.clear()

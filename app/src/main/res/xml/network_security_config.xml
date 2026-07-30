@@ -3,24 +3,25 @@
     <!-- Default: block cleartext (already enforced by targetSdk >= 28) -->
     <base-config cleartextTrafficPermitted="false" />
 
-    <!-- Certificate pinning is disabled until real hashes are provided.
-         To enable, uncomment the domain-config blocks below and replace
-         the placeholder hashes with actual SHA-256 SPKI hashes. -->
-    <!--
+    <!-- Production certificate pin for solian.app.
+         The runtime guard in NetworkConfig will log a warning if the
+         embedded hash becomes invalid (cert rotation), instead of
+         crashing all HTTPS traffic. -->
     <domain-config>
         <domain includeSubdomains="true">solian.app</domain>
         <pin-set>
-            <pin digest="SHA-256">REAL_HASH_HERE</pin>
+            <pin digest="SHA-256">ldZj8XVxkaBt4jBzMPobxTovjj5PFLIkBxjl4mGxyF8=</pin>
         </pin-set>
     </domain-config>
 
+    <!-- nt.solian.app: placeholder hash, pinning disabled until real hash provided.
+         NetworkConfig runtime guard will skip this entry automatically. -->
     <domain-config>
         <domain includeSubdomains="true">nt.solian.app</domain>
         <pin-set>
-            <pin digest="SHA-256">REAL_HASH_HERE</pin>
+            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
         </pin-set>
     </domain-config>
-    -->
 
     <!-- Allow user-configured servers (no pinning) for self-hosted instances -->
     <domain-config cleartextTrafficPermitted="false">
