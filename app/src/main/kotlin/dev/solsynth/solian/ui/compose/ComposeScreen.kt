@@ -6,6 +6,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.OutlinedTextField
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.R
@@ -26,6 +27,8 @@ fun ComposeScreen() {
         item { Spacer(Modifier.height(8.dp)) }
 
         item {
+            // Wear Compose Material3 does not provide OutlinedTextField;
+            // the standard Material3 component is used here and works on Wear OS.
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
