@@ -25,21 +25,13 @@
 | Feature | Description |
 |---------|-------------|
 | Timeline | Chronological feed of posts |
-| Posts, Articles & Moments | Multiple content types |
+| Posts | Create and view posts |
 | Instant Messaging | Real-time chat with group support |
-| Realms | Communities organized by shared interests |
 | OAuth Integration | Secure third-party authentication |
 | Check-in | Location and status sharing |
 | Countdown | Track special dates and festivals |
-| RSS Reader | Subscribe to external feeds |
-| Wallet | Credit system for transactions |
-| Stickers | Custom sticker expressions |
-| Rich Text Editor | Markdown-based with extended syntax |
-| Social Features | Friends list and blocklist |
-| File Management | Upload and organize files |
-| AI Features | Smart assistance throughout the app |
-| Fitness & Health | Track fitness goals on your wrist |
-| Fediverse | Interact with other fediverse instances (experimental) |
+| Account | Profile and status management |
+| QR Login | Scan QR code to authenticate |
 
 ---
 
@@ -57,7 +49,7 @@
 
 - Android Studio (Ladybug or newer)
 - Android SDK with Wear OS system images (if using emulator)
-- JDK 17
+- JDK 21
 
 #### Running
 
@@ -107,7 +99,7 @@ This fork is optimized for Wear OS smartwatches:
 | **Crown scrolling** | Wear Compose `RotaryScrollableDefaults` |
 | **Round watch** | `rememberIsScreenRound()` + dynamic padding |
 | **Scaling list** | `ScalingLazyColumn` with rotary behavior |
-| **Ambient mode** | Stub (not yet implemented) |
+| **Ambient mode** | Implemented |
 | **Swipe-to-back** | Stub (not yet implemented) |
 
 ---

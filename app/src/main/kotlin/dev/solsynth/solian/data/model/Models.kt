@@ -8,13 +8,19 @@ object AuthConstants {
     const val PLATFORM_ANDROID = 3
     const val DEFAULT_SERVER_URL = "https://nt.solian.app"
     const val NAMESPACE = "dev.solsynth.solian"
+    const val DEFAULT_DEVICE_ID = "wearos-client"
+    const val DEFAULT_DEVICE_NAME = "Wear OS"
+    const val STATUS_TYPE_DEFAULT = "Default"
+    const val STATUS_TYPE_INVISIBLE = "Invisible"
+    const val STATUS_ATTITUDE_NEUTRAL = "Neutral"
+    const val STATUS_ATTITUDE_BUSY = "Busy"
 }
 
 data class ChallengeRequest(
     val account: String,
     val platform: Int = AuthConstants.PLATFORM_ANDROID,
     @SerializedName("device_id") val deviceId: String,
-    @SerializedName("device_name") val deviceName: String? = "Wear OS",
+    @SerializedName("device_name") val deviceName: String? = AuthConstants.DEFAULT_DEVICE_NAME,
 )
 
 data class SnAuthChallenge(
@@ -50,9 +56,9 @@ data class TokenExchangeResponse(
 // ── QR Login ──
 
 data class QrGenerateRequest(
-    @SerializedName("device_id") val deviceId: String = "wearos-client",
-    @SerializedName("device_name") val deviceName: String? = "Wear OS",
-    val platform: Int = 3,
+    @SerializedName("device_id") val deviceId: String = AuthConstants.DEFAULT_DEVICE_ID,
+    @SerializedName("device_name") val deviceName: String? = AuthConstants.DEFAULT_DEVICE_NAME,
+    val platform: Int = AuthConstants.PLATFORM_ANDROID,
     val audiences: List<String> = emptyList(),
     val scopes: List<String> = emptyList(),
 )
@@ -92,8 +98,8 @@ data class SnAccountStatus(
 )
 
 data class AccountStatusRequest(
-    val type: String? = "Default",
-    val attitude: String? = "Neutral",
+    val type: String? = AuthConstants.STATUS_TYPE_DEFAULT,
+    val attitude: String? = AuthConstants.STATUS_ATTITUDE_NEUTRAL,
     val label: String? = null,
     val symbol: String? = null,
 )

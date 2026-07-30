@@ -162,7 +162,9 @@ class ChatWebSocketClient(
             trimmed.startsWith("http://") -> trimmed.substringAfter("http://")
             else -> trimmed
         }
-        return "wss://$host/ws?namespace=dev.solsynth.solian"
+        // Derive ws scheme from the HTTP(S) scheme so localhost dev servers work.
+        val scheme = if (trimmed.startsWith("https://")) "wss" else "ws"
+        return "$scheme://$host/ws?namespace=dev.solsynth.solian"
     }
 
     private fun Request.Builder.addAuthHeader(): Request.Builder {

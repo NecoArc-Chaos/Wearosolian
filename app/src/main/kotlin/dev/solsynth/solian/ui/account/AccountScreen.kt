@@ -12,10 +12,12 @@ import kotlinx.coroutines.launch
 import dev.solsynth.solian.R
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.AccountStatusRequest
+import dev.solsynth.solian.data.model.AuthConstants
 import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
 fun AccountScreen(onLogout: () -> Unit) {
+    // Internal state values use API enum strings; display strings come from strings.xml.
     var statusText by remember { mutableStateOf("Online") }
     var presence by remember { mutableStateOf(true) }
     var userName by remember { mutableStateOf("") }
@@ -34,7 +36,7 @@ fun AccountScreen(onLogout: () -> Unit) {
         try {
             val status = ApiClient.api.getMyStatus()
             statusText = when (status.type) {
-                "Invisible" -> "Invisible"
+                AuthConstants.STATUS_TYPE_INVISIBLE -> AuthConstants.STATUS_TYPE_INVISIBLE
                 else -> "Online"
             }
             presence = status.isOnline ?: true
@@ -81,8 +83,8 @@ fun AccountScreen(onLogout: () -> Unit) {
                             try {
                                 ApiClient.api.updateStatus(
                                     AccountStatusRequest(
-                                        type = if (newPresence) "Default" else "Invisible",
-                                        attitude = "Neutral",
+type = if (newPresence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STATUS_TYPE_INVISIBLE,
+                                        attitude = AuthConstants.STATUS_ATTITUDE_NEUTRAL,
                                     )
                                 )
                                 presence = newPresence
@@ -111,8 +113,8 @@ fun AccountScreen(onLogout: () -> Unit) {
                             try {
                                 ApiClient.api.updateStatus(
                                     AccountStatusRequest(
-                                        type = "Default",
-                                        attitude = if (newStatus == "Busy") "Busy" else "Neutral",
+type = AuthConstants.STATUS_TYPE_DEFAULT,
+                                        attitude = if (newStatus == "Busy") AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
                                         label = if (newStatus == "Busy") "Busy" else null,
                                     )
                                 )

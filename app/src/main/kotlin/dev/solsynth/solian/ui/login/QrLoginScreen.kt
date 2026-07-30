@@ -12,8 +12,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
-import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
-import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -25,6 +23,7 @@ import dev.solsynth.solian.data.model.QrGenerateRequest
 import dev.solsynth.solian.data.model.TokenExchangeRequest
 import dev.solsynth.solian.theme.rememberIsScreenRound
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
+import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
 fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
@@ -36,10 +35,6 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val listState = rememberScalingLazyListState()
-    val focusRequester = remember { FocusRequester() }
-    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
-    val isRound = rememberIsScreenRound()
 
     fun generateQr() {
         error = null
@@ -104,17 +99,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
             }
     }
 
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .rotaryScrollable(rotaryBehavior, focusRequester),
-        state = listState,
-        contentPadding = PaddingValues(
-            top = if (isRound) 36.dp else 8.dp,
-            bottom = if (isRound) 36.dp else 8.dp,
-        ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    WearScreen {
         item { Text(stringResource(R.string.qr_scan_title), style = MaterialTheme.typography.titleSmall) }
         item { Spacer(Modifier.height(8.dp)) }
 
