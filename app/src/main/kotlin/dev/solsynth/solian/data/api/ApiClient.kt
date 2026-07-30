@@ -143,6 +143,8 @@ object ApiClient {
                     }
                 }
                 store.token = tokenResp.token
+                // Persist the *new* refresh token returned by the server.
+                // The previous value has already been used and must not be written back.
                 tokenResp.refreshToken?.let { store.refreshToken = it }
                 tokenResp.expiresIn?.let {
                     store.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
