@@ -79,9 +79,10 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel()) {
                                 )
                             }
                         }
-                        if (!entry.lastMessage?.content.isNullOrBlank()) {
+                        val lastContent = entry.lastMessage?.content
+                        if (!lastContent.isNullOrBlank()) {
                             Text(
-                                entry.lastMessage?.content.orEmpty(),
+                                lastContent,
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,

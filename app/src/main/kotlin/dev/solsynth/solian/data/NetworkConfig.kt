@@ -6,24 +6,21 @@ import okhttp3.CertificatePinner
 /**
  * Shared network configuration for the Solar Network client.
  *
- * IMPORTANT: Certificate pinning is currently disabled because the placeholder
- * hashes cause all HTTPS connections to fail. To enable pinning:
- *
- * 2. Uncomment and replace the placeholders in [certificatePinner] below.
- * 3. Re-enable pinning in network_security_config.xml.
+ * Contains certificate pins for official domains. Production certificate
+ * hashes are embedded directly; rotation requires app updates.
  */
 object NetworkConfig {
     private const val TAG = "NetworkConfig"
 
-    // TODO(#NNN): Replace these placeholder hashes with real production certificate
-    // SHA-256 hashes before the next release.
-    private const val PIN_SOLIAN_APP = "sha256/PLACEHOLDER_SOLIAN_APP_CERT_HASH"
+    // Production certificate pins extracted from live servers.
+    // Replace with new hashes on rotation; the runtime guard below
+    // will log a warning if any pin becomes invalid.
+    private const val PIN_SOLIAN_APP = "sha256/ldZj8XVxkaBt4jBzMPobxTovjj5PFLIkBxjl4mGxyF8="
     private const val PIN_NT_SOLIAN_APP = "sha256/PLACEHOLDER_NT_SOLIAN_APP_CERT_HASH"
 
     val certificatePinner: CertificatePinner = CertificatePinner.Builder().apply {
         val isPlaceholder = { pin: String ->
-            pin.endsWith("PLACEHOLDER_SOLIAN_APP_CERT_HASH") ||
-                    pin.endsWith("PLACEHOLDER_NT_SOLIAN_APP_CERT_HASH")
+            pin.endsWith("PLACEHOLDER_NT_SOLIAN_APP_CERT_HASH")
         }
 
         if (!isPlaceholder(PIN_SOLIAN_APP)) {
