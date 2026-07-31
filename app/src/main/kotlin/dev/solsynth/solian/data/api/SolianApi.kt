@@ -61,6 +61,18 @@ interface SolianApi {
     @GET("messager/chat/summary")
     suspend fun getChatSummary(): Map<String, ChatSummaryEntry>
 
+    @POST("messager/chat/rooms/sync")
+    suspend fun syncRooms(@Body request: ChatSyncRequest): RoomSyncResponse
+
+    @POST("messager/chat/{roomId}/sync")
+    suspend fun syncRoom(
+        @Path("roomId") roomId: String,
+        @Body request: ChatSyncRequest,
+    ): RoomMessageSyncResponse
+
+    @POST("messager/chat/sync")
+    suspend fun syncAll(@Body request: ChatSyncRequest): RoomMessageSyncResponse
+
     @GET("messager/chat/{roomId}/messages")
     suspend fun getMessages(
         @Path("roomId") roomId: String,

@@ -78,6 +78,8 @@ data class TokenExchangeResponse(
     @SerializedName("refresh_token") val refreshToken: String?,
     @SerializedName("expires_in") val expiresIn: Long?,
     @SerializedName("refresh_expires_in") val refreshExpiresIn: Long?,
+    @SerializedName("id_token") val idToken: String? = null,
+    @SerializedName("token_type") val tokenType: String? = null,
 )
 
 // ── QR Login ──
@@ -185,6 +187,30 @@ data class ChatSummaryEntry(
     @SerializedName("unread_count") val unreadCount: Int = 0,
     @SerializedName("last_message") val lastMessage: SnChatMessage?,
     val room: SnChatRoom? = null,
+)
+
+data class ChatSyncRequest(
+    @SerializedName("last_sync_timestamp") val lastSyncTimestamp: Long = 0,
+    @SerializedName("missing_sequences") val missingSequences: List<Long>? = null,
+    @SerializedName("missing_sequence_ranges") val missingSequenceRanges: List<MissingSequenceRange>? = null,
+)
+
+data class MissingSequenceRange(
+    @SerializedName("start_sequence") val startSequence: Long,
+    @SerializedName("end_sequence") val endSequence: Long,
+)
+
+data class RoomSyncResponse(
+    val changes: List<ChatSummaryEntry>? = null,
+    val summaries: Map<String, ChatSummaryEntry>? = null,
+    @SerializedName("current_timestamp") val currentTimestamp: Long? = null,
+    @SerializedName("total_count") val totalCount: Int? = null,
+)
+
+data class RoomMessageSyncResponse(
+    val messages: List<SnChatMessage>? = null,
+    @SerializedName("current_timestamp") val currentTimestamp: Long? = null,
+    @SerializedName("total_count") val totalCount: Int? = null,
 )
 
 data class SnChatSummary(

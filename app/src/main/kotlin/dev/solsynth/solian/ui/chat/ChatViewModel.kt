@@ -82,6 +82,16 @@ class ChatViewModel : ViewModel() {
             onStatusChanged = { connected ->
                 _wsConnected.value = connected
             },
+            onReconnected = {
+                viewModelScope.launch {
+                    try {
+                        val summaryMap = ApiClient.api.getChatSummary()
+                        _rooms.value = summaryMap.values.toList()
+                    } catch (_: Exception) {
+                        // Keep current rooms on sync failure
+                    }
+                }
+            },
         )
         wsClient?.connect()
     }

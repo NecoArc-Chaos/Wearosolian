@@ -30,6 +30,7 @@ class ChatWebSocketClient(
     private val serverUrl: String,
     private val onMessage: (String, String?, String?) -> Unit,
     private val onStatusChanged: (Boolean) -> Unit,
+    private val onReconnected: () -> Unit = {},
 ) {
     // Reuse the shared OkHttpClient from ApiClient so that connection pools,
     // DNS cache, and certificate pinning are shared with the REST client.
@@ -64,6 +65,7 @@ class ChatWebSocketClient(
                 onStatusChanged(true)
                 Log.d(TAG, "WebSocket connected: $wsUrl")
                 startHeartbeat(ws)
+                onReconnected()
             }
 
             override fun onMessage(ws: WebSocket, text: String) {
@@ -201,15 +203,28 @@ class ChatWebSocketClient(
         return this
     }
 
-    fun sendMessage(chatRoomId: String, content: String) {
+    fun sendMessage(
+        chatRoomId: String,
+        content: String,
+        repliedMessageId: String? = null,
+        forwardedMessageId: String? = null,
+        attachmentsId: List<String> = emptyList(),
+        meta: JSONObject? = null,
+    ) {
+        val data = JSONObject()
+            .put("chat_room_id", chatRoomId)
+            .put("content", content)
+            .putOpt("replied_message_id", repliedMessageId)
+            .putOpt("forwarded_message_id", forwardedMessageId)
+            .putOpt("attachments_id", JSONArray(attachmentsId))
+            .putOpt("meta", meta)
+
         val payload = JSONObject()
             .put("type", "messages.send")
             .put("endpoint", MESSENGER_ENDPOINT)
-            .put("data", JSONObject()
-                .put("chat_room_id", chatRoomId)
-                .put("content", content)
-            )
+            .put("data", data)
             .toString()
+
         webSocket?.send(payload)
     }
 
