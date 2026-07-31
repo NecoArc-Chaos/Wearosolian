@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -45,7 +46,7 @@ private fun PasswordLoginScreen(
     loginFailedMessage: String,
 ) {
     val context = LocalContext.current
-    var serverUrl by remember { mutableStateOf(TokenStore.serverUrl) }
+    val focusManager = LocalFocusManager.current
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -57,7 +58,13 @@ private fun PasswordLoginScreen(
     val noPasswordFactorError = stringResource(R.string.error_no_password_factor)
 
     WearScreen {
-        item { Text(stringResource(R.string.login_title), style = MaterialTheme.typography.titleMedium) }
+        item {
+            Text(
+                text = stringResource(R.string.login_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
         item {
             Text(
                 text = stringResource(R.string.login_subtitle),
@@ -70,21 +77,14 @@ private fun PasswordLoginScreen(
 
         item {
             OutlinedTextField(
-                value = serverUrl,
-                onValueChange = { serverUrl = it },
-                label = { Text(stringResource(R.string.login_server)) },
-                singleLine = true,
-                enabled = !isLoading,
-                modifier = Modifier.fillMaxWidth(0.9f),
-            )
-        }
-
-        item { Spacer(Modifier.height(6.dp)) }
-        item {
-            OutlinedTextField(
                 value = account,
                 onValueChange = { account = it },
-                label = { Text(stringResource(R.string.login_account)) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.login_account),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                },
                 singleLine = true,
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(0.9f),
@@ -96,7 +96,12 @@ private fun PasswordLoginScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text(stringResource(R.string.login_password)) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.login_password),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                },
                 singleLine = true,
                 enabled = !isLoading,
                 visualTransformation = PasswordVisualTransformation(),
@@ -132,9 +137,10 @@ private fun PasswordLoginScreen(
         item {
             Button(
                 onClick = {
+                    focusManager.clearFocus()
                     error = null
                     isLoading = true
-                    TokenStore.serverUrl = serverUrl
+                    ApiClient.recreate()
                     scope.launch {
                         try {
                             val ch = ApiClient.api.createChallenge(
@@ -183,7 +189,10 @@ private fun PasswordLoginScreen(
                         strokeWidth = 2.dp,
                     )
                 } else {
-                    Text(stringResource(R.string.login_button))
+                    Text(
+                        text = stringResource(R.string.login_button),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
                 }
             }
         }
@@ -194,7 +203,7 @@ private fun PasswordLoginScreen(
         item {
             Button(
                 onClick = {
-                    TokenStore.serverUrl = serverUrl
+                    focusManager.clearFocus()
                     ApiClient.recreate()
                     onShowQrLogin()
                 },
@@ -202,7 +211,12 @@ private fun PasswordLoginScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ),
-            ) { Text(stringResource(R.string.login_scan_qr)) }
+            ) {
+                Text(
+                    text = stringResource(R.string.login_scan_qr),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
         }
     }
 }

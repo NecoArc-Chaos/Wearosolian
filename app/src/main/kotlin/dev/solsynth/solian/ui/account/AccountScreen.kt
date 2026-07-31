@@ -149,7 +149,31 @@ type = AuthConstants.STATUS_TYPE_DEFAULT,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error
                 ),
-            ) { Text(stringResource(R.string.account_logout)) }
+            ) {
+                Text(
+                    text = stringResource(R.string.account_logout),
+                    color = MaterialTheme.colorScheme.onError,
+                )
+            }
+        }
+
+        item { Spacer(Modifier.height(12.dp)) }
+
+        item {
+            Button(
+                onClick = {
+                    onLogout()
+                },
+                modifier = Modifier.fillMaxWidth(0.6f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ),
+            ) {
+                Text(
+                    text = stringResource(R.string.account_switch_account),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
         }
 
         item { Spacer(Modifier.height(16.dp)) }

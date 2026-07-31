@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.pager.HorizontalPager
@@ -22,12 +21,14 @@ import dev.solsynth.solian.ui.account.AccountScreen
 fun MainPagerScreen(
     onLogout: () -> Unit,
 ) {
-    val pagerState = rememberPagerState(pageCount = { 5 }, initialPage = 2)
+    val pagerState = rememberPagerState(pageCount = { 5 }, initialPage = 1)
+
+    val backgroundColor = MaterialTheme.colorScheme.background
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(backgroundColor),
     ) {
         HorizontalPager(
             state = pagerState,

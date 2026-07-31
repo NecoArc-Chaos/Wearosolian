@@ -43,6 +43,7 @@
     <string name="account_avatar">👤</string>
     <string name="account_quick_status">Quick Status</string>
     <string name="account_logout">Logout</string>
+    <string name="account_switch_account">Switch Account</string>
     <string name="account_status_online">🟢 On</string>
     <string name="account_status_offline">⚫ Off</string>
     <string name="account_status_busy">🔴 Busy</string>

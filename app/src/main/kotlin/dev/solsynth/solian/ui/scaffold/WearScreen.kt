@@ -1,10 +1,8 @@
 package dev.solsynth.solian.ui.scaffold
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -29,8 +27,8 @@ fun WearScreen(
     val isRound = rememberIsScreenRound()
     val isAmbient = rememberIsAmbient()
 
-    val defaultTopPadding = if (isRound) 36.dp else 12.dp
-    val defaultBottomPadding = if (isRound) 36.dp else 16.dp
+    val defaultTopPadding = if (isRound) 20.dp else 8.dp
+    val defaultBottomPadding = if (isRound) 20.dp else 12.dp
 
     val backgroundColor = MaterialTheme.colorScheme.background
 
@@ -46,8 +44,6 @@ fun WearScreen(
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        item { Spacer(Modifier.height(defaultTopPadding - 12.dp)) }
         content()
-        item { Spacer(Modifier.height(defaultBottomPadding - 12.dp)) }
     }
 }
