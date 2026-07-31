@@ -4,7 +4,6 @@ import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.res.Configuration
 import androidx.wear.compose.material3.ColorScheme
-import dev.solsynth.solian.BuildConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
