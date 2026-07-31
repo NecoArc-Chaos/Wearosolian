@@ -64,8 +64,8 @@ class ChatViewModel : ViewModel() {
         if (wsClient != null) return
         wsClient = ChatWebSocketClient(
             serverUrl = TokenStore.serverUrl,
-            onMessage = { content, sender, chatRoomId ->
-                if (content.isNotBlank() && _rooms.value.isNotEmpty()) {
+            onMessage = { content, sender, chatRoomId, messageId, reactionsCount ->
+                if (content.isNotBlank() && chatRoomId != null && _rooms.value.isNotEmpty()) {
                     val current = _rooms.value.toMutableList()
                     val roomIndex = current.indexOfFirst { entry ->
                         entry.room?.id == chatRoomId
@@ -74,6 +74,20 @@ class ChatViewModel : ViewModel() {
                         val entry = current[roomIndex]
                         current[roomIndex] = entry.copy(
                             lastMessage = entry.lastMessage?.copy(content = "$sender: $content")
+                        )
+                        _rooms.value = current
+                    }
+                } else if (messageId != null && content.isBlank() && reactionsCount != null) {
+                    val current = _rooms.value.toMutableList()
+                    val roomIndex = current.indexOfFirst { entry ->
+                        entry.lastMessage?.id == messageId
+                    }
+                    if (roomIndex >= 0) {
+                        val entry = current[roomIndex]
+                        current[roomIndex] = entry.copy(
+                            lastMessage = entry.lastMessage?.copy(
+                                reactions_count = reactionsCount,
+                            )
                         )
                         _rooms.value = current
                     }

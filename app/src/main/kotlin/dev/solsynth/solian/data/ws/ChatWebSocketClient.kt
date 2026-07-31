@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
  */
 class ChatWebSocketClient(
     private val serverUrl: String,
-    private val onMessage: (String, String?, String?) -> Unit,
+    private val onMessage: (String, String?, String?, String?, JSONObject?) -> Unit,
     private val onStatusChanged: (Boolean) -> Unit,
     private val onReconnected: () -> Unit = {},
 ) {
@@ -86,16 +86,19 @@ class ChatWebSocketClient(
                         "messages.update" -> {
                             val messageId = data?.optString("id")
                             val content = data?.optString("content")
-                            onMessage(content ?: "", null, messageId)
+                            val chatRoomId = data?.optString("chat_room_id")
+                            onMessage(content ?: "", null, chatRoomId, messageId)
                         }
                         "messages.delete" -> {
                             val messageId = data?.optString("id")
-                            onMessage("", null, messageId)
+                            val chatRoomId = data?.optString("chat_room_id")
+                            onMessage("", null, chatRoomId, messageId)
                         }
                         "messages.delivered" -> {
                             val messageId = data?.optString("id")
                             val content = data?.optString("content")
-                            onMessage(content ?: "", null, messageId)
+                            val chatRoomId = data?.optString("chat_room_id")
+                            onMessage(content ?: "", null, chatRoomId, messageId)
                         }
                         "messages.typing" -> {
                             val chatRoomId = data?.optString("chat_room_id")
@@ -104,7 +107,8 @@ class ChatWebSocketClient(
                         "messages.reaction.added",
                         "messages.reaction.removed" -> {
                             val messageId = data?.optJSONObject("meta")?.optString("message_id")
-                            onMessage("", null, messageId)
+                            val reactionsCount = data?.optJSONObject("meta")?.optJSONObject("reactions_count")
+                            onMessage("", null, null, messageId, reactionsCount)
                         }
                         "pong" -> { /* heartbeat response */ }
                         else -> Log.d(TAG, "Unhandled packet: $type")

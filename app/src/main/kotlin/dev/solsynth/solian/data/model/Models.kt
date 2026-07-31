@@ -176,10 +176,9 @@ data class SnChatMessage(
     @SerializedName("sender_id") val senderId: String?,
     @SerializedName("chat_room_id") val chatRoomId: String?,
     val sender: SnChatMember?,
-    @SerializedName("created_at") val createdAt: String?,
     @SerializedName("room_sequence") val roomSequence: Long?,
-    @SerializedName("reactions_count") val reactionsCount: Map<String, Int>?,
-    @SerializedName("reactions_made") val reactionsMade: Map<String, String>?,
+    val reactions_count: Map<String, Int>? = null,
+    val reactions_made: Map<String, String>? = null,
 )
 
 /** Backend /api/chat/summary returns Map<roomId, {unread_count, last_message, room}> */
