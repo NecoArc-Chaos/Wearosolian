@@ -27,13 +27,40 @@ data class SnAuthChallenge(
     val id: String,
     @SerializedName("step_remain") val stepRemain: Int = 1,
     @SerializedName("approved_at") val approvedAt: String?,
+    @SerializedName("expired_at") val expiredAt: String?,
+    @SerializedName("step_total") val stepTotal: Int = 1,
+    @SerializedName("failed_attempts") val failedAttempts: Int = 0,
+    @SerializedName("blacklist_factors") val blacklistFactors: List<String> = emptyList(),
+    val audiences: List<String> = emptyList(),
+    val scopes: List<String> = emptyList(),
+    @SerializedName("ip_address") val ipAddress: String?,
+    @SerializedName("user_agent") val userAgent: String?,
+    val nonce: String?,
+    @SerializedName("country_code") val countryCode: String?,
+    val country: String?,
+    val city: String?,
+    @SerializedName("device_id") val deviceId: String?,
+    @SerializedName("device_name") val deviceName: String?,
+    val platform: Int?,
+    @SerializedName("declined_at") val declinedAt: String?,
+    @SerializedName("approved_by_session_id") val approvedBySessionId: String?,
+    @SerializedName("account_id") val accountId: String?,
+    @SerializedName("created_at") val createdAt: String?,
+    @SerializedName("updated_at") val updatedAt: String?,
+    @SerializedName("deleted_at") val deletedAt: String?,
 )
 
 data class SnAuthFactor(
     val id: String,
-    val type: Int,         // 0=Password, 1=EmailCode, 2=InAppCode, 3=TimedCode(TOTP), 4=PinCode, ...
+    val type: Int,
     val name: String?,
     @SerializedName("enabled_at") val enabledAt: String?,
+    @SerializedName("created_at") val createdAt: String?,
+    @SerializedName("updated_at") val updatedAt: String?,
+    @SerializedName("deleted_at") val deletedAt: String?,
+    @SerializedName("expired_at") val expiredAt: String?,
+    val trustworthy: Int = 0,
+    @SerializedName("created_response") val createdResponse: Map<String, Any>? = null,
 )
 
 data class PerformChallengeRequest(

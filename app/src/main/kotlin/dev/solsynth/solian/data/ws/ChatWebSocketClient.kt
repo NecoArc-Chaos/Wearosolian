@@ -154,7 +154,7 @@ class ChatWebSocketClient(
     private fun startHeartbeat(ws: WebSocket) {
         heartbeatJob?.cancel()
         heartbeatJob = scope.launch {
-            while (isActive) {
+            while (webSocket != null) {
                 delay(30_000)
                 try {
                     val ping = JSONObject()

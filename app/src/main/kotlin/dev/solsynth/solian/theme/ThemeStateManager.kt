@@ -49,7 +49,6 @@ object ThemeStateManager {
         val isDynamic = dynamicColorScheme != null
         val colorScheme = dynamicColorScheme ?: ActiveColorScheme
         _state.value = _state.value.copy(isDynamic = isDynamic, colorScheme = colorScheme)
-        ThemeStore.isDynamicColorEnabled = isDynamic
     }
 
     suspend fun refreshDynamicColor(context: Context) {
@@ -86,8 +85,10 @@ object ThemeStateManager {
         if (isEnabled) {
             val dynamicScheme = extractor.extract(context, isDark = true)
             updateDynamic(dynamicScheme)
+            ThemeStore.isDynamicColorEnabled = true
         } else {
             updateDynamic(null)
+            ThemeStore.isDynamicColorEnabled = false
         }
     }
 
