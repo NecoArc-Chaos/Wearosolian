@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.OutlinedTextField
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalContext
 import dev.solsynth.solian.R
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.PostRequest
@@ -20,6 +21,7 @@ fun ComposeScreen() {
     var isPosting by remember { mutableStateOf(false) }
     var result by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     WearScreen {
         item { Text(stringResource(R.string.compose_title), style = MaterialTheme.typography.titleSmall) }
@@ -60,9 +62,9 @@ fun ComposeScreen() {
                         try {
                             ApiClient.api.createPost(PostRequest(content = text))
                             text = ""
-                            result = "Posted!"
+                            result = context.getString(R.string.compose_success)
                         } catch (e: Exception) {
-                            result = "Error: ${e.message}"
+                            result = context.getString(R.string.compose_error, e.message ?: "")
                         } finally {
                             isPosting = false
                         }

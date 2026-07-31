@@ -16,6 +16,7 @@ import androidx.wear.compose.material3.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalContext
 import dev.solsynth.solian.R
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
@@ -30,11 +31,12 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
     var qrData by remember { mutableStateOf<String?>(null) }
     var qrChallengeId by remember { mutableStateOf<String?>(null) }
     var authChallengeId by remember { mutableStateOf<String?>(null) }
-    var status by remember { mutableStateOf(0) }
+    var status by remember { mutableStateOf("Pending") }
     var remainingSeconds by remember { mutableStateOf(0) }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     fun generateQr() {
         error = null
@@ -46,9 +48,9 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 qrChallengeId = resp.qrChallengeId
                 authChallengeId = resp.authChallengeId
                 remainingSeconds = resp.expiresInSeconds ?: 300
-                status = 0
+                status = "Pending"
             } catch (e: Exception) {
-                error = e.message ?: "Failed to generate QR"
+                error = e.message ?: context.getString(R.string.qr_error_generate_failed)
             } finally {
                 isLoading = false
             }
@@ -60,7 +62,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
 
     // Countdown timer
     LaunchedEffect(remainingSeconds, status) {
-        while (remainingSeconds > 0 && status < 2) {
+        while (remainingSeconds > 0 && status !in listOf("Approved", "Declined")) {
             delay(1000)
             remainingSeconds--
         }
@@ -70,7 +72,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
     LaunchedEffect(qrChallengeId) {
         val id = qrChallengeId ?: return@LaunchedEffect
         snapshotFlow { status to remainingSeconds }
-            .filter { (s, r) -> s < 2 && s != 3 && r > 0 }
+            .filter { (s, r) -> s !in listOf("Approved", "Declined") && r > 0 }
             .flatMapLatest {
                 flow {
                     while (true) {
@@ -83,7 +85,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 try {
                     val qrStatus = ApiClient.api.getQrStatus(id)
                     status = qrStatus.status
-                    if (status == 2 && authChallengeId != null) {
+                    if (status == "Approved" && authChallengeId != null) {
                         val challengeId = authChallengeId!!
                         val tokenResp = ApiClient.api.exchangeToken(
                             TokenExchangeRequest(code = challengeId)
@@ -135,9 +137,9 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 // Status
                 item {
                     val (label, color) = when (status) {
-                        1 -> stringResource(R.string.qr_status_scanned) to MaterialTheme.colorScheme.tertiary
-                        2 -> stringResource(R.string.qr_status_approved) to MaterialTheme.colorScheme.primary
-                        3 -> stringResource(R.string.qr_status_declined) to MaterialTheme.colorScheme.error
+                        "Scanned" -> stringResource(R.string.qr_status_scanned) to MaterialTheme.colorScheme.tertiary
+                        "Approved" -> stringResource(R.string.qr_status_approved) to MaterialTheme.colorScheme.primary
+                        "Declined" -> stringResource(R.string.qr_status_declined) to MaterialTheme.colorScheme.error
                         else -> stringResource(R.string.qr_status_waiting) to MaterialTheme.colorScheme.onSurfaceVariant
                     }
                     Text(label, style = MaterialTheme.typography.labelSmall, color = color)
@@ -157,7 +159,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 item {
                     Button(
                         onClick = { generateQr() },
-                        enabled = !isLoading && (remainingSeconds <= 0 || status == 3),
+                        enabled = !isLoading && (remainingSeconds <= 0 || status == "Declined"),
                         modifier = Modifier.fillMaxWidth(0.7f),
                     ) { Text(stringResource(R.string.qr_refresh)) }
                 }

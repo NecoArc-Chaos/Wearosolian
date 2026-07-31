@@ -55,16 +55,12 @@ fun ExploreScreen() {
         } else {
             items(posts.size) { index ->
                 val post = posts[index]
+                if (post == null) return@items
                 Card(
                     onClick = {},
                     modifier = Modifier.fillMaxWidth(0.9f).padding(vertical = 4.dp),
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
-                        if (post.author != null) {
-                            Text(post.author.name,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary)
-                        }
                         if (!post.title.isNullOrBlank()) {
                             Text(post.title,
                                 style = MaterialTheme.typography.bodySmall,

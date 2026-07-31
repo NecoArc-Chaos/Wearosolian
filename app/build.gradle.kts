@@ -13,6 +13,7 @@ android {
         targetSdk = 36
         versionCode = 2
         versionName = "0.3.0beta"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -80,6 +81,14 @@ dependencies {
 
     // ── QR Code ──
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
+
+    // ── Testing ──
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+    testImplementation("org.robolectric:robolectric:4.12")
+    androidTestImplementation("androidx.test:runner:1.6.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 }
 
 kotlin {

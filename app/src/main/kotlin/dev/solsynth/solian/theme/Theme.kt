@@ -9,6 +9,7 @@ import androidx.core.view.WindowCompat
 import androidx.wear.compose.material3.ColorScheme
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.contentColorFor
+import dev.solsynth.solian.theme.ThemeStateManager
 
 val LocalScreenRound = staticCompositionLocalOf { false }
 val LocalIsAmbient = staticCompositionLocalOf { false }
@@ -26,7 +27,7 @@ fun rememberIsAmbient(): Boolean {
 }
 
 /** OLED-optimized color scheme, matching Wear Compose M3 1.6.2 API. */
-private val ActiveColorScheme = ColorScheme(
+internal val ActiveColorScheme = ColorScheme(
     primary = SolianViolet,
     onPrimary = OledBlack,
     primaryDim = SolianVioletDim,
@@ -85,7 +86,12 @@ fun WearosolianTheme(
     content: @Composable () -> Unit,
 ) {
     val isRound = LocalConfiguration.current.isScreenRound
-    val colorScheme = if (isAmbient) AmbientColorScheme else ActiveColorScheme
+    val themeState by ThemeStateManager.state.collectAsState()
+    val colorScheme = when {
+        isAmbient -> AmbientColorScheme
+        themeState.isDynamic -> themeState.colorScheme
+        else -> ActiveColorScheme
+    }
 
     val view = LocalView.current
     if (!view.isInEditMode) {

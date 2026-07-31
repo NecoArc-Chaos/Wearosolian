@@ -31,6 +31,7 @@
     <string name="compose_hint">What\'s on your mind?</string>
     <string name="compose_button">Publish</string>
     <string name="compose_success">Posted!</string>
+    <string name="compose_error">Error: %1$s</string>
 
     <!-- Chat -->
     <string name="chat_title">Messages</string>
@@ -45,6 +46,8 @@
     <string name="account_status_online">🟢 On</string>
     <string name="account_status_offline">⚫ Off</string>
     <string name="account_status_busy">🔴 Busy</string>
+    <string name="status_online">Online</string>
+    <string name="status_busy">Busy</string>
 
     <!-- QR Login -->
     <string name="qr_scan_title">Scan to Login</string>
@@ -56,6 +59,7 @@
     <string name="qr_expired">Expired</string>
     <string name="qr_refresh">Refresh</string>
     <string name="qr_back">Back</string>
+    <string name="qr_error_generate_failed">Failed to generate QR</string>
 
     <!-- Errors -->
     <string name="error_login_failed">Login failed</string>

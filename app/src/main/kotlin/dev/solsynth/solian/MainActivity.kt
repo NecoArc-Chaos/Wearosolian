@@ -9,9 +9,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.wear.ambient.AmbientLifecycleObserver
 import dev.solsynth.solian.data.TokenStore
+import dev.solsynth.solian.theme.ThemeStateManager
+import dev.solsynth.solian.theme.ThemeStore
 import dev.solsynth.solian.theme.WearosolianTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity(), LifecycleEventObserver {
 
@@ -22,6 +26,8 @@ class MainActivity : ComponentActivity(), LifecycleEventObserver {
         super.onCreate(savedInstanceState)
 
         TokenStore.init(applicationContext)
+        ThemeStore.init(applicationContext)
+        ThemeStateManager.init(applicationContext)
 
         ambientObserver = AmbientLifecycleObserver(
             activity = this,
@@ -54,6 +60,10 @@ class MainActivity : ComponentActivity(), LifecycleEventObserver {
             ambientObserver?.let { lifecycle.addObserver(it) }
         } else if (event == Lifecycle.Event.ON_DESTROY) {
             ambientObserver?.let { lifecycle.removeObserver(it) }
+        } else if (event == Lifecycle.Event.ON_RESUME) {
+            lifecycleScope.launch {
+                ThemeStateManager.updateDynamicColor(applicationContext)
+            }
         }
     }
 }

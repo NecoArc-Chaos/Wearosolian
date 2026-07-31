@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 object AuthConstants {
     const val PLATFORM_ANDROID = 3
-    const val DEFAULT_SERVER_URL = "https://nt.solian.app"
+    const val DEFAULT_SERVER_URL = "https://api.solian.app"
     const val NAMESPACE = "dev.solsynth.solian"
     const val DEFAULT_DEVICE_ID = "wearos-client"
     const val DEFAULT_DEVICE_NAME = "Wear OS"
@@ -74,7 +74,7 @@ data class QrGenerateResponse(
 data class QrStatusResponse(
     @SerializedName("qr_challenge_id") val qrChallengeId: String,
     @SerializedName("auth_challenge_id") val authChallengeId: String,
-    val status: Int, // 0=Pending, 1=Scanned, 2=Approved, 3=Declined
+    val status: String, // Pending, Scanned, Approved, Declined, Expired
     @SerializedName("expires_at") val expiresAt: String?,
     @SerializedName("approved_at") val approvedAt: String?,
 )
@@ -111,24 +111,16 @@ data class SnPost(
     val title: String?,
     val content: String?,
     val description: String?,
-    val type: Int?,
-    val visibility: Int?,
-    val author: SnAuthor?,
+    val type: String?,
+    val visibility: String?,
     @SerializedName("created_at") val createdAt: String?,
-)
-
-data class SnAuthor(
-    val id: String?,
-    val name: String,
-    @SerializedName("nick") val nick: String?,
-    val avatar: String?,
 )
 
 data class PostRequest(
     val content: String,
     val title: String? = null,
-    val type: Int? = 0,
-    val visibility: Int? = 0,
+    val type: String? = null,
+    val visibility: String? = null,
 )
 
 // ── Chat ──
@@ -137,7 +129,7 @@ data class SnChatRoom(
     val id: String,
     val name: String?,
     val description: String?,
-    val type: Int?,
+    val type: String?,
     @SerializedName("updated_at") val updatedAt: String?,
     val members: List<SnChatMember>?,
 )
@@ -156,6 +148,9 @@ data class SnChatMessage(
     @SerializedName("chat_room_id") val chatRoomId: String?,
     val sender: SnChatMember?,
     @SerializedName("created_at") val createdAt: String?,
+    @SerializedName("room_sequence") val roomSequence: Long?,
+    @SerializedName("reactions_count") val reactionsCount: Map<String, Int>?,
+    @SerializedName("reactions_made") val reactionsMade: Map<String, String>?,
 )
 
 /** Backend /api/chat/summary returns Map<roomId, {unread_count, last_message, room}> */
@@ -163,4 +158,88 @@ data class ChatSummaryEntry(
     @SerializedName("unread_count") val unreadCount: Int = 0,
     @SerializedName("last_message") val lastMessage: SnChatMessage?,
     val room: SnChatRoom? = null,
+)
+
+data class SnChatSummary(
+    val changes: List<ChatSummaryEntry>?,
+    val summaries: Map<String, ChatSummaryEntry>?,
+    @SerializedName("current_timestamp") val currentTimestamp: Long?,
+    val total: Int?,
+)
+
+data class SnChatOnlineStatus(
+    val id: String,
+    val status: String?,
+    @SerializedName("is_online") val isOnline: Boolean?,
+)
+
+data class SnChatGroup(
+    val id: String,
+    val name: String?,
+    val color: String?,
+    val icon: String?,
+    val order: Int?,
+)
+
+data class SnRealtimeCall(
+    val id: String,
+    @SerializedName("room_id") val roomId: String?,
+    @SerializedName("sender_id") val senderId: String?,
+    @SerializedName("session_id") val sessionId: String?,
+    @SerializedName("provider_name") val providerName: String?,
+    @SerializedName("ended_at") val endedAt: String?,
+    @SerializedName("created_at") val createdAt: String?,
+)
+
+// ── Chat Requests ──
+
+data class CreateRoomRequest(
+    val name: String?,
+    val type: String?,
+    @SerializedName("member_ids") val memberIds: List<String>? = null,
+)
+
+data class UpdateRoomRequest(
+    val name: String? = null,
+    val description: String? = null,
+    val type: String? = null,
+)
+
+data class SendMessageRequest(
+    val content: String,
+    val attachments: List<Map<String, Any>>? = null,
+)
+
+data class EditMessageRequest(
+    val content: String,
+)
+
+data class AddMemberRequest(
+    @SerializedName("account_id") val accountId: String,
+)
+
+data class UpdateOnlineStatusRequest(
+    val status: String,
+)
+
+data class CreateDirectChatRequest(
+    @SerializedName("related_user_id") val relatedUserId: String,
+)
+
+data class CreateGroupRequest(
+    val name: String,
+    val color: String? = null,
+    val icon: String? = null,
+    val order: Int? = null,
+)
+
+data class UpdateGroupRequest(
+    val name: String? = null,
+    val color: String? = null,
+    val icon: String? = null,
+    val order: Int? = null,
+)
+
+data class InitiateCallRequest(
+    val type: String,
 )

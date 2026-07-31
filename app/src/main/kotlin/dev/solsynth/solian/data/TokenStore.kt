@@ -40,7 +40,7 @@ object TokenStore {
         set(value) = prefs.edit().putLong(KEY_TOKEN_EXPIRES_AT, value).apply()
 
     var serverUrl: String
-        get() = prefs.getString(KEY_SERVER, "https://nt.solian.app") ?: "https://nt.solian.app"
+        get() = prefs.getString(KEY_SERVER, "https://api.solian.app") ?: "https://api.solian.app"
         set(value) = prefs.edit().putString(KEY_SERVER, value).apply()
 
     fun isTokenValid(): Boolean {

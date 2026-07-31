@@ -17,8 +17,9 @@ import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
 fun AccountScreen(onLogout: () -> Unit) {
-    // Internal state values use API enum strings; display strings come from strings.xml.
-    var statusText by remember { mutableStateOf("Online") }
+    val statusOnline = stringResource(R.string.status_online)
+    val statusBusy = stringResource(R.string.status_busy)
+    var statusText by remember { mutableStateOf(statusOnline) }
     var presence by remember { mutableStateOf(true) }
     var userName by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -37,7 +38,7 @@ fun AccountScreen(onLogout: () -> Unit) {
             val status = ApiClient.api.getMyStatus()
             statusText = when (status.type) {
                 AuthConstants.STATUS_TYPE_INVISIBLE -> AuthConstants.STATUS_TYPE_INVISIBLE
-                else -> "Online"
+                else -> statusOnline
             }
             presence = status.isOnline ?: true
         } catch (_: Exception) {
@@ -107,15 +108,15 @@ type = if (newPresence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STA
                 }
                 Card(
                     onClick = {
-                        val newStatus = if (statusText == "Busy") "Online" else "Busy"
+                        val newStatus = if (statusText == statusBusy) statusOnline else statusBusy
                         scope.launch {
                             isLoading = true
                             try {
                                 ApiClient.api.updateStatus(
                                     AccountStatusRequest(
 type = AuthConstants.STATUS_TYPE_DEFAULT,
-                                        attitude = if (newStatus == "Busy") AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
-                                        label = if (newStatus == "Busy") "Busy" else null,
+                                        attitude = if (newStatus == statusBusy) AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
+                                        label = if (newStatus == statusBusy) AuthConstants.STATUS_ATTITUDE_BUSY else null,
                                     )
                                 )
                                 statusText = newStatus
@@ -125,9 +126,9 @@ type = AuthConstants.STATUS_TYPE_DEFAULT,
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.4f)
-                        .then(if (statusText == "Busy") Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
+                        .then(if (statusText == statusBusy) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (statusText == "Busy") MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+                        containerColor = if (statusText == statusBusy) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
                     ),
                 ) {
                     Text(

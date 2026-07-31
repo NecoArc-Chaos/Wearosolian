@@ -15,11 +15,15 @@ import java.util.concurrent.TimeUnit
 /**
  * WebSocket client for real-time chat messages.
  *
- * Matches DysonNetwork client protocol:
+ * Matches DysonNetwork client protocol (v3 gateway):
  * - Endpoint: {serverUrl}/ws (http→ws, https→wss)
  * - Auth: Authorization: Bearer {token} header
- * - Namespace: query param namespace=dev.solsynth.solian
- * - Packet types: messages.new, messages.update, messages.delete
+ * - Packet envelope: { type, data, endpoint, error_message? }
+ * - Client outbound endpoint: "DysonNetwork.Messager"
+ * - Packet types: messages.send, messages.typing, ping/pong
+ * - Server inbound: messages.new, messages.update, messages.delete,
+ *                   messages.delivered, messages.typing,
+ *                   messages.reaction.added, messages.reaction.removed
  * - Heartbeat: client sends ping every 30s, server responds pong
  */
 class ChatWebSocketClient(
@@ -39,6 +43,11 @@ class ChatWebSocketClient(
 
     private val _statusFlow = MutableStateFlow(false)
     val statusFlow: StateFlow<Boolean> = _statusFlow
+
+    companion object {
+        private const val MESSENGER_ENDPOINT = "DysonNetwork.Messager"
+        private const val TAG = "ChatWebSocket"
+    }
 
     fun connect() {
         disconnect()
@@ -79,6 +88,20 @@ class ChatWebSocketClient(
                         }
                         "messages.delete" -> {
                             val messageId = data?.optString("id")
+                            onMessage("", null, messageId)
+                        }
+                        "messages.delivered" -> {
+                            val messageId = data?.optString("id")
+                            val content = data?.optString("content")
+                            onMessage(content ?: "", null, messageId)
+                        }
+                        "messages.typing" -> {
+                            val chatRoomId = data?.optString("chat_room_id")
+                            onMessage("", null, chatRoomId)
+                        }
+                        "messages.reaction.added",
+                        "messages.reaction.removed" -> {
+                            val messageId = data?.optJSONObject("meta")?.optString("message_id")
                             onMessage("", null, messageId)
                         }
                         "pong" -> { /* heartbeat response */ }
@@ -134,7 +157,11 @@ class ChatWebSocketClient(
             while (isActive) {
                 delay(30_000)
                 try {
-                    ws.send(JSONObject().put("type", "ping").toString())
+                    val ping = JSONObject()
+                        .put("type", "ping")
+                        .put("endpoint", MESSENGER_ENDPOINT)
+                        .toString()
+                    ws.send(ping)
                 } catch (e: Exception) {
                     Log.w(TAG, "Heartbeat failed", e)
                     break
@@ -162,9 +189,8 @@ class ChatWebSocketClient(
             trimmed.startsWith("http://") -> trimmed.substringAfter("http://")
             else -> trimmed
         }
-        // Derive ws scheme from the HTTP(S) scheme so localhost dev servers work.
         val scheme = if (trimmed.startsWith("https://")) "wss" else "ws"
-        return "$scheme://$host/ws?namespace=dev.solsynth.solian"
+        return "$scheme://$host/ws"
     }
 
     private fun Request.Builder.addAuthHeader(): Request.Builder {
@@ -175,14 +201,34 @@ class ChatWebSocketClient(
         return this
     }
 
+    fun sendMessage(chatRoomId: String, content: String) {
+        val payload = JSONObject()
+            .put("type", "messages.send")
+            .put("endpoint", MESSENGER_ENDPOINT)
+            .put("data", JSONObject()
+                .put("chat_room_id", chatRoomId)
+                .put("content", content)
+            )
+            .toString()
+        webSocket?.send(payload)
+    }
+
+    fun sendTypingIndicator(chatRoomId: String, type: String = "typing") {
+        val payload = JSONObject()
+            .put("type", "messages.typing")
+            .put("endpoint", MESSENGER_ENDPOINT)
+            .put("data", JSONObject()
+                .put("chat_room_id", chatRoomId)
+                .put("type", type)
+            )
+            .toString()
+        webSocket?.send(payload)
+    }
+
     fun cleanup() {
         heartbeatJob?.cancel()
         reconnectJob?.cancel()
         scope.cancel()
         disconnect()
-    }
-
-    companion object {
-        private const val TAG = "ChatWebSocket"
     }
 }
