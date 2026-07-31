@@ -8,8 +8,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.wear.compose.material3.ColorScheme
 import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.Shapes
 import androidx.wear.compose.material3.contentColorFor
 import dev.solsynth.solian.theme.ThemeStateManager
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 val LocalScreenRound = staticCompositionLocalOf { false }
 val LocalIsAmbient = staticCompositionLocalOf { false }
@@ -108,6 +110,13 @@ fun WearosolianTheme(
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
+            shapes = Shapes(
+                extraSmall = RoundedCornerShape(4.dp),
+                small = RoundedCornerShape(8.dp),
+                medium = RoundedCornerShape(12.dp),
+                large = RoundedCornerShape(16.dp),
+                extraLarge = RoundedCornerShape(28.dp),
+            ),
             content = content
         )
     }

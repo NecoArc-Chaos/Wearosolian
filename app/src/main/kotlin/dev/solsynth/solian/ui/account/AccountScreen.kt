@@ -64,6 +64,7 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     ),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(stringResource(R.string.account_avatar), style = MaterialTheme.typography.titleMedium)
@@ -135,6 +136,7 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
                         colors = CardDefaults.cardColors(
                             containerColor = if (presence) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
                         ),
+                        shape = MaterialTheme.shapes.small,
                     ) {
                         Text(
                             text = if (presence) stringResource(R.string.account_status_online) else stringResource(R.string.account_status_offline),
@@ -166,6 +168,7 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
                         colors = CardDefaults.cardColors(
                             containerColor = if (statusText == statusBusy) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
                         ),
+                        shape = MaterialTheme.shapes.small,
                     ) {
                         Text(
                             text = stringResource(R.string.account_status_busy),
@@ -217,6 +220,7 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                     ),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text("?", style = MaterialTheme.typography.titleMedium)

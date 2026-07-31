@@ -17,6 +17,7 @@ fun HomeScreen() {
             Card(
                 onClick = {},
                 modifier = Modifier.fillMaxWidth(0.9f),
+                shape = MaterialTheme.shapes.medium,
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(stringResource(R.string.home_checkin_title), style = MaterialTheme.typography.titleSmall)
@@ -35,6 +36,7 @@ fun HomeScreen() {
             Card(
                 onClick = {},
                 modifier = Modifier.fillMaxWidth(0.9f),
+                shape = MaterialTheme.shapes.medium,
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(stringResource(R.string.home_countdown_title), style = MaterialTheme.typography.titleSmall)
@@ -52,6 +54,7 @@ fun HomeScreen() {
             Card(
                 onClick = {},
                 modifier = Modifier.fillMaxWidth(0.9f),
+                shape = MaterialTheme.shapes.medium,
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(stringResource(R.string.home_notifications_title), style = MaterialTheme.typography.titleSmall)

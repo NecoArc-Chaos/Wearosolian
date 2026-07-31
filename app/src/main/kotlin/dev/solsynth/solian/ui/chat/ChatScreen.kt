@@ -59,6 +59,7 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel()) {
                 Card(
                     onClick = {},
                     modifier = Modifier.fillMaxWidth(0.9f).padding(vertical = 4.dp),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Column(modifier = Modifier.padding(10.dp)) {
                         Row(

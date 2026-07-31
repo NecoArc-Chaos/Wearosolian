@@ -22,7 +22,7 @@ fun MainPagerScreen(
     onShowLogin: () -> Unit,
     onLogout: () -> Unit,
 ) {
-    val pagerState = rememberPagerState(pageCount = { 5 }, initialPage = 1)
+    val pagerState = rememberPagerState(pageCount = { 5 }, initialPage = 0)
 
     val backgroundColor = MaterialTheme.colorScheme.background
 

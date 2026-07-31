@@ -88,6 +88,7 @@ private fun PasswordLoginScreen(
                 singleLine = true,
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(0.9f),
+                shape = MaterialTheme.shapes.medium,
             )
         }
 
@@ -106,6 +107,7 @@ private fun PasswordLoginScreen(
                 enabled = !isLoading,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(0.9f),
+                shape = MaterialTheme.shapes.medium,
             )
         }
 
@@ -117,6 +119,7 @@ private fun PasswordLoginScreen(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
                     ),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Text(
                         text = error!!,

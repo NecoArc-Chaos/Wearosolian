@@ -39,6 +39,7 @@ fun ComposeScreen() {
                 modifier = Modifier.fillMaxWidth(0.9f).height(80.dp),
                 maxLines = 3,
                 enabled = !isPosting,
+                shape = MaterialTheme.shapes.medium,
             )
         }
 

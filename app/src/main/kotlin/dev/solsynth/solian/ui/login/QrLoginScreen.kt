@@ -116,6 +116,7 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
                     ),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Text(error!!, style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
@@ -127,7 +128,9 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
                 item {
                     val painter = rememberQrCodePainter(qrData!!)
                     Card(onClick = {}, modifier = Modifier.size(120.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White)) {
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Image(painter, "QR Code", Modifier.size(100.dp))
                         }
