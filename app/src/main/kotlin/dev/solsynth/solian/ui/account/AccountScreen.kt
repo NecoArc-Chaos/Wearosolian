@@ -9,11 +9,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalContext
 import dev.solsynth.solian.R
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.AccountStatusRequest
 import dev.solsynth.solian.data.model.AuthConstants
+import dev.solsynth.solian.theme.ThemeStateManager
 import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
@@ -26,6 +28,7 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
     var userName by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     if (isLoggedIn) {
         LaunchedEffect(Unit) {
@@ -50,6 +53,8 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
         }
     }
 
+    var dynamicColorEnabled by remember { mutableStateOf(ThemeStore.isDynamicColorEnabled) }
+
     WearScreen {
         if (isLoggedIn) {
             item {
@@ -67,6 +72,32 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
             }
 
             item { Text(stringResource(R.string.account_title), style = MaterialTheme.typography.titleSmall) }
+
+            item { Spacer(Modifier.height(12.dp)) }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.account_dynamic_color),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Switch(
+                        checked = dynamicColorEnabled,
+                        onCheckedChange = { enabled ->
+                            dynamicColorEnabled = enabled
+                            ThemeStore.isDynamicColorEnabled = enabled
+                            scope.launch {
+                                ThemeStateManager.refreshDynamicColor(context)
+                            }
+                        },
+                    )
+                }
+            }
 
             item { Spacer(Modifier.height(12.dp)) }
 
@@ -194,6 +225,32 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
             }
 
             item { Text(stringResource(R.string.account_title), style = MaterialTheme.typography.titleSmall) }
+
+            item { Spacer(Modifier.height(12.dp)) }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.account_dynamic_color),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Switch(
+                        checked = dynamicColorEnabled,
+                        onCheckedChange = { enabled ->
+                            dynamicColorEnabled = enabled
+                            ThemeStore.isDynamicColorEnabled = enabled
+                            scope.launch {
+                                ThemeStateManager.refreshDynamicColor(context)
+                            }
+                        },
+                    )
+                }
+            }
 
             item { Spacer(Modifier.height(16.dp)) }
 

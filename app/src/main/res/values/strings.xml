@@ -49,6 +49,7 @@
     <string name="account_status_busy">🔴 Busy</string>
     <string name="status_online">Online</string>
     <string name="status_busy">Busy</string>
+    <string name="account_dynamic_color">Dynamic Color</string>
 
     <!-- QR Login -->
     <string name="qr_scan_title">Scan to Login</string>

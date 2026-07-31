@@ -52,6 +52,10 @@ object ThemeStateManager {
         ThemeStore.isDynamicColorEnabled = isDynamic
     }
 
+    suspend fun refreshDynamicColor(context: Context) {
+        updateDynamicColor(context)
+    }
+
     fun cleanup() {
         componentCallbacks = null
     }
@@ -75,11 +79,7 @@ object ThemeStateManager {
 
     internal suspend fun updateDynamicColor(context: Context) {
         val isAvailable = extractor.isAvailable()
-        val isEnabled = if (BuildConfig.DEBUG) {
-            ThemeStore.isDynamicColorEnabled
-        } else {
-            isAvailable && ThemeStore.isDynamicColorEnabled
-        }
+        val isEnabled = ThemeStore.isDynamicColorEnabled && isAvailable
 
         ThemeStore.isDynamicColorAvailable = isAvailable
 
