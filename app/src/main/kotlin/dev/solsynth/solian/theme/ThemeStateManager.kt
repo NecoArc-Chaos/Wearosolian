@@ -24,6 +24,7 @@ object ThemeStateManager {
 
     private var componentCallbacks: ComponentCallbacks? = null
     private var lastUpdateTime = 0L
+    private var extractor: WallpaperColorExtractor = SystemWallpaperColorExtractor()
 
     fun init(context: Context) {
         ThemeStore.init(context)
@@ -73,7 +74,7 @@ object ThemeStateManager {
     }
 
     internal suspend fun updateDynamicColor(context: Context) {
-        val isAvailable = DynamicColorProvider.isDynamicColorAvailable(context)
+        val isAvailable = extractor.isAvailable()
         val isEnabled = if (BuildConfig.DEBUG) {
             ThemeStore.isDynamicColorEnabled
         } else {
@@ -83,10 +84,14 @@ object ThemeStateManager {
         ThemeStore.isDynamicColorAvailable = isAvailable
 
         if (isEnabled) {
-            val dynamicScheme = DynamicColorProvider.getDynamicColorScheme(context, isDark = true)
+            val dynamicScheme = extractor.extract(context, isDark = true)
             updateDynamic(dynamicScheme)
         } else {
             updateDynamic(null)
         }
+    }
+
+    fun setExtractor(newExtractor: WallpaperColorExtractor) {
+        extractor = newExtractor
     }
 }
