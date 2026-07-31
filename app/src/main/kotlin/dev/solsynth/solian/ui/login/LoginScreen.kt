@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -46,7 +45,6 @@ private fun PasswordLoginScreen(
     loginFailedMessage: String,
 ) {
     val context = LocalContext.current
-    val focusManager = LocalFocusManager.current
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -137,47 +135,50 @@ private fun PasswordLoginScreen(
         item {
             Button(
                 onClick = {
-                    focusManager.clearFocus()
-                    error = null
-                    isLoading = true
-                    ApiClient.recreate()
-                    scope.launch {
-                        try {
-                            val ch = ApiClient.api.createChallenge(
-                                ChallengeRequest(
-                                    account = account,
-                                    deviceId = deviceId,
-                                ),
-                            )
-                            val factors = ApiClient.api.getChallengeFactors(ch.id)
-                            val pwFactor = factors.firstOrNull {
-                                it.name?.contains("password", true) == true
-                            } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
-                                ?: factors.firstOrNull { it.type == 0 }
-                                ?: throw Exception(noPasswordFactorError)
+                    try {
+                        error = null
+                        isLoading = true
+                        scope.launch {
+                            try {
+                                val ch = ApiClient.api.createChallenge(
+                                    ChallengeRequest(
+                                        account = account,
+                                        deviceId = deviceId,
+                                    ),
+                                )
+                                val factors = ApiClient.api.getChallengeFactors(ch.id)
+                                val pwFactor = factors.firstOrNull {
+                                    it.name?.contains("password", true) == true
+                                } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
+                                    ?: factors.firstOrNull { it.type == 0 }
+                                    ?: throw Exception(noPasswordFactorError)
 
-                            val result = ApiClient.api.performChallenge(
-                                ch.id,
-                                PerformChallengeRequest(factorId = pwFactor.id, password = password),
-                            )
+                                val result = ApiClient.api.performChallenge(
+                                    ch.id,
+                                    PerformChallengeRequest(factorId = pwFactor.id, password = password),
+                                )
 
-                            val tokenResp = ApiClient.api.exchangeToken(
-                                TokenExchangeRequest(code = ch.id),
-                            )
-                            TokenStore.token = tokenResp.token
-                            TokenStore.refreshToken = tokenResp.refreshToken
-                            tokenResp.expiresIn?.let {
-                                TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                                val tokenResp = ApiClient.api.exchangeToken(
+                                    TokenExchangeRequest(code = ch.id),
+                                )
+                                TokenStore.token = tokenResp.token
+                                TokenStore.refreshToken = tokenResp.refreshToken
+                                tokenResp.expiresIn?.let {
+                                    TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                                }
+                                onLoginSuccess()
+                            } catch (e: retrofit2.HttpException) {
+                                val apiError = parseApiError(e)
+                                error = apiError ?: "HTTP ${e.code()}: ${e.message()}"
+                            } catch (e: Exception) {
+                                error = e.message ?: loginFailedMessage
+                            } finally {
+                                isLoading = false
                             }
-                            onLoginSuccess()
-                        } catch (e: retrofit2.HttpException) {
-                            val apiError = parseApiError(e)
-                            error = apiError ?: "HTTP ${e.code()}: ${e.message()}"
-                        } catch (e: Exception) {
-                            error = e.message ?: loginFailedMessage
-                        } finally {
-                            isLoading = false
                         }
+                    } catch (e: Exception) {
+                        error = e.message ?: loginFailedMessage
+                        isLoading = false
                     }
                 },
                 enabled = account.isNotBlank() && password.isNotBlank() && !isLoading,
@@ -203,8 +204,6 @@ private fun PasswordLoginScreen(
         item {
             Button(
                 onClick = {
-                    focusManager.clearFocus()
-                    ApiClient.recreate()
                     onShowQrLogin()
                 },
                 modifier = Modifier.fillMaxWidth(0.7f),
