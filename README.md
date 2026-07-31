@@ -76,7 +76,7 @@ cd Wearosolian
 
 ## Differences from Upstream
 
-- ✅ **Android / Wear OS only** — all desktop (Windows/macOS/Linux), iOS, and web code removed
+- ✅ **Wear OS only**
 - ✅ Minimal dependencies — no `window_manager`, `desktop_drop`, `tray_manager`, etc.
 - ✅ Pure Kotlin + Jetpack Compose (Wear Compose Material 3)
 - ✅ Retrofit + OkHttp for networking
