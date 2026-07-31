@@ -24,17 +24,19 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     var showQrLogin by remember { mutableStateOf(false) }
     val loginFailedMessage = stringResource(R.string.error_login_failed)
 
-    if (showQrLogin) {
-        QrLoginScreen(
-            onLoginSuccess = onLoginSuccess,
-            onBack = { showQrLogin = false },
-        )
-    } else {
-        PasswordLoginScreen(
-            onLoginSuccess = onLoginSuccess,
-            onShowQrLogin = { showQrLogin = true },
-            loginFailedMessage = loginFailedMessage,
-        )
+    key(showQrLogin) {
+        if (showQrLogin) {
+            QrLoginScreen(
+                onLoginSuccess = onLoginSuccess,
+                onBack = { showQrLogin = false },
+            )
+        } else {
+            PasswordLoginScreen(
+                onLoginSuccess = onLoginSuccess,
+                onShowQrLogin = { showQrLogin = true },
+                loginFailedMessage = loginFailedMessage,
+            )
+        }
     }
 }
 

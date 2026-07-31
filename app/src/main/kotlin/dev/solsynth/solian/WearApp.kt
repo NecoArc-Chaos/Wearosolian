@@ -2,7 +2,6 @@ package dev.solsynth.solian
 
 import androidx.compose.runtime.*
 import dev.solsynth.solian.data.TokenStore
-import dev.solsynth.solian.ui.scaffold.WearAppScaffold
 import dev.solsynth.solian.ui.login.LoginScreen
 import dev.solsynth.solian.ui.MainPagerScreen
 
@@ -10,12 +9,10 @@ import dev.solsynth.solian.ui.MainPagerScreen
 fun WearApp() {
     var isLoggedIn by remember { mutableStateOf(TokenStore.isLoggedIn) }
 
-    if (!isLoggedIn) {
-        WearAppScaffold {
+    key(isLoggedIn) {
+        if (!isLoggedIn) {
             LoginScreen(onLoginSuccess = { isLoggedIn = true })
-        }
-    } else {
-        WearAppScaffold {
+        } else {
             MainPagerScreen(
                 onLogout = {
                     TokenStore.clear()
@@ -24,4 +21,5 @@ fun WearApp() {
             )
         }
     }
+}
 }
