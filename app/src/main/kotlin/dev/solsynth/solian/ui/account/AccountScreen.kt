@@ -88,20 +88,28 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.weight(1f),
                     )
-                    Switch(
-                        checked = dynamicColorEnabled,
-                        onCheckedChange = { enabled ->
-                            dynamicColorEnabled = enabled
-                            ThemeStore.isDynamicColorEnabled = enabled
+                    Card(
+                        onClick = {
+                            val newEnabled = !dynamicColorEnabled
+                            dynamicColorEnabled = newEnabled
+                            ThemeStore.isDynamicColorEnabled = newEnabled
                             scope.launch {
                                 ThemeStateManager.refreshDynamicColor(context)
                             }
                         },
-                        enabled = true,
-                        thumbColor = MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.primaryContainer,
-                        trackBorderColor = MaterialTheme.colorScheme.primary,
-                    )
+                        modifier = Modifier.size(48.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (dynamicColorEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
+                        ),
+                    ) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(
+                                text = if (dynamicColorEnabled) "ON" else "OFF",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (dynamicColorEnabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
                 }
             }
 
@@ -248,20 +256,28 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.weight(1f),
                     )
-                    Switch(
-                        checked = dynamicColorEnabled,
-                        onCheckedChange = { enabled ->
-                            dynamicColorEnabled = enabled
-                            ThemeStore.isDynamicColorEnabled = enabled
+                    Card(
+                        onClick = {
+                            val newEnabled = !dynamicColorEnabled
+                            dynamicColorEnabled = newEnabled
+                            ThemeStore.isDynamicColorEnabled = newEnabled
                             scope.launch {
                                 ThemeStateManager.refreshDynamicColor(context)
                             }
                         },
-                        enabled = true,
-                        thumbColor = MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.primaryContainer,
-                        trackBorderColor = MaterialTheme.colorScheme.primary,
-                    )
+                        modifier = Modifier.size(48.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (dynamicColorEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
+                        ),
+                    ) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(
+                                text = if (dynamicColorEnabled) "ON" else "OFF",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (dynamicColorEnabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
                 }
             }
 
