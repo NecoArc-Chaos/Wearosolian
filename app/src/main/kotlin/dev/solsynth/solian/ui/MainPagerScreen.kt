@@ -19,6 +19,7 @@ import dev.solsynth.solian.ui.account.AccountScreen
 
 @Composable
 fun MainPagerScreen(
+    onShowLogin: () -> Unit,
     onLogout: () -> Unit,
 ) {
     val pagerState = rememberPagerState(pageCount = { 5 }, initialPage = 1)
@@ -39,7 +40,7 @@ fun MainPagerScreen(
                 1 -> ExploreScreen()
                 2 -> ComposeScreen()
                 3 -> ChatScreen()
-                4 -> AccountScreen(onLogout = onLogout)
+                4 -> AccountScreen(onLogout = onLogout, onShowLogin = onShowLogin)
             }
         }
 

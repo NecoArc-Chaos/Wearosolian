@@ -10,13 +10,15 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.R
+import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.AccountStatusRequest
 import dev.solsynth.solian.data.model.AuthConstants
 import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
-fun AccountScreen(onLogout: () -> Unit) {
+fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
+    val isLoggedIn = TokenStore.isLoggedIn
     val statusOnline = stringResource(R.string.status_online)
     val statusBusy = stringResource(R.string.status_busy)
     var statusText by remember { mutableStateOf(statusOnline) }
@@ -25,154 +27,183 @@ fun AccountScreen(onLogout: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        scope.launch {
+    if (isLoggedIn) {
+        LaunchedEffect(Unit) {
+            scope.launch {
+                try {
+                    val me = ApiClient.api.getMe()
+                    userName = me.nick ?: me.name ?: ""
+                } catch (_: Exception) {
+                    // Keep default if load fails
+                }
+            }
             try {
-                val me = ApiClient.api.getMe()
-                userName = me.nick ?: me.name ?: ""
+                val status = ApiClient.api.getMyStatus()
+                statusText = when (status.type) {
+                    AuthConstants.STATUS_TYPE_INVISIBLE -> AuthConstants.STATUS_TYPE_INVISIBLE
+                    else -> statusOnline
+                }
+                presence = status.isOnline ?: true
             } catch (_: Exception) {
-                // Keep default if load fails
+                // Keep defaults if load fails
             }
-        }
-        try {
-            val status = ApiClient.api.getMyStatus()
-            statusText = when (status.type) {
-                AuthConstants.STATUS_TYPE_INVISIBLE -> AuthConstants.STATUS_TYPE_INVISIBLE
-                else -> statusOnline
-            }
-            presence = status.isOnline ?: true
-        } catch (_: Exception) {
-            // Keep defaults if load fails
         }
     }
 
     WearScreen {
-        item {
-            Card(
-                onClick = {},
-                modifier = Modifier.size(48.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-            ) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.account_avatar), style = MaterialTheme.typography.titleMedium)
+        if (isLoggedIn) {
+            item {
+                Card(
+                    onClick = {},
+                    modifier = Modifier.size(48.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ),
+                ) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(stringResource(R.string.account_avatar), style = MaterialTheme.typography.titleMedium)
+                    }
                 }
             }
-        }
 
-        item { Text(stringResource(R.string.account_title), style = MaterialTheme.typography.titleSmall) }
+            item { Text(stringResource(R.string.account_title), style = MaterialTheme.typography.titleSmall) }
 
-        item { Spacer(Modifier.height(12.dp)) }
+            item { Spacer(Modifier.height(12.dp)) }
 
-        item {
-            Text(stringResource(R.string.account_quick_status), style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.fillMaxWidth(0.9f))
-        }
+            item {
+                Text(stringResource(R.string.account_quick_status), style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxWidth(0.9f))
+            }
 
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(0.9f),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                Card(
-                    onClick = {
-                        val newPresence = !presence
-                        scope.launch {
-                            isLoading = true
-                            try {
-                                ApiClient.api.updateStatus(
-                                    AccountStatusRequest(
-type = if (newPresence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STATUS_TYPE_INVISIBLE,
-                                        attitude = AuthConstants.STATUS_ATTITUDE_NEUTRAL,
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    Card(
+                        onClick = {
+                            val newPresence = !presence
+                            scope.launch {
+                                isLoading = true
+                                try {
+                                    ApiClient.api.updateStatus(
+                                        AccountStatusRequest(
+                                            type = if (newPresence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STATUS_TYPE_INVISIBLE,
+                                            attitude = AuthConstants.STATUS_ATTITUDE_NEUTRAL,
+                                        )
                                     )
-                                )
-                                presence = newPresence
-                            } catch (_: Exception) { }
-                            isLoading = false
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.4f)
-                        .then(if (presence) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (presence) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    presence = newPresence
+                                } catch (_: Exception) { }
+                                isLoading = false
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(0.4f)
+                            .then(if (presence) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (presence) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+                        ),
+                    ) {
+                        Text(
+                            text = if (presence) stringResource(R.string.account_status_online) else stringResource(R.string.account_status_offline),
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        )
+                    }
+                    Card(
+                        onClick = {
+                            val newStatus = if (statusText == statusBusy) statusOnline else statusBusy
+                            scope.launch {
+                                isLoading = true
+                                try {
+                                    ApiClient.api.updateStatus(
+                                        AccountStatusRequest(
+                                            type = AuthConstants.STATUS_TYPE_DEFAULT,
+                                            attitude = if (newStatus == statusBusy) AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
+                                            label = if (newStatus == statusBusy) AuthConstants.STATUS_ATTITUDE_BUSY else null,
+                                        )
+                                    )
+                                    statusText = newStatus
+                                } catch (_: Exception) { }
+                                isLoading = false
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(0.4f)
+                            .then(if (statusText == statusBusy) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (statusText == statusBusy) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+                        ),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.account_status_busy),
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        )
+                    }
+                }
+            }
+
+            item { Spacer(Modifier.height(16.dp)) }
+
+            item {
+                Button(
+                    onClick = onLogout,
+                    modifier = Modifier.fillMaxWidth(0.6f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
                     ),
                 ) {
                     Text(
-                        text = if (presence) stringResource(R.string.account_status_online) else stringResource(R.string.account_status_offline),
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        text = stringResource(R.string.account_logout),
+                        color = MaterialTheme.colorScheme.onError,
                     )
                 }
-                Card(
-                    onClick = {
-                        val newStatus = if (statusText == statusBusy) statusOnline else statusBusy
-                        scope.launch {
-                            isLoading = true
-                            try {
-                                ApiClient.api.updateStatus(
-                                    AccountStatusRequest(
-type = AuthConstants.STATUS_TYPE_DEFAULT,
-                                        attitude = if (newStatus == statusBusy) AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
-                                        label = if (newStatus == statusBusy) AuthConstants.STATUS_ATTITUDE_BUSY else null,
-                                    )
-                                )
-                                statusText = newStatus
-                            } catch (_: Exception) { }
-                            isLoading = false
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.4f)
-                        .then(if (statusText == statusBusy) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (statusText == statusBusy) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+            }
+
+            item { Spacer(Modifier.height(12.dp)) }
+
+            item {
+                Button(
+                    onClick = onLogout,
+                    modifier = Modifier.fillMaxWidth(0.6f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     ),
                 ) {
                     Text(
-                        text = stringResource(R.string.account_status_busy),
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        text = stringResource(R.string.account_switch_account),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
-        }
-
-        item { Spacer(Modifier.height(16.dp)) }
-
-        item {
-            Button(
-                onClick = onLogout,
-                modifier = Modifier.fillMaxWidth(0.6f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error
-                ),
-            ) {
-                Text(
-                    text = stringResource(R.string.account_logout),
-                    color = MaterialTheme.colorScheme.onError,
-                )
+        } else {
+            item {
+                Card(
+                    onClick = {},
+                    modifier = Modifier.size(48.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ),
+                ) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("?", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
             }
-        }
 
-        item { Spacer(Modifier.height(12.dp)) }
+            item { Text(stringResource(R.string.account_title), style = MaterialTheme.typography.titleSmall) }
 
-        item {
-            Button(
-                onClick = {
-                    onLogout()
-                },
-                modifier = Modifier.fillMaxWidth(0.6f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                ),
-            ) {
-                Text(
-                    text = stringResource(R.string.account_switch_account),
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+            item { Spacer(Modifier.height(16.dp)) }
+
+            item {
+                Button(
+                    onClick = onShowLogin,
+                    modifier = Modifier.fillMaxWidth(0.7f),
+                ) {
+                    Text(stringResource(R.string.login_button))
+                }
             }
         }
 

@@ -7,19 +7,17 @@ import dev.solsynth.solian.ui.MainPagerScreen
 
 @Composable
 fun WearApp() {
-    var isLoggedIn by remember { mutableStateOf(TokenStore.isLoggedIn) }
+    var showLogin by remember { mutableStateOf(false) }
 
-    key(isLoggedIn) {
-        if (!isLoggedIn) {
-            LoginScreen(onLoginSuccess = { isLoggedIn = true })
-        } else {
-            MainPagerScreen(
-                onLogout = {
-                    TokenStore.clear()
-                    isLoggedIn = false
-                },
-            )
-        }
+    if (showLogin) {
+        LoginScreen(onLoginSuccess = { showLogin = false })
+    } else {
+        MainPagerScreen(
+            onShowLogin = { showLogin = true },
+            onLogout = {
+                TokenStore.clear()
+            },
+        )
     }
 }
 }
