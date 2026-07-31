@@ -15,6 +15,7 @@ import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.AccountStatusRequest
 import dev.solsynth.solian.data.model.AuthConstants
+import dev.solsynth.solian.theme.ThemeStore
 import dev.solsynth.solian.theme.ThemeStateManager
 import dev.solsynth.solian.ui.scaffold.WearScreen
 
@@ -96,6 +97,10 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
                                 ThemeStateManager.refreshDynamicColor(context)
                             }
                         },
+                        enabled = true,
+                        thumbColor = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.primaryContainer,
+                        trackBorderColor = MaterialTheme.colorScheme.primary,
                     )
                 }
             }
@@ -252,6 +257,10 @@ fun AccountScreen(onLogout: () -> Unit, onShowLogin: () -> Unit) {
                                 ThemeStateManager.refreshDynamicColor(context)
                             }
                         },
+                        enabled = true,
+                        thumbColor = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.primaryContainer,
+                        trackBorderColor = MaterialTheme.colorScheme.primary,
                     )
                 }
             }

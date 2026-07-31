@@ -12,6 +12,7 @@ import androidx.wear.compose.material3.Shapes
 import androidx.wear.compose.material3.contentColorFor
 import dev.solsynth.solian.theme.ThemeStateManager
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.dp
 
 val LocalScreenRound = staticCompositionLocalOf { false }
 val LocalIsAmbient = staticCompositionLocalOf { false }
