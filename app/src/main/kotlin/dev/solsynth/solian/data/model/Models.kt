@@ -154,6 +154,15 @@ data class PostRequest(
 
 // ── Chat ──
 
+enum class ChatEncryptionMode(val value: Int) {
+    None(0),
+    E2eeMls(3);
+
+    companion object {
+        fun fromValue(value: Int): ChatEncryptionMode? = entries.find { it.value == value }
+    }
+}
+
 data class SnChatRoom(
     val id: String,
     val name: String?,
@@ -161,6 +170,7 @@ data class SnChatRoom(
     val type: String?,
     @SerializedName("updated_at") val updatedAt: String?,
     val members: List<SnChatMember>?,
+    @SerializedName("encryption_mode") val encryptionMode: Int? = null,
 )
 
 data class SnChatMember(
@@ -179,6 +189,9 @@ data class SnChatMessage(
     @SerializedName("room_sequence") val roomSequence: Long?,
     val reactions_count: Map<String, Int>? = null,
     val reactions_made: Map<String, String>? = null,
+    @SerializedName("ciphertext") val ciphertext: String? = null,
+    @SerializedName("encryption_epoch") val encryptionEpoch: Long? = null,
+    @SerializedName("encryption_scheme") val encryptionScheme: String? = null,
 )
 
 /** Backend /api/chat/summary returns Map<roomId, {unread_count, last_message, room}> */

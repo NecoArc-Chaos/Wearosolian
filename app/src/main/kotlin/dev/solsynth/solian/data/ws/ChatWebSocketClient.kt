@@ -52,6 +52,7 @@ class ChatWebSocketClient(
     companion object {
         private const val MESSENGER_ENDPOINT = "DysonNetwork.Messager"
         private const val TAG = "ChatWebSocket"
+        private const val MLS_CLIENT_ABILITY = "chat.mls.v2"
     }
 
     fun connect() {
@@ -276,6 +277,7 @@ class ChatWebSocketClient(
         forwardedMessageId: String? = null,
         attachmentsId: List<String> = emptyList(),
         meta: JSONObject? = null,
+        encryptionMode: Int = 0,
     ) {
         val data = JSONObject()
             .put("chat_room_id", chatRoomId)
@@ -284,6 +286,10 @@ class ChatWebSocketClient(
             .putOpt("forwarded_message_id", forwardedMessageId)
             .putOpt("attachments_id", JSONArray(attachmentsId))
             .putOpt("meta", meta)
+
+        if (encryptionMode == 3) {
+            data.put("encryption_scheme", MLS_CLIENT_ABILITY)
+        }
 
         val payload = JSONObject()
             .put("type", "messages.send")
