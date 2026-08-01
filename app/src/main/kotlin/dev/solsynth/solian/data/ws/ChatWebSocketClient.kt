@@ -11,6 +11,9 @@ import okhttp3.*
 import okio.ByteString
 import org.json.JSONArray
 import org.json.JSONObject
+import dev.solsynth.solian.data.ws.ChatWsEvent
+import dev.solsynth.solian.data.model.SnChatMessage
+import dev.solsynth.solian.data.model.SnChatMember
 import java.util.concurrent.TimeUnit
 
 /**
@@ -29,7 +32,7 @@ import java.util.concurrent.TimeUnit
  */
 class ChatWebSocketClient(
     private val serverUrl: String,
-    private val onChatMessage: (String, String?, String?, String?, JSONObject?) -> Unit,
+    private val onEvent: (ChatWsEvent) -> Unit,
     private val onStatusChanged: (Boolean) -> Unit,
     private val onReconnected: () -> Unit = {},
 ) {
@@ -79,37 +82,48 @@ class ChatWebSocketClient(
 
                     when (type) {
                         "messages.new" -> {
-                            val content = data?.optString("content")
-                            val sender = data?.optJSONObject("sender")?.optString("name")
-                            val chatRoomId = data?.optString("chat_room_id")
-                            onChatMessage(content ?: "", sender, chatRoomId, null, null)
+                            val message = parseChatMessage(data)
+                            if (message != null) {
+                                onEvent(ChatWsEvent.NewMessage(message))
+                            }
                         }
                         "messages.update" -> {
                             val messageId = data?.optString("id")
-                            val content = data?.optString("content")
                             val chatRoomId = data?.optString("chat_room_id")
-                            onChatMessage(content ?: "", null, chatRoomId, messageId, null)
+                            val content = data?.optString("content")
+                            if (messageId != null) {
+                                onEvent(ChatWsEvent.UpdateMessage(messageId, chatRoomId, content))
+                            }
                         }
                         "messages.delete" -> {
                             val messageId = data?.optString("id")
                             val chatRoomId = data?.optString("chat_room_id")
-                            onChatMessage("", null, chatRoomId, messageId, null)
+                            if (messageId != null) {
+                                onEvent(ChatWsEvent.DeleteMessage(messageId, chatRoomId))
+                            }
                         }
                         "messages.delivered" -> {
-                            val messageId = data?.optString("id")
-                            val content = data?.optString("content")
-                            val chatRoomId = data?.optString("chat_room_id")
-                            onChatMessage(content ?: "", null, chatRoomId, messageId, null)
+                            val message = parseChatMessage(data)
+                            if (message != null) {
+                                onEvent(ChatWsEvent.Delivered(message))
+                            }
                         }
                         "messages.typing" -> {
                             val chatRoomId = data?.optString("chat_room_id")
-                            onChatMessage("", null, chatRoomId, null, null)
+                            val typingType = data?.optString("type") ?: "typing"
+                            if (chatRoomId != null) {
+                                onEvent(ChatWsEvent.Typing(chatRoomId, typingType))
+                            }
                         }
                         "messages.reaction.added",
                         "messages.reaction.removed" -> {
-                            val messageId = data?.optJSONObject("meta")?.optString("message_id")
-                            val reactionsCount = data?.optJSONObject("meta")?.optJSONObject("reactions_count")
-                            onChatMessage("", null, null, messageId, reactionsCount)
+                            val meta = data?.optJSONObject("meta")
+                            val messageId = meta?.optString("message_id")
+                            val symbol = meta?.optString("symbol")
+                            val reactionsCount = parseReactionsCount(meta?.optJSONObject("reactions_count"))
+                            if (messageId != null) {
+                                onEvent(ChatWsEvent.ReactionUpdated(messageId, symbol, reactionsCount))
+                            }
                         }
                         "pong" -> { /* heartbeat response */ }
                         else -> Log.d(TAG, "Unhandled packet: $type")
@@ -117,6 +131,53 @@ class ChatWebSocketClient(
                 } catch (e: Exception) {
                     Log.w(TAG, "Parse error: $text", e)
                 }
+            }
+
+            private fun parseChatMessage(data: JSONObject?): SnChatMessage? {
+                return try {
+                    SnChatMessage(
+                        id = data?.optString("id") ?: return null,
+                        content = data.optString("content", null),
+                        type = data.optString("type", null),
+                        senderId = data.optString("sender_id", null),
+                        chatRoomId = data.optString("chat_room_id", null),
+                        sender = data.optJSONObject("sender")?.let { senderJson ->
+                            SnChatMember(
+                                id = senderJson.optString("id"),
+                                name = senderJson.optString("name", null),
+                                nick = senderJson.optString("nick", null),
+                            )
+                        },
+                        roomSequence = data.optLong("room_sequence").takeIf { it > 0 },
+                        reactions_count = parseReactionsCount(data.optJSONObject("reactions_count")),
+                        reactions_made = parseReactionsMade(data.optJSONObject("reactions_made")),
+                    )
+                } catch (e: Exception) {
+                    Log.w(TAG, "Failed to parse chat message", e)
+                    null
+                }
+            }
+
+            private fun parseReactionsCount(json: JSONObject?): Map<String, Int>? {
+                if (json == null) return null
+                val result = mutableMapOf<String, Int>()
+                val keys = json.keys()
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    result[key] = json.optInt(key)
+                }
+                return result.ifEmpty { null }
+            }
+
+            private fun parseReactionsMade(json: JSONObject?): Map<String, String>? {
+                if (json == null) return null
+                val result = mutableMapOf<String, String>()
+                val keys = json.keys()
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    result[key] = json.optString(key)
+                }
+                return result.ifEmpty { null }
             }
 
             override fun onMessage(ws: WebSocket, bytes: ByteString) {
