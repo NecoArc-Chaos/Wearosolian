@@ -35,7 +35,7 @@ object ApiClient {
      */
     val httpClient: OkHttpClient = OkHttpClient.Builder()
         .protocols(listOf(Protocol.HTTP_1_1))
-        .certificatePinner(NetworkConfig.certificatePinner)
+        .certificatePinner(NetworkConfig.getCertificatePinner())
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
@@ -55,7 +55,7 @@ object ApiClient {
             .followRedirects(true)
             .followSslRedirects(true)
             .retryOnConnectionFailure(false)
-            .certificatePinner(NetworkConfig.certificatePinner)
+            .certificatePinner(NetworkConfig.getCertificatePinner())
             .addInterceptor(logging)
             .addInterceptor(AuthInterceptor(TokenStore, refreshApi))
             .addInterceptor { chain ->
