@@ -11,6 +11,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.wear.compose.material3.*
 import kotlinx.coroutines.launch
 import dev.solsynth.solian.R
@@ -92,7 +93,7 @@ private fun PasswordLoginScreen(
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(0.9f),
                 shape = MaterialTheme.shapes.medium,
-                colors = TextFieldDefaults.textFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = OnSurfaceHigh,
                     unfocusedTextColor = OnSurfaceMedium,
                     cursorColor = SolianViolet,
@@ -116,7 +117,7 @@ private fun PasswordLoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(0.9f),
                 shape = MaterialTheme.shapes.medium,
-                colors = TextFieldDefaults.textFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = OnSurfaceHigh,
                     unfocusedTextColor = OnSurfaceMedium,
                     cursorColor = SolianViolet,

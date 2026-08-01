@@ -60,3 +60,8 @@ keystore.jks
 
 # Android SDK local properties
 local.properties
+
+# Gradle
+.gradle/
+app/build/
+build/
