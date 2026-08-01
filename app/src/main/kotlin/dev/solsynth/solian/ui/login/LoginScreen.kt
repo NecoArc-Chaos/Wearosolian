@@ -17,6 +17,9 @@ import dev.solsynth.solian.R
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.*
+import dev.solsynth.solian.theme.OnSurfaceHigh
+import dev.solsynth.solian.theme.OnSurfaceMedium
+import dev.solsynth.solian.theme.SolianViolet
 import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
@@ -89,6 +92,11 @@ private fun PasswordLoginScreen(
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(0.9f),
                 shape = MaterialTheme.shapes.medium,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedTextColor = OnSurfaceHigh,
+                    unfocusedTextColor = OnSurfaceMedium,
+                    cursorColor = SolianViolet,
+                ),
             )
         }
 
@@ -108,6 +116,11 @@ private fun PasswordLoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(0.9f),
                 shape = MaterialTheme.shapes.medium,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedTextColor = OnSurfaceHigh,
+                    unfocusedTextColor = OnSurfaceMedium,
+                    cursorColor = SolianViolet,
+                ),
             )
         }
 
@@ -188,6 +201,9 @@ private fun PasswordLoginScreen(
                 },
                 enabled = account.isNotBlank() && password.isNotBlank() && !isLoading,
                 modifier = Modifier.fillMaxWidth(0.7f),
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = OnSurfaceHigh,
+                ),
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(
@@ -197,7 +213,6 @@ private fun PasswordLoginScreen(
                 } else {
                     Text(
                         text = stringResource(R.string.login_button),
-                        color = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
             }
