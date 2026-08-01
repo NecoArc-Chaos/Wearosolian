@@ -6,6 +6,10 @@ import androidx.compose.runtime.snapshotFlow
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.ChatSummaryEntry
+import dev.solsynth.solian.data.model.ChatSyncRequest
+import dev.solsynth.solian.data.model.RoomMessageSyncResponse
+import dev.solsynth.solian.data.model.RoomSyncResponse
+import dev.solsynth.solian.data.model.SnChatMessage
 import dev.solsynth.solian.data.ws.ChatWebSocketClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +32,7 @@ class ChatViewModel : ViewModel() {
     val wsConnected: StateFlow<Boolean> = _wsConnected
 
     private var wsClient: ChatWebSocketClient? = null
+    private var lastSyncTimestamp = 0L
 
     init {
         loadRooms()
@@ -53,12 +58,47 @@ class ChatViewModel : ViewModel() {
             try {
                 val summaryMap = ApiClient.api.getChatSummary()
                 _rooms.value = summaryMap.values.toList()
+                lastSyncTimestamp = System.currentTimeMillis()
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    private suspend fun syncChat() {
+        try {
+            val request = ChatSyncRequest(lastSyncTimestamp = lastSyncTimestamp)
+            val response = ApiClient.api.syncAll(request)
+            response.messages?.let { messages ->
+                mergeMessages(messages)
+            }
+            response.currentTimestamp?.let { timestamp ->
+                lastSyncTimestamp = timestamp
+            }
+        } catch (_: Exception) {
+            // Keep current rooms on sync failure
+        }
+    }
+
+    private fun mergeMessages(messages: List<SnChatMessage>) {
+        val current = _rooms.value.toMutableList()
+        for (message in messages) {
+            val roomId = message.chatRoomId ?: continue
+            val roomIndex = current.indexOfFirst { entry ->
+                entry.room?.id == roomId
+            }
+            if (roomIndex >= 0) {
+                val entry = current[roomIndex]
+                val shouldUpdate = entry.lastMessage == null ||
+                    (message.roomSequence ?: 0) > (entry.lastMessage.roomSequence ?: 0)
+                if (shouldUpdate) {
+                    current[roomIndex] = entry.copy(lastMessage = message)
+                }
+            }
+        }
+        _rooms.value = current
     }
 
     fun connectWebSocket() {
@@ -105,12 +145,7 @@ class ChatViewModel : ViewModel() {
             },
             onReconnected = {
                 viewModelScope.launch {
-                    try {
-                        val summaryMap = ApiClient.api.getChatSummary()
-                        _rooms.value = summaryMap.values.toList()
-                    } catch (_: Exception) {
-                        // Keep current rooms on sync failure
-                    }
+                    syncChat()
                 }
             },
         )
