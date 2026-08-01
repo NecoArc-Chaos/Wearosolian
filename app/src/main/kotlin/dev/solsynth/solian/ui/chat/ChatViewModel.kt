@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class ChatViewModel : ViewModel() {
     private val _rooms = MutableStateFlow<List<ChatSummaryEntry>>(emptyList())
@@ -64,7 +65,7 @@ class ChatViewModel : ViewModel() {
         if (wsClient != null) return
         wsClient = ChatWebSocketClient(
             serverUrl = TokenStore.serverUrl,
-            onMessage = { content, sender, chatRoomId, messageId, reactionsCount ->
+            onChatMessage = { content, sender, chatRoomId, messageId, reactionsCount ->
                 if (content.isNotBlank() && chatRoomId != null && _rooms.value.isNotEmpty()) {
                     val current = _rooms.value.toMutableList()
                     val roomIndex = current.indexOfFirst { entry ->
@@ -84,9 +85,15 @@ class ChatViewModel : ViewModel() {
                     }
                     if (roomIndex >= 0) {
                         val entry = current[roomIndex]
+                        val reactionMap = mutableMapOf<String, Int>()
+                        val keys = reactionsCount.keys()
+                        while (keys.hasNext()) {
+                            val key = keys.next()
+                            reactionMap[key] = reactionsCount.optInt(key)
+                        }
                         current[roomIndex] = entry.copy(
                             lastMessage = entry.lastMessage?.copy(
-                                reactions_count = reactionsCount,
+                                reactions_count = reactionMap,
                             )
                         )
                         _rooms.value = current

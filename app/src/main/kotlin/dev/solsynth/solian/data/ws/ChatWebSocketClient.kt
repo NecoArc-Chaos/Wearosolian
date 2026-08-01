@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import okhttp3.*
 import okio.ByteString
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit
  */
 class ChatWebSocketClient(
     private val serverUrl: String,
-    private val onMessage: (String, String?, String?, String?, JSONObject?) -> Unit,
+    private val onChatMessage: (String, String?, String?, String?, JSONObject?) -> Unit,
     private val onStatusChanged: (Boolean) -> Unit,
     private val onReconnected: () -> Unit = {},
 ) {
@@ -81,34 +82,34 @@ class ChatWebSocketClient(
                             val content = data?.optString("content")
                             val sender = data?.optJSONObject("sender")?.optString("name")
                             val chatRoomId = data?.optString("chat_room_id")
-                            onMessage(content ?: "", sender, chatRoomId)
+                            onChatMessage(content ?: "", sender, chatRoomId, null, null)
                         }
                         "messages.update" -> {
                             val messageId = data?.optString("id")
                             val content = data?.optString("content")
                             val chatRoomId = data?.optString("chat_room_id")
-                            onMessage(content ?: "", null, chatRoomId, messageId)
+                            onChatMessage(content ?: "", null, chatRoomId, messageId, null)
                         }
                         "messages.delete" -> {
                             val messageId = data?.optString("id")
                             val chatRoomId = data?.optString("chat_room_id")
-                            onMessage("", null, chatRoomId, messageId)
+                            onChatMessage("", null, chatRoomId, messageId, null)
                         }
                         "messages.delivered" -> {
                             val messageId = data?.optString("id")
                             val content = data?.optString("content")
                             val chatRoomId = data?.optString("chat_room_id")
-                            onMessage(content ?: "", null, chatRoomId, messageId)
+                            onChatMessage(content ?: "", null, chatRoomId, messageId, null)
                         }
                         "messages.typing" -> {
                             val chatRoomId = data?.optString("chat_room_id")
-                            onMessage("", null, chatRoomId)
+                            onChatMessage("", null, chatRoomId, null, null)
                         }
                         "messages.reaction.added",
                         "messages.reaction.removed" -> {
                             val messageId = data?.optJSONObject("meta")?.optString("message_id")
                             val reactionsCount = data?.optJSONObject("meta")?.optJSONObject("reactions_count")
-                            onMessage("", null, null, messageId, reactionsCount)
+                            onChatMessage("", null, null, messageId, reactionsCount)
                         }
                         "pong" -> { /* heartbeat response */ }
                         else -> Log.d(TAG, "Unhandled packet: $type")
