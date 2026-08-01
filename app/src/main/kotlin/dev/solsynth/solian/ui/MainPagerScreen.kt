@@ -11,18 +11,20 @@ import androidx.wear.compose.foundation.pager.HorizontalPager
 import androidx.wear.compose.foundation.pager.rememberPagerState
 import androidx.wear.compose.material3.HorizontalPageIndicator
 import androidx.wear.compose.material3.MaterialTheme
-import dev.solsynth.solian.ui.home.HomeScreen
-import dev.solsynth.solian.ui.explore.ExploreScreen
-import dev.solsynth.solian.ui.compose.ComposeScreen
-import dev.solsynth.solian.ui.chat.ChatScreen
+import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.ui.account.AccountScreen
+import dev.solsynth.solian.ui.chat.ChatScreen
+import dev.solsynth.solian.ui.compose.ComposeScreen
+import dev.solsynth.solian.ui.explore.ExploreScreen
+import dev.solsynth.solian.ui.home.HomeScreen
+import dev.solsynth.solian.ui.login.LoginScreen
 
 @Composable
 fun MainPagerScreen(
-    onShowLogin: () -> Unit,
     onLogout: () -> Unit,
 ) {
     val pagerState = rememberPagerState(pageCount = { 5 }, initialPage = 0)
+    var isLoggedIn by remember { mutableStateOf(TokenStore.isLoggedIn) }
 
     val backgroundColor = MaterialTheme.colorScheme.background
 
@@ -40,7 +42,18 @@ fun MainPagerScreen(
                 1 -> ExploreScreen()
                 2 -> ComposeScreen()
                 3 -> ChatScreen()
-                4 -> AccountScreen(onLogout = onLogout, onShowLogin = onShowLogin)
+                4 -> if (isLoggedIn) {
+                    AccountScreen(
+                        onLogout = {
+                            onLogout()
+                            isLoggedIn = false
+                        },
+                    )
+                } else {
+                    LoginScreen(
+                        onLoginSuccess = { isLoggedIn = true },
+                    )
+                }
             }
         }
 
