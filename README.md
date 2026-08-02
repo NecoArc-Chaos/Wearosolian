@@ -25,21 +25,13 @@
 | Feature | Description |
 |---------|-------------|
 | Timeline | Chronological feed of posts |
-| Posts, Articles & Moments | Multiple content types |
+| Posts | Create and view posts |
 | Instant Messaging | Real-time chat with group support |
-| Realms | Communities organized by shared interests |
 | OAuth Integration | Secure third-party authentication |
 | Check-in | Location and status sharing |
 | Countdown | Track special dates and festivals |
-| RSS Reader | Subscribe to external feeds |
-| Wallet | Credit system for transactions |
-| Stickers | Custom sticker expressions |
-| Rich Text Editor | Markdown-based with extended syntax |
-| Social Features | Friends list and blocklist |
-| File Management | Upload and organize files |
-| AI Features | Smart assistance throughout the app |
-| Fitness & Health | Track fitness goals on your wrist |
-| Fediverse | Interact with other fediverse instances (experimental) |
+| Account | Profile and status management |
+| QR Login | Scan QR code to authenticate |
 
 ---
 
@@ -55,41 +47,40 @@
 
 #### Prerequisites
 
-- [Flutter SDK](https://flutter.dev) (≥3.10.0)
+- Android Studio (Ladybug or newer)
 - Android SDK with Wear OS system images (if using emulator)
+- JDK 21
 
 #### Running
 
 ```bash
-# Install dependencies
-flutter pub get
+# Clone the repository
+git clone https://github.com/NecoArc-Chaos/Wearosolian.git
+cd Wearosolian
 
-# Generate code
-dart run build_runner build
-
-# Run on connected Wear OS device/emulator
-flutter run
+# Build and run on connected Wear OS device/emulator
+./gradlew installDebug
 ```
 
 #### Building
 
 ```bash
-# Build APK
-flutter build apk
+# Build debug APK
+./gradlew assembleDebug
 
-# Build App Bundle
-flutter build appbundle
+# Build release APK (requires keystore configuration)
+./gradlew assembleRelease
 ```
 
 ---
 
 ## Differences from Upstream
 
-- ✅ **Android / Wear OS only** — all desktop (Windows/macOS/Linux), iOS, and web code removed
+- ✅ **Wear OS only**
 - ✅ Minimal dependencies — no `window_manager`, `desktop_drop`, `tray_manager`, etc.
-- ✅ Apple Sign-In → OIDC web flow (native `sign_in_with_apple` removed)
-- ✅ Desktop RPC / Discord presence stubbed out
-- ✅ Call window / multi-window code stubbed out
+- ✅ Pure Kotlin + Jetpack Compose (Wear Compose Material 3)
+- ✅ Retrofit + OkHttp for networking
+- ✅ EncryptedSharedPreferences for secure token storage
 
 ---
 
@@ -105,13 +96,11 @@ This fork is optimized for Wear OS smartwatches:
 
 | Feature | Implementation |
 |---------|---------------|
-| **Crown scrolling** | Flutter Wear OS engine auto-maps crown rotation to `PointerScrollEvent` on all `Scrollable` widgets |
-| **Round watch** | `app_scaffold.dart` clips to circle via `WatchShape` and injects safe insets |
-| **Scaling list** | `WearScalingList` — items scale down to 70% at edges; `PaginationList` auto-uses it on wear devices |
-| **Swipe-to-back** | `WearSwipeBack` — left-edge swipe pops navigation (like Orbit's `SwipeDismissableNavHost`) |
-| **Ambient mode** | `WearAmbientMode` — always-on display with simplified dark UI |
-| **Shape detection** | `wear_os.dart` provides `isWearDevice()` / `isRoundWatch()` / `WearAwareBuilder` |
-| **Large targets** | Theme enforces minimum 48dp touch targets |
+| **Crown scrolling** | Wear Compose `RotaryScrollableDefaults` |
+| **Round watch** | `rememberIsScreenRound()` + dynamic padding |
+| **Scaling list** | `ScalingLazyColumn` with rotary behavior |
+| **Ambient mode** | Implemented |
+| **Swipe-to-back** | Stub (not yet implemented) |
 
 ---
 
@@ -119,9 +108,10 @@ This fork is optimized for Wear OS smartwatches:
 
 | Layer | Technology |
 |-------|------------|
-| **Frontend** | Flutter (Dart) — Wear OS target |
-| **State** | Riverpod + Hooks |
-| **Local DB** | Drift (SQLite) |
+| **Language** | Kotlin |
+| **UI** | Jetpack Compose + Wear Compose Material 3 |
+| **Networking** | Retrofit + OkHttp + WebSocket |
+| **Local Storage** | EncryptedSharedPreferences |
 | **Backend** | .NET + PostgreSQL |
 | **Protocols** | ActivityPub (Fediverse), WebSockets, REST API |
 
@@ -140,6 +130,3 @@ Third-party deployments must not impersonate the official Solar Network service.
 <p align="center">
   Forked with ❤️ from <a href="https://github.com/Solsynth/HyperNet.Surface">Solsynth/HyperNet.Surface</a>
 </p>
-
-Vibe Coding  
-有部分借鉴了优秀的wearos项目，请谅解，个人水平不高

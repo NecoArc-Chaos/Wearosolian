@@ -5,59 +5,91 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
-import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
-import androidx.wear.compose.foundation.rotary.rotaryScrollable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material3.*
+import dev.solsynth.solian.R
+import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
-fun ChatScreen() {
-    val listState = rememberScalingLazyListState()
-    val focusRequester = remember { FocusRequester() }
-    val rotaryBehavior = RotaryScrollableDefaults.behavior(scrollableState = listState)
+fun ChatScreen(viewModel: ChatViewModel = viewModel()) {
+    val rooms by viewModel.rooms.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val wsConnected by viewModel.wsConnected.collectAsState()
 
-    // Placeholder chat rooms — will be replaced with real API data
-    val rooms = remember {
-        listOf(
-            Triple("General", "Alice: See you there!", "2m ago"),
-            Triple("Project X", "Bob: PR merged ✅", "15m ago"),
-            Triple("Random", "Carol: lol nice one 😂", "1h ago"),
-        )
-    }
-
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .rotaryScrollable(rotaryBehavior, focusRequester),
-        state = listState,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    WearScreen {
         item { Spacer(Modifier.height(8.dp)) }
 
         item {
-            Text("Messages", style = MaterialTheme.typography.titleSmall,
+            Text(stringResource(R.string.chat_title), style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.fillMaxWidth(0.9f))
         }
 
-        items(rooms.size) { index ->
-            val (name, preview, time) = rooms[index]
-            Card(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(0.9f).padding(vertical = 4.dp),
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(name, style = MaterialTheme.typography.labelSmall)
-                        Text(time, style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (wsConnected) {
+            item {
+                Text(stringResource(R.string.chat_live), style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary)
+            }
+        }
+
+        if (isLoading && rooms.isEmpty()) {
+            item {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+        } else if (error != null && rooms.isEmpty()) {
+            item {
+                Text(error!!, color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall)
+            }
+        } else if (rooms.isEmpty()) {
+            item {
+                Text(stringResource(R.string.chat_empty),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        } else {
+            items(rooms.size) { index ->
+                val entry = rooms[index]
+                val room = entry.room
+                if (room == null) return@items
+                Card(
+                    onClick = {},
+                    modifier = Modifier.fillMaxWidth(0.9f).padding(vertical = 4.dp),
+                    shape = MaterialTheme.shapes.medium,
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            if (!room.name.isNullOrBlank()) {
+                                Text(room.name, style = MaterialTheme.typography.labelSmall)
+                            }
+                            if (entry.unreadCount > 0) {
+                                Text(
+                                    text = "${entry.unreadCount}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier
+                                        .background(MaterialTheme.colorScheme.primaryContainer)
+                                        .padding(horizontal = 6.dp, vertical = 2.dp),
+                                )
+                            }
+                        }
+                        val lastContent = entry.lastMessage?.content
+                        if (!lastContent.isNullOrBlank()) {
+                            Text(
+                                lastContent,
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 1,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
-                    Text(preview, style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }

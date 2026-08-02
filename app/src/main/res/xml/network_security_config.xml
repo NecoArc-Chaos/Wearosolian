@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Default: block cleartext (already enforced by targetSdk >= 28) -->
+    <base-config cleartextTrafficPermitted="false" />
+
+    <!-- Production certificate pin for solian.app.
+         The runtime guard in NetworkConfig will log a warning if the
+         embedded hash becomes invalid (cert rotation), instead of
+         crashing all HTTPS traffic. -->
+    <domain-config>
+        <domain includeSubdomains="true">solian.app</domain>
+        <pin-set>
+            <pin digest="SHA-256">ldZj8XVxkaBt4jBzMPobxTovjj5PFLIkBxjl4mGxyF8=</pin>
+        </pin-set>
+    </domain-config>
+
+    <!-- Allow user-configured servers (no pinning) for self-hosted instances -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">10.0.0.0/8</domain>
+        <domain includeSubdomains="true">172.16.0.0/12</domain>
+        <domain includeSubdomains="true">192.168.0.0/16</domain>
+    </domain-config>
+</network-security-config>
