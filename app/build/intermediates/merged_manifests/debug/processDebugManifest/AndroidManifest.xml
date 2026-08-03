@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.solsynth.solian"
-    android:versionCode="1"
-    android:versionName="0.0.3" >
+    android:versionCode="2"
+    android:versionName="0.3.0beta" >
 
     <uses-sdk
         android:minSdkVersion="26"
@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <permission
         android:name="dev.solsynth.solian.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
@@ -25,14 +26,15 @@
     <uses-permission android:name="dev.solsynth.solian.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 
     <application
+        android:name="dev.solsynth.solian.SolianApplication"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
         android:extractNativeLibs="false"
         android:icon="@mipmap/launcher_icon"
         android:label="Solian"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:testOnly="true"
-        android:usesCleartextTraffic="true" >
+        android:testOnly="true" >
         <activity
             android:name="dev.solsynth.solian.MainActivity"
             android:exported="true"
@@ -72,6 +74,9 @@
 
         <uses-library
             android:name="wear-sdk"
+            android:required="false" />
+        <uses-library
+            android:name="com.google.android.wearable"
             android:required="false" />
 
         <provider

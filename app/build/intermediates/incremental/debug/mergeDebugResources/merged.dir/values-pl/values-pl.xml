@@ -29,6 +29,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"Filtruję połączenie przychodzące"</string>
     <string msgid="406453423630273620" name="close_drawer">"Zamknij menu nawigacyjne"</string>
     <string msgid="7573152094250666567" name="close_sheet">"Zamknij arkusz"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"Błąd"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"Otwarto na telefonie"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"Udało się"</string>
     <string msgid="8038256446254964252" name="default_error_message">"Nieprawidłowe dane wejściowe"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"Wyskakujące okienko"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"Menu"</string>
@@ -134,4 +137,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"Minuta"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"Kropka"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"Sekunda"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"Panel działań"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"Panel nawigacji"</string>
 </resources>

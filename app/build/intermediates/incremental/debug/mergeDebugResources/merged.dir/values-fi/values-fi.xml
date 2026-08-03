@@ -23,6 +23,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"Seulotaan saapuvaa puhelua"</string>
     <string msgid="406453423630273620" name="close_drawer">"Sulje navigointivalikko"</string>
     <string msgid="7573152094250666567" name="close_sheet">"Sulje taulukko"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"Epäonnistui"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"Avattiin puhelimellasi"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"Onnistui"</string>
     <string msgid="8038256446254964252" name="default_error_message">"Virheellinen syöte"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"Ponnahdusikkuna"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"Avattava valikko"</string>
@@ -128,4 +131,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"Minuutti"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"Jakso"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"Sekunti"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"Toimintojen vetopaneeli"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"Navigointipaneeli"</string>
 </resources>

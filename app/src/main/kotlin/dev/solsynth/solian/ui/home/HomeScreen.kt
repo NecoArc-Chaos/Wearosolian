@@ -2,67 +2,103 @@ package dev.solsynth.solian.ui.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material3.*
+import androidx.wear.compose.material3.lazy.transformedHeight
 import dev.solsynth.solian.R
 import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
-fun HomeScreen() {
-    WearScreen {
+fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
+    val checkInStatus by viewModel.checkInStatus.collectAsState()
+    val unreadCount by viewModel.unreadCount.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
+    WearScreen { spec ->
         item {
-            Card(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(0.9f),
-                shape = MaterialTheme.shapes.medium,
+            TitleCard(
+                onClick = { viewModel.refreshData() },
+                title = {
+                    Text(
+                        text = stringResource(R.string.home_checkin_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(0.9f).transformedHeight(this, spec),
+                transformation = SurfaceTransformation(spec)
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text(stringResource(R.string.home_checkin_title), style = MaterialTheme.typography.titleSmall)
-                    Spacer(Modifier.height(4.dp))
-                    Text(stringResource(R.string.home_checkin_fortune),
+                if (isLoading && checkInStatus == null) {
+                    CircularProgressIndicator(modifier = Modifier.size(ButtonDefaults.ExtraSmallIconSize))
+                } else {
+                    Text(
+                        text = checkInStatus?.fortune ?: stringResource(R.string.home_checkin_fortune),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary)
-                    Text(stringResource(R.string.home_checkin_advice),
+                    )
+                    Text(
+                        text = checkInStatus?.advice ?: stringResource(R.string.home_checkin_advice),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }
 
         item {
-            Card(
+            TitleCard(
                 onClick = {},
-                modifier = Modifier.fillMaxWidth(0.9f),
-                shape = MaterialTheme.shapes.medium,
+                title = {
+                    Text(
+                        text = stringResource(R.string.home_countdown_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(0.9f).transformedHeight(this, spec),
+                transformation = SurfaceTransformation(spec)
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text(stringResource(R.string.home_countdown_title), style = MaterialTheme.typography.titleSmall)
-                    Spacer(Modifier.height(4.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(stringResource(R.string.home_countdown_christmas), style = MaterialTheme.typography.bodySmall)
-                        Text(stringResource(R.string.home_countdown_days), style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary)
-                    }
-                }
-            }
-        }
-
-        item {
-            Card(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(0.9f),
-                shape = MaterialTheme.shapes.medium,
-            ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text(stringResource(R.string.home_notifications_title), style = MaterialTheme.typography.titleSmall)
-                    Spacer(Modifier.height(4.dp))
-                    Text(stringResource(R.string.home_notifications_unread),
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = stringResource(R.string.home_countdown_christmas),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    )
+                    Text(
+                        text = stringResource(R.string.home_countdown_days),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
                 }
+            }
+        }
+
+        item {
+            TitleCard(
+                onClick = {},
+                title = {
+                    Text(
+                        text = stringResource(R.string.home_notifications_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(0.9f).transformedHeight(this, spec),
+                transformation = SurfaceTransformation(spec)
+            ) {
+                Text(
+                    text = if (unreadCount > 0) {
+                        "$unreadCount ${stringResource(R.string.home_notifications_unread_suffix)}"
+                    } else {
+                        stringResource(R.string.home_notifications_unread_none)
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

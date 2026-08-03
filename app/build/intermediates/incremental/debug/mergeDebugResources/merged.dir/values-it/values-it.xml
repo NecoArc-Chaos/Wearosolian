@@ -26,6 +26,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"Applicazione filtro a chiamata in arrivo"</string>
     <string msgid="406453423630273620" name="close_drawer">"Chiudi il menu di navigazione"</string>
     <string msgid="7573152094250666567" name="close_sheet">"Chiudi il foglio"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"Errore"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"Elemento aperto sul telefono"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"Operazione riuscita"</string>
     <string msgid="8038256446254964252" name="default_error_message">"Valore non valido"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"Finestra popup"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"Menu a discesa"</string>
@@ -131,4 +134,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"Minuto"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"Periodo"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"Secondo"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"Riquadro a scomparsa delle azioni"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"Riquadro di navigazione a scomparsa"</string>
 </resources>

@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "dev.solsynth.solian.app-mergeDebugResources-51:/values-v30/values-v30.xml",
+            "outputFile": "dev.solsynth.solian.app-mergeDebugResources-55:/values-v30/values-v30.xml",
             "map": [
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/1d26655857c7ce33df3e4f349ce706e0/transformed/material3/res/values-v30/values-v30.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/ce1dea108dd0dd2e37ca94dc4305c60c/transformed/material3/res/values-v30/values-v30.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

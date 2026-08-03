@@ -23,6 +23,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"ಒಳಬರುವ ಕರೆಯನ್ನು ಸ್ಕ್ರೀನ್ ಮಾಡಲಾಗುತ್ತಿದೆ"</string>
     <string msgid="406453423630273620" name="close_drawer">"ನ್ಯಾವಿಗೇಷನ್‌ ಮೆನು ಮುಚ್ಚಿರಿ"</string>
     <string msgid="7573152094250666567" name="close_sheet">"ಶೀಟ್ ಮುಚ್ಚಿರಿ"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"ವಿಫಲವಾಗಿದೆ"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ತೆರೆಯಲಾಗಿದೆ"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"ಯಶಸ್ವಿಯಾಗಿದೆ"</string>
     <string msgid="8038256446254964252" name="default_error_message">"ಅಮಾನ್ಯ ಇನ್‌ಪುಟ್"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"ಪಾಪ್-ಅಪ್ ವಿಂಡೋ"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"ಡ್ರಾಪ್‌ಡೌನ್ ಮೆನು"</string>
@@ -128,4 +131,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"ನಿಮಿಷ"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"ಅವಧಿ"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"ಸೆಕೆಂಡ್"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"ಕ್ರಿಯೆ ಡ್ರಾಯರ್"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"ನ್ಯಾವಿಗೇಶನ್ ಡ್ರಾಯರ್"</string>
 </resources>

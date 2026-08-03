@@ -23,6 +23,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"ఇన్‌కమింగ్ కాల్‌ను స్క్రీన్ చేయండి"</string>
     <string msgid="406453423630273620" name="close_drawer">"నావిగేషన్ మెనూను మూసివేయండి"</string>
     <string msgid="7573152094250666567" name="close_sheet">"షీట్‌ను మూసివేయండి"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"వైఫల్యం"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"మీ ఫోన్‌లో తెరవబడింది"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"విజయవంతమైంది"</string>
     <string msgid="8038256446254964252" name="default_error_message">"ఇన్‌పుట్ చెల్లదు"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"పాప్-అప్ విండో"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"డ్రాప్‌డౌన్ మెనూ"</string>
@@ -128,4 +131,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"నిమిషం"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"వ్యవధి"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"సెకను"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"చర్య డ్రాయర్"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"నావిగేషన్ డ్రాయర్"</string>
 </resources>

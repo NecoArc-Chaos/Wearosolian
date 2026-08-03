@@ -44,11 +44,22 @@ interface SolianApi {
     @PATCH("passport/accounts/me/statuses")
     suspend fun updateStatus(@Body request: AccountStatusRequest): SnAccountStatus
 
+    // ── Check-in ──
+
+    @GET("sphere/accounts/me/checkin")
+    suspend fun getCheckInStatus(): SnCheckInStatus
+
     // ── Timeline ──
 
     @GET("sphere/posts")
     suspend fun getTimeline(
         @Query("take") take: Int = 20,
+        @Query("offset") offset: Int = 0,
+        @Query("include") include: String = "author,author.status,author.profile,author.profile.picture,publisher,publisher.picture,attachments,gallery,media,parent,reply_to,replied_post",
+        @Query("parent_id") parentId: String? = null,
+        @Query("reply_to_id") replyToId: String? = null,
+        @Query("replied_post_id") repliedPostId: String? = null,
+        @Query("root_id") rootId: String? = null,
     ): List<SnPost>
 
     // ── Post Creation ──

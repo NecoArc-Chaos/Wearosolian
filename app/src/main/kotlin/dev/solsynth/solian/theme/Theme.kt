@@ -12,6 +12,7 @@ import androidx.wear.compose.material3.Shapes
 import androidx.wear.compose.material3.contentColorFor
 import dev.solsynth.solian.theme.ThemeStateManager
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 val LocalScreenRound = staticCompositionLocalOf { false }
@@ -45,13 +46,13 @@ internal val ActiveColorScheme = ColorScheme(
     tertiaryDim = SolianVioletDim,
     onTertiary = OledBlack,
     onTertiaryContainer = OledBlack,
-    background = OledSurface,
+    background = OledBlack,
     onBackground = OnSurfaceHigh,
     onSurface = OnSurfaceHigh,
     onSurfaceVariant = OnSurfaceMedium,
     surfaceContainerLow = OledSurface,
-    surfaceContainer = OledSurface,
-    surfaceContainerHigh = OledSurfaceVariant,
+    surfaceContainer = OledSurfaceVariant,
+    surfaceContainerHigh = Color(0xFF262626),
     error = ErrorRed,
     onError = OledBlack,
 )

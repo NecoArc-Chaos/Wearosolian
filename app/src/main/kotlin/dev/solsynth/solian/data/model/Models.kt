@@ -111,10 +111,25 @@ data class QrStatusResponse(
 // ── Account ──
 
 data class SnAccount(
+    @SerializedName("id") val id: String? = null,
+    @SerializedName("name") val name: String? = null,
+    @SerializedName("nick") val nick: String? = null,
+    @SerializedName("nickname") val nickname: String? = null,
+    @SerializedName("username") val username: String? = null,
+    @SerializedName("display_name") val displayName: String? = null,
+    @SerializedName("avatar_url") val avatarUrl: String? = null,
+    @SerializedName("avatar") val avatar: String? = null,
+    @SerializedName("picture") val picture: SnAttachment? = null,
+    @SerializedName("profile") val profile: SnProfile? = null,
+    @SerializedName("status") val status: SnAccountStatus? = null,
+)
+
+data class SnProfile(
     val id: String,
-    val name: String?,
-    @SerializedName("nick") val nick: String?,
-    @SerializedName("avatar_url") val avatarUrl: String?,
+    @SerializedName("first_name") val firstName: String?,
+    @SerializedName("last_name") val lastName: String?,
+    val bio: String?,
+    @SerializedName("picture") val picture: SnAttachment? = null,
 )
 
 data class SnAccountStatus(
@@ -139,10 +154,44 @@ data class SnPost(
     val id: String,
     val title: String?,
     val content: String?,
-    val description: String?,
-    val type: String?,
-    val visibility: String?,
-    @SerializedName("created_at") val createdAt: String?,
+    val description: String? = null,
+    val type: Int? = 0,
+    val visibility: Int? = 0,
+    @SerializedName("created_at") val createdAt: String? = null,
+    @SerializedName("published_at") val publishedAt: String? = null,
+    @SerializedName("author") val author: SnAccount? = null,
+    @SerializedName("account") val account: SnAccount? = null,
+    @SerializedName("user") val user: SnAccount? = null,
+    @SerializedName("publisher") val publisher: SnAccount? = null,
+    @SerializedName("creator") val creator: SnAccount? = null,
+    @SerializedName("profile") val profile: SnAccount? = null,
+    @SerializedName("attachments") val attachments: List<SnAttachment>? = null,
+    @SerializedName("gallery") val gallery: List<SnAttachment>? = null,
+    @SerializedName("media") val media: List<SnAttachment>? = null,
+    @SerializedName("parent_id") val parentId: String? = null,
+    @SerializedName("reply_to_id") val replyToId: String? = null,
+    @SerializedName("replied_post_id") val repliedPostId: String? = null,
+    @SerializedName("root_id") val rootId: String? = null,
+    @SerializedName("parent") val parent: SnPost? = null,
+    @SerializedName("reply_to") val replyTo: SnPost? = null,
+    @SerializedName("replied_post") val repliedPost: SnPost? = null,
+    @SerializedName("reply_count") val replyCount: Int? = 0,
+    @SerializedName("replies_count") val repliesCount: Int? = 0,
+    @SerializedName("thread_replies_count") val threadRepliesCount: Int? = 0,
+)
+
+data class SnAttachment(
+    val id: String,
+    val type: Int? = 0, // Image=0, Video=1, etc.
+    @SerializedName("mime_type") val mimeType: String? = null,
+    @SerializedName("url") val url: String?,
+    @SerializedName("preview_url") val previewUrl: String?,
+)
+
+data class SnCheckInStatus(
+    val fortune: String?,
+    val advice: String?,
+    @SerializedName("checked_in") val checkedIn: Boolean = false,
 )
 
 data class PostRequest(

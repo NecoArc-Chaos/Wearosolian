@@ -29,6 +29,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"Preveruje sa prichádzajúci hovor"</string>
     <string msgid="406453423630273620" name="close_drawer">"Zavrieť navigačnú ponuku"</string>
     <string msgid="7573152094250666567" name="close_sheet">"Zavrieť hárok"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"Nepodarilo sa"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"Otvorené v telefóne"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"Úspech"</string>
     <string msgid="8038256446254964252" name="default_error_message">"Neplatný vstup"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"Vyskakovacie okno"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"Rozbaľovacia ponuka"</string>
@@ -134,4 +137,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"Minúta"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"Obdobie"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"Sekunda"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"Vysúvací panel akcií"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"Navigačný vysúvací panel"</string>
 </resources>

@@ -2,186 +2,159 @@ package dev.solsynth.solian.ui.account
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.*
-import kotlinx.coroutines.launch
-import androidx.compose.ui.platform.LocalContext
+import androidx.wear.compose.material3.lazy.transformedHeight
+import coil.compose.AsyncImage
 import dev.solsynth.solian.R
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.AccountStatusRequest
 import dev.solsynth.solian.data.model.AuthConstants
-import dev.solsynth.solian.theme.ThemeStore
-import dev.solsynth.solian.theme.ThemeStateManager
+import dev.solsynth.solian.data.model.SnAttachment
 import dev.solsynth.solian.ui.scaffold.WearScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun AccountScreen(onLogout: () -> Unit) {
-    val statusOnline = stringResource(R.string.status_online)
-    val statusBusy = stringResource(R.string.status_busy)
-    var statusText by remember { mutableStateOf(statusOnline) }
-    var presence by remember { mutableStateOf(true) }
     var userName by remember { mutableStateOf("") }
+    var avatarUrl by remember { mutableStateOf<String?>(null) }
+    var presence by remember { mutableStateOf(true) }
+    var isBusyStatus by remember { mutableStateOf(false) }
+    val statusSymbol = remember { mutableStateOf("") }
+
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         scope.launch {
             try {
                 val me = ApiClient.api.getMe()
-                userName = me.nick ?: me.name ?: ""
-            } catch (_: Exception) {
-                // Keep default if load fails
-            }
+                userName = me.nick ?: me.nickname ?: me.displayName ?: me.name ?: me.username ?: me.id?.take(8) ?: ""
+                val avatarAttachment = me.picture ?: me.profile?.picture ?: me.avatar?.let { 
+                    if (it.length > 20) SnAttachment(id = it, type = 0, url = it, previewUrl = it) else null 
+                }
+                val url = me.avatarUrl ?: me.profile?.picture?.url ?: me.picture?.url ?: me.avatar
+                avatarUrl = ApiClient.resolveUrl(url, avatarAttachment)
+            } catch (_: Exception) { }
+
             try {
                 val status = ApiClient.api.getMyStatus()
-                statusText = when (status.type) {
-                    AuthConstants.STATUS_TYPE_INVISIBLE -> AuthConstants.STATUS_TYPE_INVISIBLE
-                    else -> statusOnline
+                presence = status.type != AuthConstants.STATUS_TYPE_INVISIBLE
+                isBusyStatus = status.attitude == AuthConstants.STATUS_ATTITUDE_BUSY
+                if (!status.symbol.isNullOrBlank()) {
+                    statusSymbol.value = status.symbol
                 }
-                presence = status.isOnline ?: true
-            } catch (_: Exception) {
-                // Keep defaults if load fails
-            }
+            } catch (_: Exception) { }
         }
     }
 
-    var dynamicColorEnabled by remember { mutableStateOf(ThemeStore.isDynamicColorEnabled) }
-
-    WearScreen {
+    WearScreen { spec ->
         item {
-            Card(
-                onClick = {},
-                modifier = Modifier.size(48.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = MaterialTheme.shapes.medium,
-            ) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.account_avatar), style = MaterialTheme.typography.titleMedium)
-                }
-            }
+            AsyncImage(
+                model = avatarUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .transformedHeight(this, spec),
+                contentScale = ContentScale.Crop
+            )
         }
 
-        item { Text(stringResource(R.string.account_title), style = MaterialTheme.typography.titleSmall) }
-
-        item { Spacer(Modifier.height(12.dp)) }
-
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(0.9f),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.account_dynamic_color),
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.weight(1f),
-                )
-                Card(
-                    onClick = {
-                        val newEnabled = !dynamicColorEnabled
-                        dynamicColorEnabled = newEnabled
-                        ThemeStore.isDynamicColorEnabled = newEnabled
-                        scope.launch {
-                            ThemeStateManager.refreshDynamicColor(context)
-                        }
-                    },
-                    modifier = Modifier.size(48.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (dynamicColorEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
-                    ),
-                ) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = if (dynamicColorEnabled) "ON" else "OFF",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = if (dynamicColorEnabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                }
-            }
+            Text(
+                text = (userName.ifBlank { stringResource(R.string.account_title) }) + statusSymbol.value,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.transformedHeight(this, spec)
+            )
         }
 
         item { Spacer(Modifier.height(12.dp)) }
 
         item {
-            Text(stringResource(R.string.account_quick_status), style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.fillMaxWidth(0.9f))
+            ListHeader(
+                modifier = Modifier.transformedHeight(this, spec)
+            ) {
+                Text(stringResource(R.string.account_quick_status))
+            }
         }
 
         item {
             Row(
-                modifier = Modifier.fillMaxWidth(0.9f),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth(0.9f).transformedHeight(this, spec),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Card(
+                Button(
                     onClick = {
-                        val newPresence = !presence
+                        val nextPresence = !presence
                         scope.launch {
                             isLoading = true
                             try {
-                                ApiClient.api.updateStatus(
+                                val updated = ApiClient.api.updateStatus(
                                     AccountStatusRequest(
-                                        type = if (newPresence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STATUS_TYPE_INVISIBLE,
-                                        attitude = AuthConstants.STATUS_ATTITUDE_NEUTRAL,
+                                        type = if (nextPresence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STATUS_TYPE_INVISIBLE,
+                                        attitude = if (isBusyStatus) AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
                                     )
                                 )
-                                presence = newPresence
+                                presence = updated.type != AuthConstants.STATUS_TYPE_INVISIBLE
+                                if (updated.symbol != null) statusSymbol.value = updated.symbol
                             } catch (_: Exception) { }
                             isLoading = false
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth(0.4f)
-                        .then(if (presence) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (presence) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
-                    ),
-                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.weight(1f),
+                    colors = if (presence) ButtonDefaults.buttonColors() else ButtonDefaults.filledTonalButtonColors(),
+                    enabled = !isLoading
                 ) {
                     Text(
                         text = if (presence) stringResource(R.string.account_status_online) else stringResource(R.string.account_status_offline),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     )
                 }
-                Card(
+                
+                Button(
                     onClick = {
-                        val newStatus = if (statusText == statusBusy) statusOnline else statusBusy
+                        val nextBusy = !isBusyStatus
                         scope.launch {
                             isLoading = true
                             try {
-                                ApiClient.api.updateStatus(
+                                val updated = ApiClient.api.updateStatus(
                                     AccountStatusRequest(
-                                        type = AuthConstants.STATUS_TYPE_DEFAULT,
-                                        attitude = if (newStatus == statusBusy) AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
-                                        label = if (newStatus == statusBusy) AuthConstants.STATUS_ATTITUDE_BUSY else null,
+                                        type = if (presence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STATUS_TYPE_INVISIBLE,
+                                        attitude = if (nextBusy) AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
+                                        label = if (nextBusy) AuthConstants.STATUS_ATTITUDE_BUSY else null,
                                     )
                                 )
-                                statusText = newStatus
+                                isBusyStatus = updated.attitude == AuthConstants.STATUS_ATTITUDE_BUSY
+                                if (updated.symbol != null) statusSymbol.value = updated.symbol
                             } catch (_: Exception) { }
                             isLoading = false
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth(0.4f)
-                        .then(if (statusText == statusBusy) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (statusText == statusBusy) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
-                    ),
-                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.weight(1f),
+                    colors = if (isBusyStatus) {
+                        ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                    } else {
+                        ButtonDefaults.filledTonalButtonColors()
+                    },
+                    enabled = !isLoading
                 ) {
                     Text(
                         text = stringResource(R.string.account_status_busy),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     )
                 }
             }
@@ -190,37 +163,18 @@ fun AccountScreen(onLogout: () -> Unit) {
         item { Spacer(Modifier.height(16.dp)) }
 
         item {
-            Button(
+            FilledTonalButton(
                 onClick = onLogout,
-                modifier = Modifier.fillMaxWidth(0.6f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error
+                modifier = Modifier.fillMaxWidth(0.8f).transformedHeight(this, spec),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
                 ),
             ) {
-                Text(
-                    text = stringResource(R.string.account_logout),
-                    color = MaterialTheme.colorScheme.onError,
-                )
+                Text(text = stringResource(R.string.account_logout))
             }
         }
 
-        item { Spacer(Modifier.height(12.dp)) }
-
-        item {
-            Button(
-                onClick = onLogout,
-                modifier = Modifier.fillMaxWidth(0.6f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                ),
-            ) {
-                Text(
-                    text = stringResource(R.string.account_switch_account),
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-        }
-
-        item { Spacer(Modifier.height(16.dp)) }
+        item { Spacer(Modifier.height(24.dp)) }
     }
 }

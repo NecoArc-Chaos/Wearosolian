@@ -23,6 +23,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"এটা অন্তৰ্গামী কলৰ পৰীক্ষা কৰি থকা হৈছে"</string>
     <string msgid="406453423630273620" name="close_drawer">"নেভিগেশ্বন মেনু বন্ধ কৰক"</string>
     <string msgid="7573152094250666567" name="close_sheet">"শ্বীট বন্ধ কৰক"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"বিফল হৈছে"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"আপোনাৰ ফ’নত খোলা হৈছে"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"সফল হৈছে"</string>
     <string msgid="8038256446254964252" name="default_error_message">"অমান্য ইনপুট"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"পপ-আপ ৱিণ্ড’"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"ড্ৰপডাউনৰ মেনু"</string>
@@ -128,4 +131,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"মিনিট"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"পিৰিয়ড"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"দ্বিতীয়"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"কাৰ্য ড্ৰৱাৰ"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"নেভিগেশ্বন ড্ৰৱাৰ"</string>
 </resources>

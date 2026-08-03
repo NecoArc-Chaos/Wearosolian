@@ -20,7 +20,8 @@
     <string name="home_countdown_christmas">🎄 圣诞节</string>
     <string name="home_countdown_days">158天</string>
     <string name="home_notifications_title">🔔 通知</string>
-    <string name="home_notifications_unread">3 条未读消息</string>
+    <string name="home_notifications_unread_suffix">条未读消息</string>
+    <string name="home_notifications_unread_none">暂无未读消息</string>
 
     <!-- Explore -->
     <string name="explore_title">Explore</string>

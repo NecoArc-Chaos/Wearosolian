@@ -3,14 +3,13 @@
     <!-- Default: block cleartext (already enforced by targetSdk >= 28) -->
     <base-config cleartextTrafficPermitted="false" />
 
-    <!-- Production certificate pin for solian.app.
-         The runtime guard in NetworkConfig will log a warning if the
-         embedded hash becomes invalid (cert rotation), instead of
-         crashing all HTTPS traffic. -->
     <domain-config>
         <domain includeSubdomains="true">solian.app</domain>
         <pin-set>
+            <!-- solian.app (GTS) -->
             <pin digest="SHA-256">ldZj8XVxkaBt4jBzMPobxTovjj5PFLIkBxjl4mGxyF8=</pin>
+            <!-- api.solian.app (Let's Encrypt) -->
+            <pin digest="SHA-256">FCfjouup09On+facLQ3EB57P+RN7EM9VKTcDteEBt4E=</pin>
         </pin-set>
     </domain-config>
 

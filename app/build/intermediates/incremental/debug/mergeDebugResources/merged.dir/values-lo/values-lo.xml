@@ -23,6 +23,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"ກຳລັງກວດສອບສາຍໂທເຂົ້າ"</string>
     <string msgid="406453423630273620" name="close_drawer">"ປິດ​ເມ​ນູການ​ນຳ​ທາງ"</string>
     <string msgid="7573152094250666567" name="close_sheet">"ປິດຊີດ"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"ບໍ່ສຳເລັດ"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"ເປີດຢູ່ໂທລະສັບຂອງທ່ານແລ້ວ"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"ສໍາເລັດແລ້ວ"</string>
     <string msgid="8038256446254964252" name="default_error_message">"ຂໍ້ມູນທີ່ປ້ອນເຂົ້າບໍ່ຖືກຕ້ອງ"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"ໜ້າຈໍປັອບອັບ"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"ເມນູແບບເລື່ອນລົງ"</string>
@@ -128,4 +131,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"ນາທີ"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"ໄລຍະເວລາ"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"ວິນາທີ"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"ແຖບຄຳສັ່ງ"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"ແຖບການນຳທາງ"</string>
 </resources>

@@ -2,6 +2,7 @@ package dev.solsynth.solian.data.api
 
 import dev.solsynth.solian.data.NetworkConfig
 import dev.solsynth.solian.data.TokenStore
+import dev.solsynth.solian.data.model.SnAttachment
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -18,13 +19,13 @@ import kotlinx.coroutines.withTimeout
 
 object ApiClient {
 
-    var api: SolianApi = createApi()
+    private val refreshApi: SolianApi by lazy { createApi(withAuth = false) }
+
+    var api: SolianApi = createApi(withAuth = true)
         private set
 
-    private val refreshApi: SolianApi by lazy { createApi() }
-
     fun recreate() {
-        api = createApi()
+        api = createApi(withAuth = true)
     }
 
     /**
@@ -34,30 +35,34 @@ object ApiClient {
      * but without the auth interceptor (authentication is handled per-connection).
      */
     val httpClient: OkHttpClient = OkHttpClient.Builder()
-        .protocols(listOf(Protocol.HTTP_1_1))
-        .certificatePinner(NetworkConfig.getCertificatePinner())
+        // .certificatePinner(NetworkConfig.getCertificatePinner())
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
 
-    private fun createApi(): SolianApi {
-        return build().create(SolianApi::class.java)
+    private fun createApi(withAuth: Boolean): SolianApi {
+        return build(withAuth).create(SolianApi::class.java)
     }
 
-    private fun build(): Retrofit {
+    private fun build(withAuth: Boolean): Retrofit {
         val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.HEADERS
+            level = HttpLoggingInterceptor.Level.BODY
         }
 
         val client = OkHttpClient.Builder()
             .protocols(listOf(Protocol.HTTP_1_1))
+            .protocols(listOf(Protocol.HTTP_1_1))
             .followRedirects(true)
             .followSslRedirects(true)
-            .retryOnConnectionFailure(false)
-            .certificatePinner(NetworkConfig.getCertificatePinner())
+            .retryOnConnectionFailure(true)
+            // .certificatePinner(NetworkConfig.getCertificatePinner())
             .addInterceptor(logging)
-            .addInterceptor(AuthInterceptor(TokenStore, refreshApi))
+            .apply {
+                if (withAuth) {
+                    addInterceptor(AuthInterceptor(TokenStore, refreshApi))
+                }
+            }
             .addInterceptor { chain ->
                 val original = chain.request()
                 val request = if (TokenStore.isLoggedIn) {
@@ -65,15 +70,7 @@ object ApiClient {
                         .header("Authorization", "Bearer ${TokenStore.token}")
                         .build()
                 } else original
-                val method = request.method
-                if (method !in listOf("GET", "HEAD", "OPTIONS")) {
-                    chain.proceed(request)
-                } else {
-                    val newRequest = request.newBuilder()
-                        .header("Connection", "close")
-                        .build()
-                    chain.proceed(newRequest)
-                }
+                chain.proceed(request)
             }
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
@@ -160,4 +157,25 @@ object ApiClient {
 
     private fun String.ensureTrailingSlash() =
         if (endsWith("/")) this else "$this/"
+
+    fun resolveUrl(url: String?, attachment: SnAttachment? = null): String? {
+        val targetUrl = url ?: attachment?.url ?: attachment?.previewUrl
+        if (targetUrl.isNullOrBlank()) {
+            attachment?.id?.let { id ->
+                val rawBase = TokenStore.serverUrl.removeSuffix("/")
+                return "$rawBase/drive/files/$id"
+            }
+            return null
+        }
+        
+        if (targetUrl.startsWith("http")) return targetUrl
+        val rawBase = TokenStore.serverUrl.removeSuffix("/")
+        
+        // If it looks like a ULID/ID (26 chars, or no extension and no path)
+        if (!targetUrl.contains("/") && !targetUrl.contains(".")) {
+            return "$rawBase/drive/files/$targetUrl"
+        }
+        
+        return if (targetUrl.startsWith("/")) "$rawBase$targetUrl" else "$rawBase/$targetUrl"
+    }
 }

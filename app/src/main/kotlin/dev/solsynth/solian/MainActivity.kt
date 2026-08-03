@@ -25,7 +25,6 @@ class MainActivity : ComponentActivity(), LifecycleEventObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        TokenStore.init(applicationContext)
         ThemeStore.init(applicationContext)
         ThemeStateManager.init(applicationContext)
 

@@ -35,6 +35,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"يتم فحص المكالمة الواردة"</string>
     <string msgid="406453423630273620" name="close_drawer">"إغلاق قائمة التنقل"</string>
     <string msgid="7573152094250666567" name="close_sheet">"إغلاق الورقة"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"تعذَّر إتمام العملية."</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"تم الفتح على هاتفك."</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"تم تنفيذ الإجراء بنجاح."</string>
     <string msgid="8038256446254964252" name="default_error_message">"إدخال غير صالح"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"نافذة منبثقة"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"قائمة منسدلة"</string>
@@ -140,4 +143,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"دقيقة"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"فترة"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"ثانية"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"دُرج الإجراءات"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"لائحة التنقل"</string>
 </resources>

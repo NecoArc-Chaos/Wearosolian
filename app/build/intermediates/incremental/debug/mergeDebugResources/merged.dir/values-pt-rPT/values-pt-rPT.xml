@@ -26,6 +26,9 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"A filtrar uma chamada recebida…"</string>
     <string msgid="406453423630273620" name="close_drawer">"Fechar menu de navegação"</string>
     <string msgid="7573152094250666567" name="close_sheet">"Fechar folha"</string>
+    <string msgid="6412144553299494336" name="confirmation_overlay_a11y_description_fail">"Falha"</string>
+    <string msgid="8809042819843332546" name="confirmation_overlay_a11y_description_phone">"Aberto no seu telemóvel"</string>
+    <string msgid="2936753235333429892" name="confirmation_overlay_a11y_description_success">"Êxito"</string>
     <string msgid="8038256446254964252" name="default_error_message">"Entrada inválida"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"Janela pop-up"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"Menu pendente"</string>
@@ -131,4 +134,6 @@
     <string msgid="2847700380677127030" name="wear_m3c_time_picker_minute">"Minuto"</string>
     <string msgid="5567285614451063120" name="wear_m3c_time_picker_period">"Período"</string>
     <string msgid="5551916170669814925" name="wear_m3c_time_picker_second">"Segundo"</string>
+    <string msgid="8863821639144537553" name="ws_action_drawer_content_description">"Gaveta de ações"</string>
+    <string msgid="777117228299084604" name="ws_navigation_drawer_content_description">"Gaveta de navegação"</string>
 </resources>
