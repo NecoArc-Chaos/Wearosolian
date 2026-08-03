@@ -8,11 +8,11 @@ import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.ChatSummaryEntry
 import dev.solsynth.solian.data.model.ChatSyncRequest
-import dev.solsynth.solian.data.model.RoomMessageSyncResponse
-import dev.solsynth.solian.data.model.RoomSyncResponse
+import dev.solsynth.solian.data.model.SendMessageRequest
 import dev.solsynth.solian.data.model.SnChatMessage
 import dev.solsynth.solian.data.ws.ChatWsEvent
 import dev.solsynth.solian.data.ws.ChatWebSocketClient
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -31,6 +31,21 @@ class ChatViewModel : ViewModel() {
 
     private val _wsConnected = MutableStateFlow(false)
     val wsConnected: StateFlow<Boolean> = _wsConnected
+
+    private val _selectedRoom = MutableStateFlow<ChatSummaryEntry?>(null)
+    val selectedRoom: StateFlow<ChatSummaryEntry?> = _selectedRoom
+
+    private val _messages = MutableStateFlow<List<SnChatMessage>>(emptyList())
+    val messages: StateFlow<List<SnChatMessage>> = _messages
+
+    private val _isRoomLoading = MutableStateFlow(false)
+    val isRoomLoading: StateFlow<Boolean> = _isRoomLoading
+
+    private val _roomError = MutableStateFlow<String?>(null)
+    val roomError: StateFlow<String?> = _roomError
+
+    private val _typingRooms = MutableStateFlow<Set<String>>(emptySet())
+    val typingRooms: StateFlow<Set<String>> = _typingRooms
 
     private var wsClient: ChatWebSocketClient? = null
     private var lastSyncTimestamp = 0L
@@ -64,6 +79,41 @@ class ChatViewModel : ViewModel() {
                 _error.value = e.message
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    fun openRoom(entry: ChatSummaryEntry) {
+        val roomId = entry.room?.id ?: return
+        _selectedRoom.value = entry
+        _roomError.value = null
+        viewModelScope.launch {
+            _isRoomLoading.value = true
+            try {
+                val history = ApiClient.api.getMessages(roomId, take = 50)
+                _messages.value = history
+            } catch (e: Exception) {
+                _roomError.value = e.message
+            } finally {
+                _isRoomLoading.value = false
+            }
+        }
+    }
+
+    fun closeRoom() {
+        _selectedRoom.value = null
+        _messages.value = emptyList()
+        _roomError.value = null
+    }
+
+    fun sendText(text: String) {
+        val roomId = _selectedRoom.value?.room?.id ?: return
+        viewModelScope.launch {
+            try {
+                val sent = ApiClient.api.sendMessage(roomId, SendMessageRequest(content = text))
+                upsertMessage(sent)
+            } catch (e: Exception) {
+                _roomError.value = e.message
             }
         }
     }
@@ -143,12 +193,34 @@ class ChatViewModel : ViewModel() {
                 _rooms.value = current
             }
         }
+        if (roomId == _selectedRoom.value?.room?.id) {
+            upsertMessage(message)
+        }
+    }
+
+    private fun upsertMessage(message: SnChatMessage) {
+        val current = _messages.value
+        if (current.any { it.id == message.id }) {
+            _messages.value = current.map { if (it.id == message.id) message else it }
+        } else {
+            _messages.value = current + message
+        }
     }
 
     private fun handleUpdateMessage(event: ChatWsEvent.UpdateMessage) {
+        val roomId = event.roomId
+        if (roomId != null && roomId == _selectedRoom.value?.room?.id) {
+            _messages.value = _messages.value.map { message ->
+                if (message.id == event.messageId) {
+                    message.copy(content = event.content ?: message.content)
+                } else {
+                    message
+                }
+            }
+        }
         val current = _rooms.value.toMutableList()
         val roomIndex = current.indexOfFirst { entry ->
-            entry.room?.id == event.roomId
+            entry.room?.id == roomId
         }
         if (roomIndex >= 0) {
             val entry = current[roomIndex]
@@ -163,9 +235,13 @@ class ChatViewModel : ViewModel() {
     }
 
     private fun handleDeleteMessage(event: ChatWsEvent.DeleteMessage) {
+        val roomId = event.roomId
+        if (roomId != null && roomId == _selectedRoom.value?.room?.id) {
+            _messages.value = _messages.value.filterNot { it.id == event.messageId }
+        }
         val current = _rooms.value.toMutableList()
         val roomIndex = current.indexOfFirst { entry ->
-            entry.room?.id == event.roomId
+            entry.room?.id == roomId
         }
         if (roomIndex >= 0) {
             val entry = current[roomIndex]
@@ -189,11 +265,17 @@ class ChatViewModel : ViewModel() {
                 _rooms.value = current
             }
         }
+        if (roomId == _selectedRoom.value?.room?.id) {
+            upsertMessage(message)
+        }
     }
 
     private fun handleTyping(event: ChatWsEvent.Typing) {
-        // TODO: Show typing indicator in UI when ChatScreen supports it
-        Log.d("ChatViewModel", "Typing in room ${event.roomId}: ${event.type}")
+        _typingRooms.value = _typingRooms.value + event.roomId
+        viewModelScope.launch {
+            delay(3_000)
+            _typingRooms.value = _typingRooms.value - event.roomId
+        }
     }
 
     private fun handleReactionUpdated(event: ChatWsEvent.ReactionUpdated) {
@@ -207,7 +289,16 @@ class ChatViewModel : ViewModel() {
                     )
                 )
                 _rooms.value = current
-                return
+                break
+            }
+        }
+        if (_messages.value.any { it.id == event.messageId }) {
+            _messages.value = _messages.value.map { message ->
+                if (message.id == event.messageId) {
+                    message.copy(reactions_count = event.reactionsCount)
+                } else {
+                    message
+                }
             }
         }
     }

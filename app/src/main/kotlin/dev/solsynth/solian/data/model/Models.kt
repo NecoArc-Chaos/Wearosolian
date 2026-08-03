@@ -236,6 +236,7 @@ data class SnChatMessage(
     @SerializedName("chat_room_id") val chatRoomId: String?,
     val sender: SnChatMember?,
     @SerializedName("room_sequence") val roomSequence: Long?,
+    @SerializedName("created_at") val createdAt: String? = null,
     val reactions_count: Map<String, Int>? = null,
     val reactions_made: Map<String, String>? = null,
     @SerializedName("ciphertext") val ciphertext: String? = null,

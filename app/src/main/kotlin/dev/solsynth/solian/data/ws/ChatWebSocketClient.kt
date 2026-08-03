@@ -64,16 +64,16 @@ class ChatWebSocketClient(
             .build()
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
-            override fun onOpen(ws: WebSocket, response: Response) {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
                 isConnected = true
                 _statusFlow.value = true
                 onStatusChanged(true)
                 Log.d(TAG, "WebSocket connected: $wsUrl")
-                startHeartbeat(ws)
+                startHeartbeat(webSocket)
                 onReconnected()
             }
 
-            override fun onMessage(ws: WebSocket, text: String) {
+            override fun onMessage(webSocket: WebSocket, text: String) {
                 try {
                     val json = JSONObject(text)
                     val type = json.optString("type")
@@ -138,18 +138,19 @@ class ChatWebSocketClient(
                 return try {
                     SnChatMessage(
                         id = data?.optString("id") ?: return null,
-                        content = data.optString("content", null),
-                        type = data.optString("type", null),
-                        senderId = data.optString("sender_id", null),
-                        chatRoomId = data.optString("chat_room_id", null),
+                        content = if (data.has("content")) data.optString("content") else null,
+                        type = if (data.has("type")) data.optString("type") else null,
+                        senderId = if (data.has("sender_id")) data.optString("sender_id") else null,
+                        chatRoomId = if (data.has("chat_room_id")) data.optString("chat_room_id") else null,
                         sender = data.optJSONObject("sender")?.let { senderJson ->
                             SnChatMember(
                                 id = senderJson.optString("id"),
-                                name = senderJson.optString("name", null),
-                                nick = senderJson.optString("nick", null),
+                                name = if (senderJson.has("name")) senderJson.optString("name") else null,
+                                nick = if (senderJson.has("nick")) senderJson.optString("nick") else null,
                             )
                         },
                         roomSequence = data.optLong("room_sequence").takeIf { it > 0 },
+                        createdAt = if (data.has("created_at")) data.optString("created_at") else null,
                         reactions_count = parseReactionsCount(data.optJSONObject("reactions_count")),
                         reactions_made = parseReactionsMade(data.optJSONObject("reactions_made")),
                     )
@@ -181,25 +182,25 @@ class ChatWebSocketClient(
                 return result.ifEmpty { null }
             }
 
-            override fun onMessage(ws: WebSocket, bytes: ByteString) {
-                onMessage(ws, bytes.utf8())
+            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+                onMessage(webSocket, bytes.utf8())
             }
 
-            override fun onClosing(ws: WebSocket, code: Int, reason: String) {
+            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
                 isConnected = false
                 _statusFlow.value = false
                 onStatusChanged(false)
                 Log.d(TAG, "Closing: $code $reason")
             }
 
-            override fun onClosed(ws: WebSocket, code: Int, reason: String) {
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 isConnected = false
                 _statusFlow.value = false
                 onStatusChanged(false)
                 Log.d(TAG, "Closed: $code $reason")
             }
 
-            override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 isConnected = false
                 _statusFlow.value = false
                 onStatusChanged(false)

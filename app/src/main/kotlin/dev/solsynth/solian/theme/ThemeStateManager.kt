@@ -29,10 +29,12 @@ object ThemeStateManager {
         ThemeStore.init(context)
 
         componentCallbacks = object : ComponentCallbacks {
+            @Suppress("OVERRIDE_DEPRECATION")
             override fun onConfigurationChanged(newConfig: Configuration) {
                 handleConfigurationChanged(newConfig)
             }
 
+            @Suppress("OVERRIDE_DEPRECATION")
             override fun onLowMemory() {}
         }
 
@@ -82,8 +84,10 @@ object ThemeStateManager {
         ThemeStore.isDynamicColorAvailable = isAvailable
 
         if (isEnabled) {
-            val dynamicScheme = extractor.extract(context, isDark = true)
-            updateDynamic(dynamicScheme)
+            val isDark = _state.value.isDark
+            val dynamicScheme = extractor.extract(context, isDark = isDark)
+            val adapted = dynamicScheme?.let { MonetThemeAdapter.adaptDynamicScheme(it, isDark) }
+            updateDynamic(adapted)
             ThemeStore.isDynamicColorEnabled = true
         } else {
             updateDynamic(null)

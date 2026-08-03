@@ -10,30 +10,33 @@ object MonetThemeAdapter {
     private const val MIN_CONTRAST_RATIO = 4.5f
 
     fun adaptDynamicScheme(dynamicScheme: ColorScheme, isDark: Boolean): ColorScheme {
+        val background = if (isDark) OledBlack else Color.White
+        val contentHigh = if (isDark) OnSurfaceHigh else OledBlack
+        val contentMedium = if (isDark) OnSurfaceMedium else Color(0xFF555555)
         return ColorScheme(
             primary = dynamicScheme.primary,
-            onPrimary = ensureContrast(dynamicScheme.primary, OledBlack, MIN_CONTRAST_RATIO),
+            onPrimary = ensureContrast(dynamicScheme.primary, background, MIN_CONTRAST_RATIO),
             primaryDim = dynamicScheme.primaryDim,
             primaryContainer = dynamicScheme.primaryContainer,
-            onPrimaryContainer = ensureContrast(dynamicScheme.primaryContainer, OledBlack, MIN_CONTRAST_RATIO),
+            onPrimaryContainer = ensureContrast(dynamicScheme.primaryContainer, background, MIN_CONTRAST_RATIO),
             secondary = dynamicScheme.secondary,
             secondaryDim = dynamicScheme.secondaryDim,
-            onSecondary = ensureContrast(dynamicScheme.secondary, OledBlack, MIN_CONTRAST_RATIO),
+            onSecondary = ensureContrast(dynamicScheme.secondary, background, MIN_CONTRAST_RATIO),
             secondaryContainer = dynamicScheme.secondaryContainer,
-            onSecondaryContainer = ensureContrast(dynamicScheme.secondaryContainer, OledBlack, MIN_CONTRAST_RATIO),
+            onSecondaryContainer = ensureContrast(dynamicScheme.secondaryContainer, background, MIN_CONTRAST_RATIO),
             tertiary = dynamicScheme.tertiary,
             tertiaryDim = dynamicScheme.tertiaryDim,
-            onTertiary = ensureContrast(dynamicScheme.tertiary, OledBlack, MIN_CONTRAST_RATIO),
-            onTertiaryContainer = ensureContrast(dynamicScheme.tertiaryContainer, OledBlack, MIN_CONTRAST_RATIO),
-            background = OledBlack,
-            onBackground = OnSurfaceHigh,
-            onSurface = OnSurfaceHigh,
-            onSurfaceVariant = OnSurfaceMedium,
-            surfaceContainerLow = OledSurface,
-            surfaceContainer = OledSurface,
-            surfaceContainerHigh = OledSurfaceVariant,
+            onTertiary = ensureContrast(dynamicScheme.tertiary, background, MIN_CONTRAST_RATIO),
+            onTertiaryContainer = ensureContrast(dynamicScheme.tertiaryContainer, background, MIN_CONTRAST_RATIO),
+            background = background,
+            onBackground = contentHigh,
+            onSurface = contentHigh,
+            onSurfaceVariant = contentMedium,
+            surfaceContainerLow = if (isDark) OledSurface else Color(0xFFF7F7F7),
+            surfaceContainer = if (isDark) OledSurfaceVariant else Color(0xFFEFEFEF),
+            surfaceContainerHigh = if (isDark) OledSurfaceVariant else Color(0xFFE4E4E4),
             error = ErrorRed,
-            onError = OledBlack,
+            onError = if (isDark) OledBlack else Color.White,
         )
     }
 

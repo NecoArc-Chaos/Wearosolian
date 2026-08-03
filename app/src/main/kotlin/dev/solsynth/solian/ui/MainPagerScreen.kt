@@ -18,6 +18,7 @@ import dev.solsynth.solian.ui.compose.ComposeScreen
 import dev.solsynth.solian.ui.explore.ExploreScreen
 import dev.solsynth.solian.ui.home.HomeScreen
 import dev.solsynth.solian.ui.login.LoginScreen
+import dev.solsynth.solian.ui.scaffold.WearAppScaffold
 
 @Composable
 fun MainPagerScreen(
@@ -27,9 +28,7 @@ fun MainPagerScreen(
     var isLoggedIn by remember { mutableStateOf(TokenStore.isLoggedIn) }
 
     // Standard M3 Wear layout with AppScaffold at the very top.
-    AppScaffold(
-        timeText = { TimeText() }
-    ) {
+    WearAppScaffold {
         Box(
             modifier = Modifier
                 .fillMaxSize()

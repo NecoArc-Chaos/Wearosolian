@@ -33,10 +33,12 @@ class MainActivity : ComponentActivity(), LifecycleEventObserver {
             callbacks = object : AmbientLifecycleObserver.AmbientLifecycleCallback {
                 override fun onEnterAmbient(ambientDetails: AmbientLifecycleObserver.AmbientDetails) {
                     isAmbient = true
+                    ThemeStateManager.updateAmbient(true)
                 }
 
                 override fun onExitAmbient() {
                     isAmbient = false
+                    ThemeStateManager.updateAmbient(false)
                 }
 
                 override fun onUpdateAmbient() {

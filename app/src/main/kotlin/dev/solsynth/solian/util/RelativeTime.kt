@@ -48,10 +48,10 @@ object RelativeTime {
                 Instant.parse(iso)
             } catch (e2: Exception) {
                 try {
-                    // Try simple date
-                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                        .withZone(ZoneId.of("UTC"))
-                    Instant.from(formatter.parse(dateStr))
+                    // Try simple date (e.g. "2026-08-02") as start of day UTC
+                    java.time.LocalDate.parse(dateStr)
+                        .atStartOfDay(ZoneId.of("UTC"))
+                        .toInstant()
                 } catch (e3: Exception) {
                     null
                 }

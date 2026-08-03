@@ -9,8 +9,11 @@ object DynamicColorProvider {
 
     @Suppress("DEPRECATION")
     internal fun mapWallpaperColorsToColorScheme(colors: WallpaperColors, isDark: Boolean): ColorScheme {
+        @Suppress("UNNECESSARY_SAFE_CALL")
         val primary = colors.primaryColor?.toComposeColor() ?: SolianViolet
+        @Suppress("UNNECESSARY_SAFE_CALL")
         val secondary = colors.secondaryColor?.toComposeColor() ?: SolianViolet
+        @Suppress("UNNECESSARY_SAFE_CALL")
         val tertiary = colors.tertiaryColor?.toComposeColor() ?: SolianVioletBright
 
         return buildColorScheme(primary, secondary, tertiary)

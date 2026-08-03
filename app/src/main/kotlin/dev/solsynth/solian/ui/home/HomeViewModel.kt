@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.solsynth.solian.data.api.ApiClient
 import dev.solsynth.solian.data.model.SnCheckInStatus
+import java.time.LocalDate
+import java.time.Month
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -14,6 +18,9 @@ class HomeViewModel : ViewModel() {
 
     private val _unreadCount = MutableStateFlow(0)
     val unreadCount: StateFlow<Int> = _unreadCount
+
+    private val _countdownDays = MutableStateFlow(calculateChristmasCountdown())
+    val countdownDays: StateFlow<Int> = _countdownDays
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -42,5 +49,18 @@ class HomeViewModel : ViewModel() {
                 _isLoading.value = false
             }
         }
+    }
+
+    fun refreshCountdown() {
+        _countdownDays.value = calculateChristmasCountdown()
+    }
+
+    private fun calculateChristmasCountdown(): Int {
+        val today = LocalDate.now(ZoneId.systemDefault())
+        var christmas = LocalDate.of(today.year, Month.DECEMBER, 25)
+        if (!christmas.isAfter(today)) {
+            christmas = christmas.plusYears(1)
+        }
+        return ChronoUnit.DAYS.between(today, christmas).toInt()
     }
 }

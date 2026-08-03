@@ -25,6 +25,7 @@ import dev.solsynth.solian.theme.rememberIsScreenRound
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import dev.solsynth.solian.ui.scaffold.WearScreen
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @Composable
 fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
     var qrData by remember { mutableStateOf<String?>(null) }

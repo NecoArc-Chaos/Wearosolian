@@ -18,6 +18,7 @@ import dev.solsynth.solian.ui.scaffold.WearScreen
 fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val checkInStatus by viewModel.checkInStatus.collectAsState()
     val unreadCount by viewModel.unreadCount.collectAsState()
+    val countdownDays by viewModel.countdownDays.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
     WearScreen { spec ->
@@ -52,7 +53,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
 
         item {
             TitleCard(
-                onClick = {},
+                onClick = { viewModel.refreshCountdown() },
                 title = {
                     Text(
                         text = stringResource(R.string.home_countdown_title),
@@ -69,7 +70,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Text(
-                        text = stringResource(R.string.home_countdown_days),
+                        text = stringResource(R.string.home_countdown_days, countdownDays),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.secondary,
                     )

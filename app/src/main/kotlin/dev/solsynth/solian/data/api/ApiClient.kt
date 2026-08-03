@@ -35,7 +35,7 @@ object ApiClient {
      * but without the auth interceptor (authentication is handled per-connection).
      */
     val httpClient: OkHttpClient = OkHttpClient.Builder()
-        // .certificatePinner(NetworkConfig.getCertificatePinner())
+        .certificatePinner(NetworkConfig.getCertificatePinner())
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
@@ -52,11 +52,10 @@ object ApiClient {
 
         val client = OkHttpClient.Builder()
             .protocols(listOf(Protocol.HTTP_1_1))
-            .protocols(listOf(Protocol.HTTP_1_1))
             .followRedirects(true)
             .followSslRedirects(true)
             .retryOnConnectionFailure(true)
-            // .certificatePinner(NetworkConfig.getCertificatePinner())
+            .certificatePinner(NetworkConfig.getCertificatePinner())
             .addInterceptor(logging)
             .apply {
                 if (withAuth) {
