@@ -19,6 +19,8 @@ import kotlinx.coroutines.withTimeout
 
 object ApiClient {
 
+    private const val MLS_CLIENT_ABILITY = "chat.mls.v2"
+
     private val refreshApi: SolianApi by lazy { createApi(withAuth = false) }
 
     var api: SolianApi = createApi(withAuth = true)
@@ -64,12 +66,12 @@ object ApiClient {
             }
             .addInterceptor { chain ->
                 val original = chain.request()
-                val request = if (TokenStore.isLoggedIn) {
-                    original.newBuilder()
-                        .header("Authorization", "Bearer ${TokenStore.token}")
-                        .build()
-                } else original
-                chain.proceed(request)
+                val builder = original.newBuilder()
+                    .header("X-Client-Ability", MLS_CLIENT_ABILITY)
+                if (TokenStore.isLoggedIn) {
+                    builder.header("Authorization", "Bearer ${TokenStore.token}")
+                }
+                chain.proceed(builder.build())
             }
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)

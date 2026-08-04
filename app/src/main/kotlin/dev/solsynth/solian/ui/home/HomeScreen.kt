@@ -16,7 +16,7 @@ import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
-    val checkInStatus by viewModel.checkInStatus.collectAsState()
+    val checkInResult by viewModel.checkInResult.collectAsState()
     val unreadCount by viewModel.unreadCount.collectAsState()
     val countdownDays by viewModel.countdownDays.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -35,15 +35,19 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth(0.9f).transformedHeight(this, spec),
                 transformation = SurfaceTransformation(spec)
             ) {
-                if (isLoading && checkInStatus == null) {
+                if (isLoading && checkInResult == null) {
                     CircularProgressIndicator(modifier = Modifier.size(ButtonDefaults.ExtraSmallIconSize))
                 } else {
                     Text(
-                        text = checkInStatus?.fortune ?: stringResource(R.string.home_checkin_fortune),
+                        text = checkInResult?.fortuneReport?.poem
+                            ?.takeIf { it.isNotBlank() }
+                            ?: stringResource(R.string.home_checkin_fortune),
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Text(
-                        text = checkInStatus?.advice ?: stringResource(R.string.home_checkin_advice),
+                        text = checkInResult?.fortuneReport?.summary
+                            ?.takeIf { it.isNotBlank() }
+                            ?: stringResource(R.string.home_checkin_advice),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

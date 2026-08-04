@@ -10,10 +10,10 @@ object AuthConstants {
     const val NAMESPACE = "dev.solsynth.solian"
     const val DEFAULT_DEVICE_ID = "wearos-client"
     const val DEFAULT_DEVICE_NAME = "Wear OS"
-    const val STATUS_TYPE_DEFAULT = "Default"
-    const val STATUS_TYPE_INVISIBLE = "Invisible"
-    const val STATUS_ATTITUDE_NEUTRAL = "Neutral"
-    const val STATUS_ATTITUDE_BUSY = "Busy"
+    const val STATUS_TYPE_NORMAL = 0
+    const val STATUS_TYPE_BUSY = 1
+    const val STATUS_TYPE_DND = 2
+    const val STATUS_TYPE_INVISIBLE = 3
 }
 
 data class ChallengeRequest(
@@ -134,18 +134,18 @@ data class SnProfile(
 
 data class SnAccountStatus(
     val id: String,
-    val type: String?,
-    val attitude: String?,
-    val label: String?,
-    val symbol: String?,
-    @SerializedName("is_online") val isOnline: Boolean?,
+    val type: Int = AuthConstants.STATUS_TYPE_NORMAL,
+    val label: String? = null,
+    val icon: String? = null,
+    @SerializedName("clear_after") val clearAfter: String? = null,
+    @SerializedName("is_online") val isOnline: Boolean? = null,
 )
 
 data class AccountStatusRequest(
-    val type: String? = AuthConstants.STATUS_TYPE_DEFAULT,
-    val attitude: String? = AuthConstants.STATUS_ATTITUDE_NEUTRAL,
+    val type: Int? = AuthConstants.STATUS_TYPE_NORMAL,
     val label: String? = null,
-    val symbol: String? = null,
+    val icon: String? = null,
+    @SerializedName("clear_after") val clearAfter: String? = null,
 )
 
 // ── Post ──
@@ -188,10 +188,42 @@ data class SnAttachment(
     @SerializedName("preview_url") val previewUrl: String?,
 )
 
-data class SnCheckInStatus(
-    val fortune: String?,
-    val advice: String?,
-    @SerializedName("checked_in") val checkedIn: Boolean = false,
+data class SnFortuneTip(
+    @SerializedName("is_positive") val isPositive: Boolean,
+    val title: String,
+    val content: String,
+)
+
+data class SnCheckInFortuneReport(
+    val version: Int = 1,
+    val poem: String = "",
+    val summary: String = "",
+    @SerializedName("summary_detail") val summaryDetail: String? = null,
+    val wish: String = "",
+    val love: String = "",
+    val study: String = "",
+    val career: String = "",
+    val health: String = "",
+    @SerializedName("lost_item") val lostItem: String = "",
+    @SerializedName("lucky_color") val luckyColor: String = "",
+    @SerializedName("lucky_direction") val luckyDirection: String = "",
+    @SerializedName("lucky_time") val luckyTime: String = "",
+    @SerializedName("lucky_item") val luckyItem: String = "",
+    @SerializedName("lucky_action") val luckyAction: String = "",
+    @SerializedName("avoid_action") val avoidAction: String = "",
+    val ritual: String = "",
+)
+
+data class SnCheckInResult(
+    val id: String,
+    val level: Int = 0,
+    val tips: List<SnFortuneTip> = emptyList(),
+    @SerializedName("fortune_report") val fortuneReport: SnCheckInFortuneReport? = null,
+    @SerializedName("account_id") val accountId: String? = null,
+    val account: SnAccount? = null,
+    @SerializedName("created_at") val createdAt: String? = null,
+    @SerializedName("updated_at") val updatedAt: String? = null,
+    @SerializedName("deleted_at") val deletedAt: String? = null,
 )
 
 data class PostRequest(
@@ -238,16 +270,16 @@ data class SnChatMessage(
     @SerializedName("room_sequence") val roomSequence: Long?,
     @SerializedName("created_at") val createdAt: String? = null,
     val reactions_count: Map<String, Int>? = null,
-    val reactions_made: Map<String, String>? = null,
+    val reactions_made: Map<String, Boolean>? = null,
     @SerializedName("ciphertext") val ciphertext: String? = null,
     @SerializedName("encryption_epoch") val encryptionEpoch: Long? = null,
     @SerializedName("encryption_scheme") val encryptionScheme: String? = null,
 )
 
-/** Backend /api/chat/summary returns Map<roomId, {unread_count, last_message, room}> */
+/** Per-room summary inside the room list sync `summaries` map, keyed by room id. */
 data class ChatSummaryEntry(
     @SerializedName("unread_count") val unreadCount: Int = 0,
-    @SerializedName("last_message") val lastMessage: SnChatMessage?,
+    @SerializedName("last_message") val lastMessage: SnChatMessage? = null,
     val room: SnChatRoom? = null,
 )
 
@@ -276,10 +308,8 @@ data class RoomMessageSyncResponse(
 )
 
 data class SnChatSummary(
-    val changes: List<ChatSummaryEntry>?,
-    val summaries: Map<String, ChatSummaryEntry>?,
-    @SerializedName("current_timestamp") val currentTimestamp: Long?,
-    val total: Int?,
+    @SerializedName("unread_count") val unreadCount: Int = 0,
+    @SerializedName("last_message") val lastMessage: SnChatMessage? = null,
 )
 
 data class SnChatOnlineStatus(
@@ -327,6 +357,10 @@ data class SendMessageRequest(
 
 data class EditMessageRequest(
     val content: String,
+)
+
+data class MarkAsReadRequest(
+    @SerializedName("message_id") val messageId: String,
 )
 
 data class AddMemberRequest(

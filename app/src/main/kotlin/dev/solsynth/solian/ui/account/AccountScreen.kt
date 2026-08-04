@@ -49,9 +49,9 @@ fun AccountScreen(onLogout: () -> Unit) {
             try {
                 val status = ApiClient.api.getMyStatus()
                 presence = status.type != AuthConstants.STATUS_TYPE_INVISIBLE
-                isBusyStatus = status.attitude == AuthConstants.STATUS_ATTITUDE_BUSY
-                if (!status.symbol.isNullOrBlank()) {
-                    statusSymbol.value = status.symbol
+                isBusyStatus = status.type == AuthConstants.STATUS_TYPE_BUSY
+                if (!status.icon.isNullOrBlank()) {
+                    statusSymbol.value = status.icon
                 }
             } catch (_: Exception) { }
         }
@@ -105,12 +105,11 @@ fun AccountScreen(onLogout: () -> Unit) {
                             try {
                                 val updated = ApiClient.api.updateStatus(
                                     AccountStatusRequest(
-                                        type = if (nextPresence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STATUS_TYPE_INVISIBLE,
-                                        attitude = if (isBusyStatus) AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
+                                        type = if (nextPresence) AuthConstants.STATUS_TYPE_NORMAL else AuthConstants.STATUS_TYPE_INVISIBLE,
                                     )
                                 )
                                 presence = updated.type != AuthConstants.STATUS_TYPE_INVISIBLE
-                                if (updated.symbol != null) statusSymbol.value = updated.symbol
+                                if (!updated.icon.isNullOrBlank()) statusSymbol.value = updated.icon
                             } catch (_: Exception) { }
                             isLoading = false
                         }
@@ -133,13 +132,16 @@ fun AccountScreen(onLogout: () -> Unit) {
                             try {
                                 val updated = ApiClient.api.updateStatus(
                                     AccountStatusRequest(
-                                        type = if (presence) AuthConstants.STATUS_TYPE_DEFAULT else AuthConstants.STATUS_TYPE_INVISIBLE,
-                                        attitude = if (nextBusy) AuthConstants.STATUS_ATTITUDE_BUSY else AuthConstants.STATUS_ATTITUDE_NEUTRAL,
-                                        label = if (nextBusy) AuthConstants.STATUS_ATTITUDE_BUSY else null,
+                                        type = if (nextBusy) {
+                                            AuthConstants.STATUS_TYPE_BUSY
+                                        } else {
+                                            if (presence) AuthConstants.STATUS_TYPE_NORMAL else AuthConstants.STATUS_TYPE_INVISIBLE
+                                        },
+                                        label = if (nextBusy) "Busy" else null,
                                     )
                                 )
-                                isBusyStatus = updated.attitude == AuthConstants.STATUS_ATTITUDE_BUSY
-                                if (updated.symbol != null) statusSymbol.value = updated.symbol
+                                isBusyStatus = updated.type == AuthConstants.STATUS_TYPE_BUSY
+                                if (!updated.icon.isNullOrBlank()) statusSymbol.value = updated.icon
                             } catch (_: Exception) { }
                             isLoading = false
                         }

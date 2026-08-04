@@ -72,9 +72,13 @@ class ChatViewModel : ViewModel() {
     fun loadRooms() {
         viewModelScope.launch {
             try {
-                val summaryMap = ApiClient.api.getChatSummary()
-                _rooms.value = summaryMap.values.toList()
-                lastSyncTimestamp = System.currentTimeMillis()
+                val rooms = ApiClient.api.getRooms(take = 50)
+                val sync = ApiClient.api.syncRooms(ChatSyncRequest(lastSyncTimestamp = 0))
+                val summaries = sync.summaries ?: emptyMap()
+                _rooms.value = rooms.map { room ->
+                    summaries[room.id]?.copy(room = room) ?: ChatSummaryEntry(room = room)
+                }
+                lastSyncTimestamp = sync.currentTimestamp ?: System.currentTimeMillis()
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {

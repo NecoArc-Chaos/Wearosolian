@@ -46,20 +46,18 @@ interface SolianApi {
 
     // ── Check-in ──
 
-    @GET("sphere/accounts/me/checkin")
-    suspend fun getCheckInStatus(): SnCheckInStatus
+    @GET("passport/accounts/me/check-in")
+    suspend fun getCheckInResult(@Query("version") version: Int = 2): retrofit2.Response<SnCheckInResult>
+
+    @POST("passport/accounts/me/check-in")
+    suspend fun checkIn(@Query("version") version: Int = 2): retrofit2.Response<Unit>
 
     // ── Timeline ──
 
-    @GET("sphere/posts")
+    @GET("sphere/timeline/home")
     suspend fun getTimeline(
         @Query("take") take: Int = 20,
         @Query("offset") offset: Int = 0,
-        @Query("include") include: String = "author,author.status,author.profile,author.profile.picture,publisher,publisher.picture,attachments,gallery,media,parent,reply_to,replied_post",
-        @Query("parent_id") parentId: String? = null,
-        @Query("reply_to_id") replyToId: String? = null,
-        @Query("replied_post_id") repliedPostId: String? = null,
-        @Query("root_id") rootId: String? = null,
     ): List<SnPost>
 
     // ── Post Creation ──
@@ -70,7 +68,7 @@ interface SolianApi {
     // ── Chat ──
 
     @GET("messager/chat/summary")
-    suspend fun getChatSummary(): Map<String, ChatSummaryEntry>
+    suspend fun getChatSummary(): SnChatSummary
 
     @POST("messager/chat/rooms/sync")
     suspend fun syncRooms(@Body request: ChatSyncRequest): RoomSyncResponse
@@ -87,6 +85,7 @@ interface SolianApi {
     @GET("messager/chat/{roomId}/messages")
     suspend fun getMessages(
         @Path("roomId") roomId: String,
+        @Query("offset") offset: Int = 0,
         @Query("take") take: Int = 20,
     ): List<SnChatMessage>
 
@@ -128,6 +127,12 @@ interface SolianApi {
     suspend fun deleteMessage(
         @Path("roomId") roomId: String,
         @Path("messageId") messageId: String,
+    )
+
+    @POST("messager/chat/rooms/{roomId}/read")
+    suspend fun markAsRead(
+        @Path("roomId") roomId: String,
+        @Body request: MarkAsReadRequest,
     )
 
     @GET("messager/chat/rooms/{roomId}/members")

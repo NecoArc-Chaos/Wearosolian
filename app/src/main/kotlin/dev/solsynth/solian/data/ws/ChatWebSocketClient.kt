@@ -118,7 +118,9 @@ class ChatWebSocketClient(
                         }
                         "messages.reaction.added",
                         "messages.reaction.removed" -> {
-                            val meta = data?.optJSONObject("meta")
+                            // Reaction packets carry meta either wrapped in `data` or at the
+                            // top level of the envelope (kb developer docs show the latter).
+                            val meta = data?.optJSONObject("meta") ?: json.optJSONObject("meta")
                             val messageId = meta?.optString("message_id")
                             val symbol = meta?.optString("symbol")
                             val reactionsCount = parseReactionsCount(meta?.optJSONObject("reactions_count"))
@@ -171,13 +173,13 @@ class ChatWebSocketClient(
                 return result.ifEmpty { null }
             }
 
-            private fun parseReactionsMade(json: JSONObject?): Map<String, String>? {
+            private fun parseReactionsMade(json: JSONObject?): Map<String, Boolean>? {
                 if (json == null) return null
-                val result = mutableMapOf<String, String>()
+                val result = mutableMapOf<String, Boolean>()
                 val keys = json.keys()
                 while (keys.hasNext()) {
                     val key = keys.next()
-                    result[key] = json.optString(key)
+                    result[key] = json.optBoolean(key, false)
                 }
                 return result.ifEmpty { null }
             }
@@ -268,6 +270,7 @@ class ChatWebSocketClient(
         if (!token.isNullOrBlank()) {
             header("Authorization", "Bearer $token")
         }
+        header("X-Client-Ability", MLS_CLIENT_ABILITY)
         return this
     }
 

@@ -145,7 +145,7 @@ private fun PostCard(
             .let { if (!isDetail) it.transformedHeight(itemScope, spec) else it },
         appName = {
             Text(
-                text = name + (author?.status?.symbol ?: ""),
+                text = name + (author?.status?.icon ?: ""),
                 style = MaterialTheme.typography.labelSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
