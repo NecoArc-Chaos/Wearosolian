@@ -3,12 +3,14 @@ package dev.solsynth.solian
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import dev.solsynth.solian.data.CrashReport
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.data.api.ApiClient
 
 class SolianApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
+        CrashReport.install(this)
         TokenStore.init(this)
     }
 
