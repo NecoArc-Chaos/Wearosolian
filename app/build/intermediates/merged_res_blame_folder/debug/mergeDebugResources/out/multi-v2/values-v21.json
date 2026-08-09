@@ -4,7 +4,7 @@
             "outputFile": "dev.solsynth.solian.app-mergeDebugResources-55:/values-v21/values-v21.xml",
             "map": [
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/6f7e84c4629f2eee6e474bafa869ab92/transformed/core-1.16.0/res/values-v21/values-v21.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/bfc49f184bbc41c8eff52e56c136bff1/transformed/core-1.16.0/res/values-v21/values-v21.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,13",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",

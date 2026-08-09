@@ -18,10 +18,12 @@ object CrashReport {
     private const val FILE_NAME = "crash.log"
 
     private var appContext: Context? = null
+    private var defaultHandler: Thread.UncaughtExceptionHandler? = null
 
     fun install(context: Context) {
         appContext = context.applicationContext
         if (Thread.getDefaultUncaughtExceptionHandler() === handler) return
+        defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler(handler)
     }
 
@@ -42,6 +44,9 @@ object CrashReport {
             }
         } catch (_: Exception) {
             // Never block crash reporting
+        } finally {
+            // Pass to default handler so app actually crashes/closes correctly
+            defaultHandler?.uncaughtException(thread, throwable)
         }
     }
 

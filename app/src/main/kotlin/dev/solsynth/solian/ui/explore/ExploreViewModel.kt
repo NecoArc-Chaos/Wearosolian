@@ -22,7 +22,7 @@ class ExploreViewModel : ViewModel() {
     val error: StateFlow<String?> = _error
 
     private var currentOffset = 0
-    private val pageSize = 20
+    private val pageSize = 10
 
     init {
         refresh()

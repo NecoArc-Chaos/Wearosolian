@@ -1,5 +1,6 @@
 package dev.solsynth.solian.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.solsynth.solian.data.api.ApiClient
@@ -38,11 +39,16 @@ class HomeViewModel : ViewModel() {
             _error.value = null
             try {
                 // Fetch today's check-in result (404 means not checked in yet)
+                Log.d("HomeVM", "Fetching check-in...")
                 val checkIn = ApiClient.api.getCheckInResult().body()
+                Log.d("HomeVM", "Check-in done: ${checkIn?.id}")
                 _checkInResult.value = checkIn
 
                 // Fetch chat summary to calculate total unread count
-                _unreadCount.value = ApiClient.api.getChatSummary().unreadCount
+                Log.d("HomeVM", "Fetching chat summary...")
+                val summary = ApiClient.api.getChatSummary()
+                Log.d("HomeVM", "Summary done: ${summary.unreadCount}")
+                _unreadCount.value = summary.unreadCount
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {

@@ -54,7 +54,7 @@ interface SolianApi {
 
     // ── Timeline ──
 
-    @GET("sphere/timeline/home")
+    @GET("sphere/posts")
     suspend fun getTimeline(
         @Query("take") take: Int = 20,
         @Query("offset") offset: Int = 0,
@@ -70,17 +70,8 @@ interface SolianApi {
     @GET("messager/chat/summary")
     suspend fun getChatSummary(): SnChatSummary
 
-    @POST("messager/chat/rooms/sync")
-    suspend fun syncRooms(@Body request: ChatSyncRequest): RoomSyncResponse
-
-    @POST("messager/chat/{roomId}/sync")
-    suspend fun syncRoom(
-        @Path("roomId") roomId: String,
-        @Body request: ChatSyncRequest,
-    ): RoomMessageSyncResponse
-
     @POST("messager/chat/sync")
-    suspend fun syncAll(@Body request: ChatSyncRequest): RoomMessageSyncResponse
+    suspend fun syncChat(@Body request: ChatSyncRequest): RoomSyncResponse
 
     @GET("messager/chat/{roomId}/messages")
     suspend fun getMessages(
@@ -89,7 +80,7 @@ interface SolianApi {
         @Query("take") take: Int = 20,
     ): List<SnChatMessage>
 
-    @GET("messager/chat/rooms")
+    @GET("messager/chat")
     suspend fun getRooms(
         @Query("offset") offset: Int = 0,
         @Query("take") take: Int = 20,

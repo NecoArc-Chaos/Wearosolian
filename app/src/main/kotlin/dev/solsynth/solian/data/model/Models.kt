@@ -10,10 +10,12 @@ object AuthConstants {
     const val NAMESPACE = "dev.solsynth.solian"
     const val DEFAULT_DEVICE_ID = "wearos-client"
     const val DEFAULT_DEVICE_NAME = "Wear OS"
-    const val STATUS_TYPE_NORMAL = 0
-    const val STATUS_TYPE_BUSY = 1
-    const val STATUS_TYPE_DND = 2
-    const val STATUS_TYPE_INVISIBLE = 3
+    const val STATUS_TYPE_NORMAL = "Normal"
+    const val STATUS_TYPE_BUSY = "Busy"
+    const val STATUS_TYPE_INVISIBLE = "Invisible"
+    const val STATUS_ATTITUDE_NEUTRAL = "Neutral"
+    const val STATUS_ATTITUDE_BUSY = "Busy"
+    const val MLS_CLIENT_ABILITY = "chat.mls.v2"
 }
 
 data class ChallengeRequest(
@@ -24,7 +26,7 @@ data class ChallengeRequest(
 )
 
 data class SnAuthChallenge(
-    val id: String,
+    val id: String?,
     @SerializedName("step_remain") val stepRemain: Int = 1,
     @SerializedName("approved_at") val approvedAt: String?,
     @SerializedName("expired_at") val expiredAt: String?,
@@ -51,7 +53,7 @@ data class SnAuthChallenge(
 )
 
 data class SnAuthFactor(
-    val id: String,
+    val id: String?,
     val type: Int,
     val name: String?,
     @SerializedName("enabled_at") val enabledAt: String?,
@@ -74,7 +76,7 @@ data class TokenExchangeRequest(
 )
 
 data class TokenExchangeResponse(
-    val token: String,
+    val token: String?,
     @SerializedName("refresh_token") val refreshToken: String?,
     @SerializedName("expires_in") val expiresIn: Long?,
     @SerializedName("refresh_expires_in") val refreshExpiresIn: Long?,
@@ -93,17 +95,17 @@ data class QrGenerateRequest(
 )
 
 data class QrGenerateResponse(
-    @SerializedName("qr_challenge_id") val qrChallengeId: String,
-    @SerializedName("auth_challenge_id") val authChallengeId: String,
-    @SerializedName("qr_data") val qrData: String,
+    @SerializedName("qr_challenge_id") val qrChallengeId: String?,
+    @SerializedName("auth_challenge_id") val authChallengeId: String?,
+    @SerializedName("qr_data") val qrData: String?,
     @SerializedName("expires_at") val expiresAt: String?,
     @SerializedName("expires_in_seconds") val expiresInSeconds: Int?,
 )
 
 data class QrStatusResponse(
-    @SerializedName("qr_challenge_id") val qrChallengeId: String,
-    @SerializedName("auth_challenge_id") val authChallengeId: String,
-    val status: String, // Pending, Scanned, Approved, Declined, Expired
+    @SerializedName("qr_challenge_id") val qrChallengeId: String?,
+    @SerializedName("auth_challenge_id") val authChallengeId: String?,
+    val status: String?, // Pending, Scanned, Approved, Declined, Expired
     @SerializedName("expires_at") val expiresAt: String?,
     @SerializedName("approved_at") val approvedAt: String?,
 )
@@ -125,35 +127,35 @@ data class SnAccount(
 )
 
 data class SnProfile(
-    val id: String,
-    @SerializedName("first_name") val firstName: String?,
-    @SerializedName("last_name") val lastName: String?,
-    val bio: String?,
+    val id: String?,
+    @SerializedName("first_name") val firstName: String? = null,
+    @SerializedName("last_name") val lastName: String? = null,
+    val bio: String? = null,
     @SerializedName("picture") val picture: SnAttachment? = null,
 )
 
 data class SnAccountStatus(
-    val id: String,
-    val type: Int = AuthConstants.STATUS_TYPE_NORMAL,
+    val id: String? = null,
+    val type: String? = null,
+    val attitude: String? = null,
     val label: String? = null,
     val icon: String? = null,
-    @SerializedName("clear_after") val clearAfter: String? = null,
     @SerializedName("is_online") val isOnline: Boolean? = null,
 )
 
 data class AccountStatusRequest(
-    val type: Int? = AuthConstants.STATUS_TYPE_NORMAL,
+    val type: String? = AuthConstants.STATUS_TYPE_NORMAL,
+    val attitude: String? = AuthConstants.STATUS_ATTITUDE_NEUTRAL,
     val label: String? = null,
     val icon: String? = null,
-    @SerializedName("clear_after") val clearAfter: String? = null,
 )
 
 // ── Post ──
 
 data class SnPost(
-    val id: String,
-    val title: String?,
-    val content: String?,
+    val id: String?,
+    val title: String? = null,
+    val content: String? = null,
     val description: String? = null,
     val type: Int? = 0,
     val visibility: Int? = 0,
@@ -181,43 +183,43 @@ data class SnPost(
 )
 
 data class SnAttachment(
-    val id: String,
+    val id: String?,
     val type: Int? = 0, // Image=0, Video=1, etc.
     @SerializedName("mime_type") val mimeType: String? = null,
-    @SerializedName("url") val url: String?,
-    @SerializedName("preview_url") val previewUrl: String?,
+    @SerializedName("url") val url: String? = null,
+    @SerializedName("preview_url") val previewUrl: String? = null,
 )
 
 data class SnFortuneTip(
-    @SerializedName("is_positive") val isPositive: Boolean,
-    val title: String,
-    val content: String,
+    @SerializedName("is_positive") val isPositive: Boolean = false,
+    val title: String? = null,
+    val content: String? = null,
 )
 
 data class SnCheckInFortuneReport(
-    val version: Int = 1,
-    val poem: String = "",
-    val summary: String = "",
+    val version: Int? = 1,
+    val poem: String? = "",
+    val summary: String? = "",
     @SerializedName("summary_detail") val summaryDetail: String? = null,
-    val wish: String = "",
-    val love: String = "",
-    val study: String = "",
-    val career: String = "",
-    val health: String = "",
-    @SerializedName("lost_item") val lostItem: String = "",
-    @SerializedName("lucky_color") val luckyColor: String = "",
-    @SerializedName("lucky_direction") val luckyDirection: String = "",
-    @SerializedName("lucky_time") val luckyTime: String = "",
-    @SerializedName("lucky_item") val luckyItem: String = "",
-    @SerializedName("lucky_action") val luckyAction: String = "",
-    @SerializedName("avoid_action") val avoidAction: String = "",
-    val ritual: String = "",
+    val wish: String? = "",
+    val love: String? = "",
+    val study: String? = "",
+    val career: String? = "",
+    val health: String? = "",
+    @SerializedName("lost_item") val lostItem: String? = "",
+    @SerializedName("lucky_color") val luckyColor: String? = "",
+    @SerializedName("lucky_direction") val luckyDirection: String? = "",
+    @SerializedName("lucky_time") val luckyTime: String? = "",
+    @SerializedName("lucky_item") val luckyItem: String? = "",
+    @SerializedName("lucky_action") val luckyAction: String? = "",
+    @SerializedName("avoid_action") val avoidAction: String? = "",
+    val ritual: String? = "",
 )
 
 data class SnCheckInResult(
-    val id: String,
-    val level: Int = 0,
-    val tips: List<SnFortuneTip> = emptyList(),
+    val id: String?,
+    val level: Int? = 0,
+    val tips: List<SnFortuneTip>? = emptyList(),
     @SerializedName("fortune_report") val fortuneReport: SnCheckInFortuneReport? = null,
     @SerializedName("account_id") val accountId: String? = null,
     val account: SnAccount? = null,
@@ -245,29 +247,29 @@ enum class ChatEncryptionMode(val value: Int) {
 }
 
 data class SnChatRoom(
-    val id: String,
-    val name: String?,
-    val description: String?,
-    val type: String?,
-    @SerializedName("updated_at") val updatedAt: String?,
-    val members: List<SnChatMember>?,
+    val id: String?,
+    val name: String? = null,
+    val description: String? = null,
+    val type: String? = null,
+    @SerializedName("updated_at") val updatedAt: String? = null,
+    val members: List<SnChatMember>? = null,
     @SerializedName("encryption_mode") val encryptionMode: Int? = null,
 )
 
 data class SnChatMember(
-    val id: String,
-    val name: String?,
-    @SerializedName("nick") val nick: String?,
+    val id: String?,
+    val name: String? = null,
+    @SerializedName("nick") val nick: String? = null,
 )
 
 data class SnChatMessage(
-    val id: String,
-    val content: String?,
-    val type: String?,
-    @SerializedName("sender_id") val senderId: String?,
-    @SerializedName("chat_room_id") val chatRoomId: String?,
-    val sender: SnChatMember?,
-    @SerializedName("room_sequence") val roomSequence: Long?,
+    val id: String?,
+    val content: String? = null,
+    val type: String? = null,
+    @SerializedName("sender_id") val senderId: String? = null,
+    @SerializedName("chat_room_id") val chatRoomId: String? = null,
+    val sender: SnChatMember? = null,
+    @SerializedName("room_sequence") val roomSequence: Long? = null,
     @SerializedName("created_at") val createdAt: String? = null,
     val reactions_count: Map<String, Int>? = null,
     val reactions_made: Map<String, Boolean>? = null,
@@ -297,6 +299,7 @@ data class MissingSequenceRange(
 data class RoomSyncResponse(
     val changes: List<ChatSummaryEntry>? = null,
     val summaries: Map<String, ChatSummaryEntry>? = null,
+    val messages: List<SnChatMessage>? = null,
     @SerializedName("current_timestamp") val currentTimestamp: Long? = null,
     @SerializedName("total_count") val totalCount: Int? = null,
 )
@@ -313,34 +316,34 @@ data class SnChatSummary(
 )
 
 data class SnChatOnlineStatus(
-    val id: String,
-    val status: String?,
-    @SerializedName("is_online") val isOnline: Boolean?,
+    val id: String?,
+    val status: String? = null,
+    @SerializedName("is_online") val isOnline: Boolean? = null,
 )
 
 data class SnChatGroup(
-    val id: String,
-    val name: String?,
-    val color: String?,
-    val icon: String?,
-    val order: Int?,
+    val id: String?,
+    val name: String? = null,
+    val color: String? = null,
+    val icon: String? = null,
+    val order: Int? = null,
 )
 
 data class SnRealtimeCall(
-    val id: String,
-    @SerializedName("room_id") val roomId: String?,
-    @SerializedName("sender_id") val senderId: String?,
-    @SerializedName("session_id") val sessionId: String?,
-    @SerializedName("provider_name") val providerName: String?,
-    @SerializedName("ended_at") val endedAt: String?,
-    @SerializedName("created_at") val createdAt: String?,
+    val id: String?,
+    @SerializedName("room_id") val roomId: String? = null,
+    @SerializedName("sender_id") val senderId: String? = null,
+    @SerializedName("session_id") val sessionId: String? = null,
+    @SerializedName("provider_name") val providerName: String? = null,
+    @SerializedName("ended_at") val endedAt: String? = null,
+    @SerializedName("created_at") val createdAt: String? = null,
 )
 
 // ── Chat Requests ──
 
 data class CreateRoomRequest(
-    val name: String?,
-    val type: String?,
+    val name: String? = null,
+    val type: String? = null,
     @SerializedName("member_ids") val memberIds: List<String>? = null,
 )
 
@@ -357,10 +360,6 @@ data class SendMessageRequest(
 
 data class EditMessageRequest(
     val content: String,
-)
-
-data class MarkAsReadRequest(
-    @SerializedName("message_id") val messageId: String,
 )
 
 data class AddMemberRequest(
@@ -391,4 +390,8 @@ data class UpdateGroupRequest(
 
 data class InitiateCallRequest(
     val type: String,
+)
+
+data class MarkAsReadRequest(
+    @SerializedName("last_read_sequence") val lastReadSequence: Long,
 )

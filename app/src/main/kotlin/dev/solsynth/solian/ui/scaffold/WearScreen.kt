@@ -39,7 +39,7 @@ fun WearScreen(
                 ScrollIndicator(state = state)
             }
         ) { padding ->
-            WearScreenTLC(state, padding, true, isRound, transformationSpec, pullToRefreshState, isRefreshing, onRefresh, content)
+            WearScreenBody(state, padding, true, isRound, transformationSpec, pullToRefreshState, isRefreshing, onRefresh, content)
         }
     } else {
         ScreenScaffold(
@@ -49,13 +49,13 @@ fun WearScreen(
                 ScrollIndicator(state = state)
             }
         ) { padding ->
-            WearScreenTLC(state, padding, false, isRound, transformationSpec, pullToRefreshState, isRefreshing, onRefresh, content)
+            WearScreenBody(state, padding, false, isRound, transformationSpec, pullToRefreshState, isRefreshing, onRefresh, content)
         }
     }
 }
 
 @Composable
-private fun WearScreenTLC(
+private fun WearScreenBody(
     state: TransformingLazyColumnState,
     padding: PaddingValues,
     hasEdgeButton: Boolean,
@@ -76,7 +76,9 @@ private fun WearScreenTLC(
                 start = 10.dp,
                 end = 10.dp,
                 top = (if (isRound) 40.dp else 24.dp) + padding.calculateTopPadding(),
-                bottom = (if (hasEdgeButton) 72.dp else (if (isRound) 48.dp else 24.dp)) + 
+                // Using a larger bottom padding to ensure the last item can be scrolled 
+                // fully above the EdgeButton.
+                bottom = (if (hasEdgeButton) 80.dp else (if (isRound) 48.dp else 24.dp)) + 
                         padding.calculateBottomPadding()
             ),
             horizontalAlignment = Alignment.CenterHorizontally,

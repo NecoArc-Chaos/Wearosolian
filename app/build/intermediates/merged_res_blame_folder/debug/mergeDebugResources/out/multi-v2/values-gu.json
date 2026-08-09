@@ -4,41 +4,7 @@
             "outputFile": "dev.solsynth.solian.app-mergeDebugResources-55:/values-gu/values-gu.xml",
             "map": [
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/a7e6a3aceeb6ab18577d508dc80e8a55/transformed/wear-1.4.0/res/values-gu/values-gu.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6",
-                        "startColumns": "4,4,4,4,4",
-                        "startOffsets": "55,170,290,405,513",
-                        "endColumns": "114,119,114,107,113",
-                        "endOffsets": "165,285,400,508,622"
-                    },
-                    "to": {
-                        "startLines": "25,26,27,133,134",
-                        "startColumns": "4,4,4,4,4",
-                        "startOffsets": "1896,2011,2131,13197,13305",
-                        "endColumns": "114,119,114,107,113",
-                        "endOffsets": "2006,2126,2241,13300,13414"
-                    }
-                },
-                {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/a114d16b616d191de915497f99f6299a/transformed/ui/res/values-gu/values-gu.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "107,222,314,396,489,588,675,761,862,949,1035,1118,1201,1276,1360,1435,1510,1585,1661,1727",
-                        "endColumns": "114,91,81,92,98,86,85,100,86,85,82,82,74,83,74,74,74,75,65,119",
-                        "endOffsets": "217,309,391,484,583,670,756,857,944,1030,1113,1196,1271,1355,1430,1505,1580,1656,1722,1842"
-                    },
-                    "to": {
-                        "startLines": "15,23,24,28,29,30,31,32,99,100,101,102,103,104,105,106,107,109,110,111",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "885,1722,1814,2246,2339,2438,2525,2611,9924,10011,10097,10180,10263,10338,10422,10497,10572,10748,10824,10890",
-                        "endColumns": "114,91,81,92,98,86,85,100,86,85,82,82,74,83,74,74,74,75,65,119",
-                        "endOffsets": "995,1809,1891,2334,2433,2520,2606,2707,10006,10092,10175,10258,10333,10417,10492,10567,10642,10819,10885,11005"
-                    }
-                },
-                {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/15a02cd8e876085d70a3861fd11b8329/transformed/compose-material3-1.6.2/res/values-gu/values-gu.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/0d5402a281afc42c712171d69a3d45b4/transformed/compose-material3-1.6.2/res/values-gu/values-gu.xml",
                     "from": {
                         "startLines": "2,6,10,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -57,24 +23,24 @@
                     }
                 },
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/6551374d8718fc4c1dcc8f9628042322/transformed/foundation/res/values-gu/values-gu.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/38fb6fc283d74e48e118a31acabf52fb/transformed/wear-1.4.0/res/values-gu/values-gu.xml",
                     "from": {
-                        "startLines": "2,3,4",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "55,178,263",
-                        "endColumns": "122,84,84",
-                        "endOffsets": "173,258,343"
+                        "startLines": "2,3,4,5,6",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,170,290,405,513",
+                        "endColumns": "114,119,114,107,113",
+                        "endOffsets": "165,285,400,508,622"
                     },
                     "to": {
-                        "startLines": "14,112,113",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "762,11010,11095",
-                        "endColumns": "122,84,84",
-                        "endOffsets": "880,11090,11175"
+                        "startLines": "25,26,27,133,134",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "1896,2011,2131,13197,13305",
+                        "endColumns": "114,119,114,107,113",
+                        "endOffsets": "2006,2126,2241,13300,13414"
                     }
                 },
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/ce1dea108dd0dd2e37ca94dc4305c60c/transformed/material3/res/values-gu/values-gu.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/af4fc1948323dc08120d42b4243a9f78/transformed/material3/res/values-gu/values-gu.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -91,7 +57,41 @@
                     }
                 },
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/6f7e84c4629f2eee6e474bafa869ab92/transformed/core-1.16.0/res/values-gu/values-gu.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/a5fd8a094aea3b2990a54b04a6d8dc58/transformed/ui/res/values-gu/values-gu.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "107,222,314,396,489,588,675,761,862,949,1035,1118,1201,1276,1360,1435,1510,1585,1661,1727",
+                        "endColumns": "114,91,81,92,98,86,85,100,86,85,82,82,74,83,74,74,74,75,65,119",
+                        "endOffsets": "217,309,391,484,583,670,756,857,944,1030,1113,1196,1271,1355,1430,1505,1580,1656,1722,1842"
+                    },
+                    "to": {
+                        "startLines": "15,23,24,28,29,30,31,32,99,100,101,102,103,104,105,106,107,109,110,111",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "885,1722,1814,2246,2339,2438,2525,2611,9924,10011,10097,10180,10263,10338,10422,10497,10572,10748,10824,10890",
+                        "endColumns": "114,91,81,92,98,86,85,100,86,85,82,82,74,83,74,74,74,75,65,119",
+                        "endOffsets": "995,1809,1891,2334,2433,2520,2606,2707,10006,10092,10175,10258,10333,10417,10492,10567,10642,10819,10885,11005"
+                    }
+                },
+                {
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/5304a1a7cf7d9e46ceab23d6917d066d/transformed/foundation/res/values-gu/values-gu.xml",
+                    "from": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,178,263",
+                        "endColumns": "122,84,84",
+                        "endOffsets": "173,258,343"
+                    },
+                    "to": {
+                        "startLines": "14,112,113",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "762,11010,11095",
+                        "endColumns": "122,84,84",
+                        "endOffsets": "880,11090,11175"
+                    }
+                },
+                {
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/bfc49f184bbc41c8eff52e56c136bff1/transformed/core-1.16.0/res/values-gu/values-gu.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

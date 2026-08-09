@@ -165,22 +165,24 @@ private fun PasswordLoginScreen(
                                         deviceId = deviceId,
                                     ),
                                 )
-                                val factors = ApiClient.api.getChallengeFactors(ch.id)
+                                val challengeId = ch.id ?: throw Exception("Invalid challenge ID")
+                                val factors = ApiClient.api.getChallengeFactors(challengeId)
                                 val pwFactor = factors.firstOrNull {
                                     it.name?.contains("password", true) == true
                                 } ?: factors.firstOrNull { (it.type == 0) && (it.enabledAt != null) }
                                     ?: factors.firstOrNull { it.type == 0 }
                                     ?: throw Exception(noPasswordFactorError)
 
-                                val result = ApiClient.api.performChallenge(
-                                    ch.id,
-                                    PerformChallengeRequest(factorId = pwFactor.id, password = password),
+                                val factorId = pwFactor.id ?: throw Exception("Invalid factor ID")
+                                ApiClient.api.performChallenge(
+                                    challengeId,
+                                    PerformChallengeRequest(factorId = factorId, password = password),
                                 )
 
                                 val tokenResp = ApiClient.api.exchangeToken(
-                                    TokenExchangeRequest(code = ch.id),
+                                    TokenExchangeRequest(code = challengeId),
                                 )
-                                TokenStore.token = tokenResp.token
+                                TokenStore.token = tokenResp.token ?: throw Exception("Login failed: empty token")
                                 TokenStore.refreshToken = tokenResp.refreshToken
                                 tokenResp.expiresIn?.let {
                                     TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it

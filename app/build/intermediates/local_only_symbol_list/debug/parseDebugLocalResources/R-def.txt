@@ -12,9 +12,14 @@ string account_status_online
 string account_switch_account
 string account_title
 string app_name
+string chat_back
 string chat_empty
+string chat_input_hint
 string chat_live
+string chat_room_empty
+string chat_send
 string chat_title
+string chat_typing
 string compose_button
 string compose_error
 string compose_hint

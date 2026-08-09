@@ -73,7 +73,7 @@ class ChatViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val rooms = ApiClient.api.getRooms(take = 50)
-                val sync = ApiClient.api.syncRooms(ChatSyncRequest(lastSyncTimestamp = 0))
+                val sync = ApiClient.api.syncChat(ChatSyncRequest(lastSyncTimestamp = 0))
                 val summaries = sync.summaries ?: emptyMap()
                 _rooms.value = rooms.map { room ->
                     summaries[room.id]?.copy(room = room) ?: ChatSummaryEntry(room = room)
@@ -125,7 +125,7 @@ class ChatViewModel : ViewModel() {
     private suspend fun syncChat() {
         try {
             val request = ChatSyncRequest(lastSyncTimestamp = lastSyncTimestamp)
-            val response = ApiClient.api.syncAll(request)
+            val response = ApiClient.api.syncChat(request)
             response.messages?.let { messages ->
                 mergeMessages(messages)
             }

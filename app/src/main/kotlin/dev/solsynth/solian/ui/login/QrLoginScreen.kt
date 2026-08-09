@@ -84,18 +84,21 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
             .collect {
                 try {
                     val qrStatus = ApiClient.api.getQrStatus(id)
-                    status = qrStatus.status
+                    status = qrStatus.status ?: "Pending"
                     if (status == "Approved" && authChallengeId != null) {
                         val challengeId = authChallengeId!!
                         val tokenResp = ApiClient.api.exchangeToken(
                             TokenExchangeRequest(code = challengeId)
                         )
-                        TokenStore.token = tokenResp.token
-                        TokenStore.refreshToken = tokenResp.refreshToken
-                        tokenResp.expiresIn?.let {
-                            TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                        val token = tokenResp.token
+                        if (!token.isNullOrBlank()) {
+                            TokenStore.token = token
+                            TokenStore.refreshToken = tokenResp.refreshToken
+                            tokenResp.expiresIn?.let {
+                                TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                            }
+                            onLoginSuccess()
                         }
-                        onLoginSuccess()
                     }
                 } catch (_: Exception) { }
             }

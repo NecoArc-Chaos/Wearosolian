@@ -2,6 +2,7 @@ package dev.solsynth.solian.data.api
 
 import dev.solsynth.solian.data.NetworkConfig
 import dev.solsynth.solian.data.TokenStore
+import dev.solsynth.solian.data.model.AuthConstants
 import dev.solsynth.solian.data.model.SnAttachment
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -19,8 +20,6 @@ import kotlinx.coroutines.withTimeout
 
 object ApiClient {
 
-    private const val MLS_CLIENT_ABILITY = "chat.mls.v2"
-
     private val refreshApi: SolianApi by lazy { createApi(withAuth = false) }
 
     var api: SolianApi = createApi(withAuth = true)
@@ -37,7 +36,8 @@ object ApiClient {
      * but without the auth interceptor (authentication is handled per-connection).
      */
     val httpClient: OkHttpClient = OkHttpClient.Builder()
-        .certificatePinner(NetworkConfig.getCertificatePinner())
+        // Disable pinning temporarily to diagnose physical device connectivity crashes
+        // .certificatePinner(NetworkConfig.getCertificatePinner())
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
@@ -57,7 +57,7 @@ object ApiClient {
             .followRedirects(true)
             .followSslRedirects(true)
             .retryOnConnectionFailure(true)
-            .certificatePinner(NetworkConfig.getCertificatePinner())
+            // .certificatePinner(NetworkConfig.getCertificatePinner())
             .addInterceptor(logging)
             .apply {
                 if (withAuth) {
@@ -67,7 +67,7 @@ object ApiClient {
             .addInterceptor { chain ->
                 val original = chain.request()
                 val builder = original.newBuilder()
-                    .header("X-Client-Ability", MLS_CLIENT_ABILITY)
+                    .header("X-Client-Ability", AuthConstants.MLS_CLIENT_ABILITY)
                 if (TokenStore.isLoggedIn) {
                     builder.header("Authorization", "Bearer ${TokenStore.token}")
                 }

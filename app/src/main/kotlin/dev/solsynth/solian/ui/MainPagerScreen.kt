@@ -40,23 +40,24 @@ fun MainPagerScreen(
                 crashLog = null
             },
             title = { Text("上次崩溃") },
-            text = {
-                Text(
-                    text = crashLog ?: "",
-                    style = MaterialTheme.typography.labelSmall,
-                    maxLines = 24,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    CrashReport.clear()
-                    crashLog = null
-                }) {
+            edgeButton = {
+                AlertDialogDefaults.EdgeButton(
+                    onClick = {
+                        CrashReport.clear()
+                        crashLog = null
+                    }
+                ) {
                     Text("知道了")
                 }
-            },
-        )
+            }
+        ) {
+            item {
+                Text(
+                    text = crashLog?.take(2000) ?: "",
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            }
+        }
     }
 
     // Standard M3 Wear layout with AppScaffold at the very top.

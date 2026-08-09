@@ -4,7 +4,7 @@
             "outputFile": "dev.solsynth.solian.app-mergeDebugResources-55:/values-as/values-as.xml",
             "map": [
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/6f7e84c4629f2eee6e474bafa869ab92/transformed/core-1.16.0/res/values-as/values-as.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/bfc49f184bbc41c8eff52e56c136bff1/transformed/core-1.16.0/res/values-as/values-as.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/ce1dea108dd0dd2e37ca94dc4305c60c/transformed/material3/res/values-as/values-as.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/af4fc1948323dc08120d42b4243a9f78/transformed/material3/res/values-as/values-as.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -38,41 +38,7 @@
                     }
                 },
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/a7e6a3aceeb6ab18577d508dc80e8a55/transformed/wear-1.4.0/res/values-as/values-as.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6",
-                        "startColumns": "4,4,4,4,4",
-                        "startOffsets": "55,166,290,403,511",
-                        "endColumns": "110,123,112,107,115",
-                        "endOffsets": "161,285,398,506,622"
-                    },
-                    "to": {
-                        "startLines": "25,26,27,133,134",
-                        "startColumns": "4,4,4,4,4",
-                        "startOffsets": "1928,2039,2163,13273,13381",
-                        "endColumns": "110,123,112,107,115",
-                        "endOffsets": "2034,2158,2271,13376,13492"
-                    }
-                },
-                {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/a114d16b616d191de915497f99f6299a/transformed/ui/res/values-as/values-as.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "107,219,314,399,492,590,677,774,873,962,1052,1135,1220,1299,1389,1464,1539,1613,1688,1754",
-                        "endColumns": "111,94,84,92,97,86,96,98,88,89,82,84,78,89,74,74,73,74,65,121",
-                        "endOffsets": "214,309,394,487,585,672,769,868,957,1047,1130,1215,1294,1384,1459,1534,1608,1683,1749,1871"
-                    },
-                    "to": {
-                        "startLines": "15,23,24,28,29,30,31,32,99,100,101,102,103,104,105,106,107,109,110,111",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "886,1748,1843,2276,2369,2467,2554,2651,9977,10066,10156,10239,10324,10403,10493,10568,10643,10818,10893,10959",
-                        "endColumns": "111,94,84,92,97,86,96,98,88,89,82,84,78,89,74,74,73,74,65,121",
-                        "endOffsets": "993,1838,1923,2364,2462,2549,2646,2745,10061,10151,10234,10319,10398,10488,10563,10638,10712,10888,10954,11076"
-                    }
-                },
-                {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/15a02cd8e876085d70a3861fd11b8329/transformed/compose-material3-1.6.2/res/values-as/values-as.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/0d5402a281afc42c712171d69a3d45b4/transformed/compose-material3-1.6.2/res/values-as/values-as.xml",
                     "from": {
                         "startLines": "2,6,10,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -91,7 +57,7 @@
                     }
                 },
                 {
-                    "source": "/Users/nickole/.gradle/caches/9.5.0/transforms/6551374d8718fc4c1dcc8f9628042322/transformed/foundation/res/values-as/values-as.xml",
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/5304a1a7cf7d9e46ceab23d6917d066d/transformed/foundation/res/values-as/values-as.xml",
                     "from": {
                         "startLines": "2,3,4",
                         "startColumns": "4,4,4",
@@ -105,6 +71,40 @@
                         "startOffsets": "766,11081,11166",
                         "endColumns": "119,84,87",
                         "endOffsets": "881,11161,11249"
+                    }
+                },
+                {
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/38fb6fc283d74e48e118a31acabf52fb/transformed/wear-1.4.0/res/values-as/values-as.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,166,290,403,511",
+                        "endColumns": "110,123,112,107,115",
+                        "endOffsets": "161,285,398,506,622"
+                    },
+                    "to": {
+                        "startLines": "25,26,27,133,134",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "1928,2039,2163,13273,13381",
+                        "endColumns": "110,123,112,107,115",
+                        "endOffsets": "2034,2158,2271,13376,13492"
+                    }
+                },
+                {
+                    "source": "/Users/nickole/.gradle/caches/9.6.1/transforms/a5fd8a094aea3b2990a54b04a6d8dc58/transformed/ui/res/values-as/values-as.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "107,219,314,399,492,590,677,774,873,962,1052,1135,1220,1299,1389,1464,1539,1613,1688,1754",
+                        "endColumns": "111,94,84,92,97,86,96,98,88,89,82,84,78,89,74,74,73,74,65,121",
+                        "endOffsets": "214,309,394,487,585,672,769,868,957,1047,1130,1215,1294,1384,1459,1534,1608,1683,1749,1871"
+                    },
+                    "to": {
+                        "startLines": "15,23,24,28,29,30,31,32,99,100,101,102,103,104,105,106,107,109,110,111",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "886,1748,1843,2276,2369,2467,2554,2651,9977,10066,10156,10239,10324,10403,10493,10568,10643,10818,10893,10959",
+                        "endColumns": "111,94,84,92,97,86,96,98,88,89,82,84,78,89,74,74,73,74,65,121",
+                        "endOffsets": "993,1838,1923,2364,2462,2549,2646,2745,10061,10151,10234,10319,10398,10488,10563,10638,10712,10888,10954,11076"
                     }
                 }
             ]

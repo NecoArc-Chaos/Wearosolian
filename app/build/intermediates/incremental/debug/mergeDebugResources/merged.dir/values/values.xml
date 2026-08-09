@@ -297,9 +297,14 @@
     <string name="call_notification_incoming_text">Incoming call</string>
     <string name="call_notification_ongoing_text">Ongoing call</string>
     <string name="call_notification_screening_text">Screening an incoming call</string>
+    <string name="chat_back">←</string>
     <string name="chat_empty">No chat rooms</string>
+    <string name="chat_input_hint">Message</string>
     <string name="chat_live">● Live</string>
+    <string name="chat_room_empty">No messages yet</string>
+    <string name="chat_send">Send</string>
     <string name="chat_title">Messages</string>
+    <string name="chat_typing">typing…</string>
     <string name="close_drawer">"Close navigation menu"</string>
     <string name="close_sheet">"Close sheet"</string>
     <string name="compose_button">Publish</string>
@@ -321,7 +326,7 @@
     <string name="home_checkin_fortune">大吉 · 诸事顺遂</string>
     <string name="home_checkin_title">🏮 今日签文</string>
     <string name="home_countdown_christmas">🎄 圣诞节</string>
-    <string name="home_countdown_days">158天</string>
+    <string name="home_countdown_days">%1$d天</string>
     <string name="home_countdown_title">⏳ 重要倒计时</string>
     <string name="home_notifications_title">🔔 通知</string>
     <string name="home_notifications_unread_none">暂无未读消息</string>

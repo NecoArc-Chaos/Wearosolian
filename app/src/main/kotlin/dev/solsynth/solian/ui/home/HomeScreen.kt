@@ -28,7 +28,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 title = {
                     Text(
                         text = stringResource(R.string.home_checkin_title),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
                 },
@@ -61,7 +61,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 title = {
                     Text(
                         text = stringResource(R.string.home_countdown_title),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
                 },
@@ -88,7 +88,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 title = {
                     Text(
                         text = stringResource(R.string.home_notifications_title),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
                 },
