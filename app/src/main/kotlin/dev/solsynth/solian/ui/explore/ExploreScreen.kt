@@ -12,12 +12,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumnItemScope
 import androidx.wear.compose.material3.*
 import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
@@ -30,8 +32,6 @@ import dev.solsynth.solian.ui.scaffold.WearScreen
 import dev.solsynth.solian.util.RelativeTime
 import kotlinx.coroutines.launch
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.wear.compose.foundation.lazy.TransformingLazyColumnItemScope
 
 @Composable
 fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
@@ -48,22 +48,23 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
             targetState = selectedPostStack.lastOrNull(),
             transitionSpec = {
                 if (targetState != null) {
-                    slideInHorizontally(animationSpec = tween(300)) { it } + fadeIn() togetherWith
-                            slideOutHorizontally(animationSpec = tween(300)) { -it / 2 } + fadeOut()
+                    (slideInHorizontally(animationSpec = tween(300)) { it } + fadeIn()) togetherWith
+                            (slideOutHorizontally(animationSpec = tween(300)) { -it / 2 } + fadeOut())
                 } else {
-                    slideInHorizontally(animationSpec = tween(300)) { -it / 2 } + fadeIn() togetherWith
-                            slideOutHorizontally(animationSpec = tween(300)) { it } + fadeOut()
+                    (slideInHorizontally(animationSpec = tween(300)) { -it / 2 } + fadeIn()) togetherWith
+                            (slideOutHorizontally(animationSpec = tween(300)) { it } + fadeOut())
                 }
             },
             label = "ExploreNavigation",
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) { targetPost ->
             if (targetPost != null) {
                 PostDetailScreen(
                     post = targetPost,
                     onBack = { selectedPostStack.removeAt(selectedPostStack.size - 1) },
-                    onPostClick = { selectedPostStack.add(it) }
-                )
+                ) {
+                    selectedPostStack.add(it)
+                }
             } else {
                 WearScreen(
                     isRefreshing = isRefreshing,
@@ -72,25 +73,26 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
                     edgeButton = {
                         EdgeButton(
                             onClick = { viewModel.loadMore() },
-                            enabled = !isLoadingMore
+                            enabled = !isLoadingMore,
+                            buttonSize = EdgeButtonSize.Large,
                         ) {
                             if (isLoadingMore) {
                                 CircularProgressIndicator(
-                                    modifier = Modifier.size(ButtonDefaults.ExtraSmallIconSize)
+                                    modifier = Modifier.size(ButtonDefaults.ExtraSmallIconSize),
                                 )
                             } else {
                                 Text("Load More", style = MaterialTheme.typography.labelSmall)
                             }
                         }
-                    }
+                    },
                 ) { spec ->
-                    if (error != null && posts.isEmpty()) {
+                    if ((error != null) && posts.isEmpty()) {
                         item {
                             Text(
                                 text = error!!,
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(horizontal = 16.dp).transformedHeight(this, spec)
+                                modifier = Modifier.padding(horizontal = 16.dp).transformedHeight(this, spec),
                             )
                         }
                     } else if (posts.isEmpty() && !isRefreshing) {
@@ -99,7 +101,7 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
                                 text = stringResource(R.string.explore_empty),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.transformedHeight(this, spec)
+                                modifier = Modifier.transformedHeight(this, spec),
                             )
                         }
                     } else {
@@ -109,8 +111,9 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
                                 post = post,
                                 spec = spec,
                                 itemScope = this,
-                                onClick = { selectedPostStack.add(post) }
-                            )
+                            ) {
+                                selectedPostStack.add(post)
+                            }
                         }
                     }
                 }
@@ -125,7 +128,7 @@ private fun PostCard(
     spec: TransformationSpec,
     itemScope: TransformingLazyColumnItemScope,
     isDetail: Boolean = false,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val author = post.publisher ?: post.author ?: post.account ?: post.user ?: post.creator ?: post.profile
     val avatarAttachment = author?.picture ?: author?.profile?.picture ?: author?.avatar?.let { 
@@ -138,7 +141,7 @@ private fun PostCard(
 
     AppCard(
         onClick = onClick,
-        enabled = !isDetail || (replyCount ?: 0) > 0,
+        enabled = (!isDetail) || ((replyCount ?: 0) > 0),
         modifier = Modifier
             .fillMaxWidth(if (isDetail) 1f else 0.94f)
             .padding(vertical = if (isDetail) 0.dp else 4.dp)
@@ -149,28 +152,28 @@ private fun PostCard(
                 style = MaterialTheme.typography.labelSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         },
         appImage = {
             AsyncImage(
                 model = ApiClient.resolveUrl(
                     author?.avatarUrl ?: author?.profile?.picture?.url ?: author?.picture?.url ?: author?.avatar,
-                    avatarAttachment
+                    avatarAttachment,
                 ),
                 contentDescription = null,
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
         },
         time = { 
             Text(
                 text = time,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             ) 
         },
         title = {
@@ -178,7 +181,7 @@ private fun PostCard(
                 Text(
                     text = post.title,
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             } else {
                 Spacer(Modifier.width(0.dp))
@@ -188,20 +191,20 @@ private fun PostCard(
         colors = CardDefaults.cardColors(
             containerColor = if (isDetail) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceContainer,
         ),
-        transformation = if (!isDetail) with(itemScope) { SurfaceTransformation(spec) } else null
+        transformation = if (!isDetail) with(itemScope) { SurfaceTransformation(spec) } else null,
     ) {
         if (!post.content.isNullOrBlank()) {
             Text(
                 text = post.content,
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = if (isDetail) Int.MAX_VALUE else 5,
-                overflow = if (isDetail) TextOverflow.Clip else TextOverflow.Ellipsis
+                overflow = if (isDetail) TextOverflow.Clip else TextOverflow.Ellipsis,
             )
         }
 
         // Attachments (Images)
         val images = (post.attachments ?: emptyList()) + (post.gallery ?: emptyList()) + (post.media ?: emptyList())
-        val filteredImages = images.filter { it.type == 0 || it.mimeType?.startsWith("image/") == true }
+        val filteredImages = images.filter { (it.type == 0) || (it.mimeType?.startsWith("image/") == true) }
         
         if (isDetail) {
             filteredImages.forEach { attachment ->
@@ -214,7 +217,7 @@ private fun PostCard(
                         .wrapContentHeight()
                         .clip(MaterialTheme.shapes.small)
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-                    contentScale = ContentScale.FillWidth
+                    contentScale = ContentScale.FillWidth,
                 )
             }
         } else {
@@ -228,26 +231,26 @@ private fun PostCard(
                         .height(80.dp)
                         .clip(MaterialTheme.shapes.small)
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
         }
 
         // Footer (Replies)
-        if (!isDetail && (replyCount ?: 0) > 0) {
+        if ((!isDetail) && ((replyCount ?: 0) > 0)) {
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Chat,
                     contentDescription = null,
                     modifier = Modifier.size(12.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.width(4.dp))
                 Text(
-                    text = "$replyCount",
+                    text = replyCount.toString(),
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -258,11 +261,11 @@ private fun PostCard(
 private fun PostDetailScreen(
     post: SnPost,
     onBack: () -> Unit,
-    onPostClick: (SnPost) -> Unit
+    onPostClick: (SnPost) -> Unit,
 ) {
     BackHandler(onBack = onBack)
     var comments by remember { mutableStateOf<List<SnPost>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(value = true) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(post.id) {
@@ -272,9 +275,9 @@ private fun PostDetailScreen(
                 val all = ApiClient.api.getTimeline(take = 100)
                 comments = all.filter { 
                     (it.id != post.id) && (
-                    it.repliedPostId == post.id || it.parentId == post.id || 
-                    it.replyToId == post.id || it.parent?.id == post.id || 
-                    it.replyTo?.id == post.id || it.repliedPost?.id == post.id)
+                    (it.repliedPostId == post.id) || (it.parentId == post.id) || 
+                    (it.replyToId == post.id) || (it.parent?.id == post.id) || 
+                    (it.replyTo?.id == post.id) || (it.repliedPost?.id == post.id))
                 }
             } catch (_: Exception) { }
             finally { isLoading = false }
@@ -289,25 +292,35 @@ private fun PostDetailScreen(
         }
         item {
             // isDetail=true disables transformation to keep it static at top
-            PostCard(post = post, spec = spec, itemScope = this, isDetail = true, onClick = {})
+            PostCard(post = post, spec = spec, itemScope = this, isDetail = true) {
+                // No-op for detail click
+            }
         }
         item {
             Spacer(Modifier.height(8.dp))
-            Text("Comments", style = MaterialTheme.typography.titleSmall, 
-                 modifier = Modifier.transformedHeight(this, spec))
+            Text(
+                text = "Comments",
+                style = MaterialTheme.typography.titleSmall, 
+                modifier = Modifier.transformedHeight(this, spec),
+            )
         }
         if (isLoading) {
             item { CircularProgressIndicator(modifier = Modifier.size(24.dp).transformedHeight(this, spec)) }
         } else if (comments.isEmpty()) {
             item {
-                Text("No comments yet", style = MaterialTheme.typography.bodySmall, 
+                Text(
+                    text = "No comments yet",
+                    style = MaterialTheme.typography.bodySmall, 
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.transformedHeight(this, spec))
+                    modifier = Modifier.transformedHeight(this, spec),
+                )
             }
         } else {
             items(comments.size) { index ->
                 val comment = comments[index]
-                PostCard(post = comment, spec = spec, itemScope = this, onClick = { onPostClick(comment) })
+                PostCard(post = comment, spec = spec, itemScope = this) {
+                    onPostClick(comment)
+                }
             }
         }
         item { Spacer(Modifier.height(24.dp)) }

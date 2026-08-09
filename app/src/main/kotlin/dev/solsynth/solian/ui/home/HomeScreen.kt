@@ -4,10 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material3.*
 import androidx.wear.compose.material3.lazy.transformedHeight
@@ -29,13 +28,13 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                     Text(
                         text = stringResource(R.string.home_checkin_title),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 },
                 modifier = Modifier.fillMaxWidth(0.9f).transformedHeight(this, spec),
-                transformation = SurfaceTransformation(spec)
+                transformation = SurfaceTransformation(spec),
             ) {
-                if (isLoading && checkInResult == null) {
+                if (isLoading && (checkInResult == null)) {
                     CircularProgressIndicator(modifier = Modifier.size(ButtonDefaults.ExtraSmallIconSize))
                 } else {
                     Text(
@@ -62,11 +61,11 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                     Text(
                         text = stringResource(R.string.home_countdown_title),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 },
                 modifier = Modifier.fillMaxWidth(0.9f).transformedHeight(this, spec),
-                transformation = SurfaceTransformation(spec)
+                transformation = SurfaceTransformation(spec),
             ) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(
@@ -89,11 +88,11 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                     Text(
                         text = stringResource(R.string.home_notifications_title),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 },
                 modifier = Modifier.fillMaxWidth(0.9f).transformedHeight(this, spec),
-                transformation = SurfaceTransformation(spec)
+                transformation = SurfaceTransformation(spec),
             ) {
                 Text(
                     text = if (unreadCount > 0) {

@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -27,11 +26,11 @@ import kotlinx.coroutines.launch
 fun AccountScreen(onLogout: () -> Unit) {
     var userName by remember { mutableStateOf("") }
     var avatarUrl by remember { mutableStateOf<String?>(null) }
-    var presence by remember { mutableStateOf(true) }
-    var isBusyStatus by remember { mutableStateOf(false) }
+    var presence by remember { mutableStateOf(value = true) }
+    var isBusyStatus by remember { mutableStateOf(value = false) }
     val statusSymbol = remember { mutableStateOf("") }
 
-    var isLoading by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(value = false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -67,7 +66,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .transformedHeight(this, spec),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
         }
 
@@ -78,7 +77,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                 textAlign = TextAlign.Center,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.transformedHeight(this, spec)
+                modifier = Modifier.transformedHeight(this, spec),
             )
         }
 
@@ -86,7 +85,7 @@ fun AccountScreen(onLogout: () -> Unit) {
 
         item {
             ListHeader(
-                modifier = Modifier.transformedHeight(this, spec)
+                modifier = Modifier.transformedHeight(this, spec),
             ) {
                 Text(stringResource(R.string.account_quick_status))
             }
@@ -106,17 +105,17 @@ fun AccountScreen(onLogout: () -> Unit) {
                                 val updated = ApiClient.api.updateStatus(
                                     AccountStatusRequest(
                                         type = if (nextPresence) AuthConstants.STATUS_TYPE_NORMAL else AuthConstants.STATUS_TYPE_INVISIBLE,
-                                    )
+                                    ),
                                 )
                                 presence = updated.type != AuthConstants.STATUS_TYPE_INVISIBLE
-                                if (!updated.icon.isNullOrBlank()) statusSymbol.value = updated.icon
+                                updated.icon?.let { statusSymbol.value = it }
                             } catch (_: Exception) { }
                             isLoading = false
                         }
                     },
                     modifier = Modifier.weight(1f),
                     colors = if (presence) ButtonDefaults.buttonColors() else ButtonDefaults.filledTonalButtonColors(),
-                    enabled = !isLoading
+                    enabled = !isLoading,
                 ) {
                     Text(
                         text = if (presence) stringResource(R.string.account_status_online) else stringResource(R.string.account_status_offline),
@@ -138,10 +137,10 @@ fun AccountScreen(onLogout: () -> Unit) {
                                             if (presence) AuthConstants.STATUS_TYPE_NORMAL else AuthConstants.STATUS_TYPE_INVISIBLE
                                         },
                                         label = if (nextBusy) "Busy" else null,
-                                    )
+                                    ),
                                 )
                                 isBusyStatus = updated.type == AuthConstants.STATUS_TYPE_BUSY
-                                if (!updated.icon.isNullOrBlank()) statusSymbol.value = updated.icon
+                                updated.icon?.let { statusSymbol.value = it }
                             } catch (_: Exception) { }
                             isLoading = false
                         }
@@ -152,7 +151,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                     } else {
                         ButtonDefaults.filledTonalButtonColors()
                     },
-                    enabled = !isLoading
+                    enabled = !isLoading,
                 ) {
                     Text(
                         text = stringResource(R.string.account_status_busy),
@@ -170,7 +169,7 @@ fun AccountScreen(onLogout: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(0.8f).transformedHeight(this, spec),
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
                 ),
             ) {
                 Text(text = stringResource(R.string.account_logout))

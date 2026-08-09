@@ -6,15 +6,15 @@ import com.google.gson.annotations.SerializedName
 
 object AuthConstants {
     const val PLATFORM_ANDROID = 3
-    const val DEFAULT_SERVER_URL = "https://api.solian.app"
-    const val NAMESPACE = "dev.solsynth.solian"
+    @Suppress("unused") const val DEFAULT_SERVER_URL = "https://api.solian.app"
+    @Suppress("unused") const val NAMESPACE = "dev.solsynth.solian"
     const val DEFAULT_DEVICE_ID = "wearos-client"
     const val DEFAULT_DEVICE_NAME = "Wear OS"
     const val STATUS_TYPE_NORMAL = "Normal"
     const val STATUS_TYPE_BUSY = "Busy"
     const val STATUS_TYPE_INVISIBLE = "Invisible"
     const val STATUS_ATTITUDE_NEUTRAL = "Neutral"
-    const val STATUS_ATTITUDE_BUSY = "Busy"
+    @Suppress("unused") const val STATUS_ATTITUDE_BUSY = "Busy"
     const val MLS_CLIENT_ABILITY = "chat.mls.v2"
 }
 
@@ -242,7 +242,8 @@ enum class ChatEncryptionMode(val value: Int) {
     E2eeMls(3);
 
     companion object {
-        fun fromValue(value: Int): ChatEncryptionMode? = entries.find { it.value == value }
+        @Suppress("unused")
+    fun fromValue(value: Int): ChatEncryptionMode? = entries.find { it.value == value }
     }
 }
 
@@ -271,8 +272,8 @@ data class SnChatMessage(
     val sender: SnChatMember? = null,
     @SerializedName("room_sequence") val roomSequence: Long? = null,
     @SerializedName("created_at") val createdAt: String? = null,
-    val reactions_count: Map<String, Int>? = null,
-    val reactions_made: Map<String, Boolean>? = null,
+    @SerializedName("reactions_count") val reactionsCount: Map<String, Int>? = null,
+    @SerializedName("reactions_made") val reactionsMade: Map<String, Boolean>? = null,
     @SerializedName("ciphertext") val ciphertext: String? = null,
     @SerializedName("encryption_epoch") val encryptionEpoch: Long? = null,
     @SerializedName("encryption_scheme") val encryptionScheme: String? = null,
@@ -304,6 +305,7 @@ data class RoomSyncResponse(
     @SerializedName("total_count") val totalCount: Int? = null,
 )
 
+@Suppress("unused")
 data class RoomMessageSyncResponse(
     val messages: List<SnChatMessage>? = null,
     @SerializedName("current_timestamp") val currentTimestamp: Long? = null,

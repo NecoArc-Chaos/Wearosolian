@@ -289,7 +289,7 @@ class ChatViewModel : ViewModel() {
             if (entry.lastMessage?.id == event.messageId) {
                 current[i] = entry.copy(
                     lastMessage = entry.lastMessage.copy(
-                        reactions_count = event.reactionsCount,
+                        reactionsCount = event.reactionsCount,
                     )
                 )
                 _rooms.value = current
@@ -299,7 +299,7 @@ class ChatViewModel : ViewModel() {
         if (_messages.value.any { it.id == event.messageId }) {
             _messages.value = _messages.value.map { message ->
                 if (message.id == event.messageId) {
-                    message.copy(reactions_count = event.reactionsCount)
+                    message.copy(reactionsCount = event.reactionsCount)
                 } else {
                     message
                 }

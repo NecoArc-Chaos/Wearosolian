@@ -1,6 +1,6 @@
 package dev.solsynth.solian.ui.login
 
-import android.provider.Settings.Secure
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +25,7 @@ import dev.solsynth.solian.ui.scaffold.WearScreen
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
-    var showQrLogin by remember { mutableStateOf(false) }
+    var showQrLogin by remember { mutableStateOf(value = false) }
     val loginFailedMessage = stringResource(R.string.error_login_failed)
 
     key(showQrLogin) {
@@ -50,15 +50,12 @@ private fun PasswordLoginScreen(
     onShowQrLogin: () -> Unit,
     loginFailedMessage: String,
 ) {
-    val context = LocalContext.current
+
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val deviceId = remember {
-        Secure.getString(context.contentResolver, Secure.ANDROID_ID) ?: "wearos-unknown"
-    }
     val noPasswordFactorError = stringResource(R.string.error_no_password_factor)
 
     WearScreen {
@@ -162,7 +159,7 @@ private fun PasswordLoginScreen(
                                 val ch = ApiClient.api.createChallenge(
                                     ChallengeRequest(
                                         account = account,
-                                        deviceId = deviceId,
+                                        deviceId = TokenStore.deviceId,
                                     ),
                                 )
                                 val challengeId = ch.id ?: throw Exception("Invalid challenge ID")
@@ -185,7 +182,7 @@ private fun PasswordLoginScreen(
                                 TokenStore.token = tokenResp.token ?: throw Exception("Login failed: empty token")
                                 TokenStore.refreshToken = tokenResp.refreshToken
                                 tokenResp.expiresIn?.let {
-                                    TokenStore.tokenExpiresAt = System.currentTimeMillis() / 1000 + it
+                                    TokenStore.tokenExpiresAt = (System.currentTimeMillis() / 1000) + it
                                 }
                                 onLoginSuccess()
                             } catch (e: retrofit2.HttpException) {

@@ -153,8 +153,8 @@ class ChatWebSocketClient(
                         },
                         roomSequence = data.optLong("room_sequence").takeIf { it > 0 },
                         createdAt = if (data.has("created_at")) data.optString("created_at") else null,
-                        reactions_count = parseReactionsCount(data.optJSONObject("reactions_count")),
-                        reactions_made = parseReactionsMade(data.optJSONObject("reactions_made")),
+                        reactionsCount = parseReactionsCount(data.optJSONObject("reactions_count")),
+                        reactionsMade = parseReactionsMade(data.optJSONObject("reactions_made")),
                     )
                 } catch (e: Exception) {
                     Log.w(TAG, "Failed to parse chat message", e)

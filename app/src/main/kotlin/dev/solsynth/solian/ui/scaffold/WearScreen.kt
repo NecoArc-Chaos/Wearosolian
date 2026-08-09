@@ -37,9 +37,11 @@ fun WearScreen(
             modifier = modifier.fillMaxSize(),
             scrollIndicator = {
                 ScrollIndicator(state = state)
-            }
+            },
         ) { padding ->
-            WearScreenBody(state, padding, true, isRound, transformationSpec, pullToRefreshState, isRefreshing, onRefresh, content)
+            // The bottom padding from ScreenScaffold with EdgeButton already 
+            // provides sufficient space for the button.
+            WearScreenTLC(state, padding, isRound, transformationSpec, pullToRefreshState, isRefreshing, onRefresh, content)
         }
     } else {
         ScreenScaffold(
@@ -47,24 +49,23 @@ fun WearScreen(
             modifier = modifier.fillMaxSize(),
             scrollIndicator = {
                 ScrollIndicator(state = state)
-            }
+            },
         ) { padding ->
-            WearScreenBody(state, padding, false, isRound, transformationSpec, pullToRefreshState, isRefreshing, onRefresh, content)
+            WearScreenTLC(state, padding, isRound, transformationSpec, pullToRefreshState, isRefreshing, onRefresh, content)
         }
     }
 }
 
 @Composable
-private fun WearScreenBody(
+private fun WearScreenTLC(
     state: TransformingLazyColumnState,
     padding: PaddingValues,
-    hasEdgeButton: Boolean,
     isRound: Boolean,
     transformationSpec: TransformationSpec,
     pullToRefreshState: PullToRefreshState?,
     isRefreshing: Boolean,
     onRefresh: (() -> Unit)?,
-    content: TransformingLazyColumnScope.(TransformationSpec) -> Unit
+    content: TransformingLazyColumnScope.(TransformationSpec) -> Unit,
 ) {
     val tlc = @Composable {
         TransformingLazyColumn(
@@ -75,11 +76,11 @@ private fun WearScreenBody(
             contentPadding = PaddingValues(
                 start = 10.dp,
                 end = 10.dp,
+                // Combine top padding for TimeText, and use scaffold padding for the rest.
                 top = (if (isRound) 40.dp else 24.dp) + padding.calculateTopPadding(),
-                // Using a larger bottom padding to ensure the last item can be scrolled 
-                // fully above the EdgeButton.
-                bottom = (if (hasEdgeButton) 80.dp else (if (isRound) 48.dp else 24.dp)) + 
-                        padding.calculateBottomPadding()
+                // The padding from ScreenScaffold handles the EdgeButton slot.
+                // We add very minimal padding here to close the gap.
+                bottom = padding.calculateBottomPadding() + 4.dp,
             ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -87,13 +88,13 @@ private fun WearScreenBody(
         }
     }
 
-    if (pullToRefreshState != null && onRefresh != null) {
+    if (((pullToRefreshState != null)) && ((onRefresh != null))) {
         PullToRefreshBox(
             isRefreshing = isRefreshing,
             onRefresh = onRefresh,
             state = pullToRefreshState,
             modifier = Modifier.fillMaxSize(),
-            content = { tlc() }
+            content = { tlc() },
         )
     } else {
         tlc()

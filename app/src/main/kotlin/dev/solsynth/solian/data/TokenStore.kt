@@ -1,6 +1,8 @@
 package dev.solsynth.solian.data
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.provider.Settings
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
@@ -11,7 +13,9 @@ object TokenStore {
     private const val KEY_TOKEN_EXPIRES_AT = "token_expires_at"
     private const val KEY_SERVER = "server_url"
 
-    private lateinit var prefs: android.content.SharedPreferences
+    private lateinit var prefs: SharedPreferences
+    lateinit var deviceId: String
+        private set
 
     fun init(context: Context) {
         val masterKey = MasterKey.Builder(context)
@@ -25,6 +29,8 @@ object TokenStore {
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
+
+        deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "wearos-unknown"
     }
 
     var token: String?

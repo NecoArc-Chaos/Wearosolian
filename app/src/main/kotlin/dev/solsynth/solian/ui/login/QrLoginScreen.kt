@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,25 +32,24 @@ fun QrLoginScreen(onLoginSuccess: () -> Unit, onBack: () -> Unit) {
     var qrChallengeId by remember { mutableStateOf<String?>(null) }
     var authChallengeId by remember { mutableStateOf<String?>(null) }
     var status by remember { mutableStateOf("Pending") }
-    var remainingSeconds by remember { mutableStateOf(0) }
-    var isLoading by remember { mutableStateOf(false) }
+    var remainingSeconds by remember { mutableIntStateOf(0) }
+    var isLoading by remember { mutableStateOf(value = false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     fun generateQr() {
         error = null
         isLoading = true
         scope.launch {
             try {
-                val resp = ApiClient.api.generateQrChallenge(QrGenerateRequest())
+                val resp = ApiClient.api.generateQrChallenge(QrGenerateRequest(deviceId = TokenStore.deviceId))
                 qrData = resp.qrData
                 qrChallengeId = resp.qrChallengeId
                 authChallengeId = resp.authChallengeId
                 remainingSeconds = resp.expiresInSeconds ?: 300
                 status = "Pending"
             } catch (e: Exception) {
-                error = e.message ?: context.getString(R.string.qr_error_generate_failed)
+                error = e.message ?: "Failed to generate QR"
             } finally {
                 isLoading = false
             }

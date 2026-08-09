@@ -12,7 +12,7 @@ class ExploreViewModel : ViewModel() {
     private val _posts = MutableStateFlow<List<SnPost>>(emptyList())
     val posts: StateFlow<List<SnPost>> = _posts
 
-    private val _isRefreshing = MutableStateFlow(false)
+    private val _isRefreshing = MutableStateFlow(value = false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
     private val _isLoadingMore = MutableStateFlow(false)
@@ -52,7 +52,7 @@ class ExploreViewModel : ViewModel() {
             try {
                 val morePosts = ApiClient.api.getTimeline(take = pageSize, offset = currentOffset)
                 if (morePosts.isNotEmpty()) {
-                    _posts.value = _posts.value + filterTimeline(morePosts)
+                    _posts.value += filterTimeline(morePosts)
                     currentOffset += pageSize
                 }
             } catch (e: Exception) {
@@ -65,11 +65,11 @@ class ExploreViewModel : ViewModel() {
 
     private fun filterTimeline(allPosts: List<SnPost>): List<SnPost> {
         return allPosts.filter { 
-            (it.parentId.isNullOrBlank() || it.parentId == "0" || it.parentId == "00000000-0000-0000-0000-000000000000") &&
+            (((it.parentId.isNullOrBlank() || it.parentId == "0" || it.parentId == "00000000-0000-0000-0000-000000000000"))) &&
             (it.repliedPostId.isNullOrBlank() || it.repliedPostId == "0") &&
             (it.replyToId.isNullOrBlank() || it.replyToId == "0") &&
             (it.rootId.isNullOrBlank() || it.rootId == "0") &&
-            it.parent == null && it.replyTo == null && it.repliedPost == null &&
+            (it.parent == null && it.replyTo == null && it.repliedPost == null) &&
             (it.type == 0 || it.type == null)
         }
     }

@@ -7,12 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.pager.HorizontalPager
 import androidx.wear.compose.foundation.pager.rememberPagerState
 import androidx.wear.compose.material3.*
-import dev.solsynth.solian.data.CrashReport
 import dev.solsynth.solian.data.TokenStore
 import dev.solsynth.solian.ui.account.AccountScreen
 import dev.solsynth.solian.ui.chat.ChatScreen
@@ -20,7 +18,6 @@ import dev.solsynth.solian.ui.compose.ComposeScreen
 import dev.solsynth.solian.ui.explore.ExploreScreen
 import dev.solsynth.solian.ui.home.HomeScreen
 import dev.solsynth.solian.ui.login.LoginScreen
-import dev.solsynth.solian.ui.scaffold.WearAppScaffold
 
 @Composable
 fun MainPagerScreen(
@@ -29,39 +26,9 @@ fun MainPagerScreen(
     val pagerState = rememberPagerState(pageCount = { 5 }, initialPage = 0)
     var isLoggedIn by remember { mutableStateOf(TokenStore.isLoggedIn) }
 
-    // Show the most recent crash stack trace (if any) so it can be reported
-    // without requiring an ADB connection.
-    var crashLog by remember { mutableStateOf(CrashReport.readLatest()) }
-    if (crashLog != null) {
-        AlertDialog(
-            visible = true,
-            onDismissRequest = {
-                CrashReport.clear()
-                crashLog = null
-            },
-            title = { Text("上次崩溃") },
-            edgeButton = {
-                AlertDialogDefaults.EdgeButton(
-                    onClick = {
-                        CrashReport.clear()
-                        crashLog = null
-                    }
-                ) {
-                    Text("知道了")
-                }
-            }
-        ) {
-            item {
-                Text(
-                    text = crashLog?.take(2000) ?: "",
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
-        }
-    }
-
-    // Standard M3 Wear layout with AppScaffold at the very top.
-    WearAppScaffold {
+    AppScaffold(
+        timeText = { TimeText() },
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,34 +44,33 @@ fun MainPagerScreen(
                     2 -> ComposeScreen()
                     3 -> ChatScreen()
                     4 -> if (isLoggedIn) {
-                        AccountScreen(
-                            onLogout = {
-                                onLogout()
-                                isLoggedIn = false
-                            },
-                        )
+                        AccountScreen {
+                        onLogout()
+                        isLoggedIn = false
+                    }
                     } else {
-                        LoginScreen(
-                            onLoginSuccess = { isLoggedIn = true },
-                        )
+                        LoginScreen {
+                        isLoggedIn = true
+                    }
                     }
                 }
             }
 
-            // M3 Guideline: Page indicator at the bottom center.
-            // Requirement: Hide indicator on Explore page (index 1) to avoid collision with EdgeButton.
+            // M3 Guideline: Hide indicator on Explore page to give room for EdgeButton
             val indicatorAlpha by animateFloatAsState(
                 targetValue = if (pagerState.currentPage == 1) 0f else 1f,
-                label = "IndicatorVisibility"
+                label = "IndicatorVisibility",
             )
 
-            HorizontalPageIndicator(
-                pagerState = pagerState,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 12.dp)
-                    .alpha(indicatorAlpha),
-            )
+            if (indicatorAlpha > 0.05f) {
+                HorizontalPageIndicator(
+                    pagerState = pagerState,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 12.dp)
+                        .alpha(indicatorAlpha),
+                )
+            }
         }
     }
 }

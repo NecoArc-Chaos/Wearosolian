@@ -3,6 +3,7 @@ package dev.solsynth.solian.data.api
 import dev.solsynth.solian.data.model.*
 import retrofit2.http.*
 
+@Suppress("unused")
 interface SolianApi {
 
     // ── Auth ──
@@ -22,7 +23,7 @@ interface SolianApi {
     @POST("padlock/auth/token")
     suspend fun exchangeToken(@Body request: TokenExchangeRequest): TokenExchangeResponse
 
-    @POST("padlock/auth/refresh")
+    @POST("padlock/auth/token")
     suspend fun refreshToken(@Body body: Map<String, String>): TokenExchangeResponse
 
     // ── QR Login ──

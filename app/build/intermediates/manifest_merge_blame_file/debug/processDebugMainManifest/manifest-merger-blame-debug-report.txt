@@ -63,172 +63,171 @@
 34-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:14:9-31
 35        android:networkSecurityConfig="@xml/network_security_config"
 35-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:16:9-69
-36        android:supportsRtl="true"
+36        android:supportsRtl="true" >
 36-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:17:9-35
-37        android:testOnly="true" >
-38        <activity
-38-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:19:9-45:20
-39            android:name="dev.solsynth.solian.MainActivity"
-39-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:20:13-41
-40            android:exported="true"
-40-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:21:13-36
-41            android:taskAffinity=""
-41-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:22:13-36
-42            android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
-42-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:23:13-75
-43            <intent-filter>
-43-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:25:13-28:29
-44                <action android:name="android.intent.action.MAIN" />
-44-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:26:17-69
-44-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:26:25-66
-45
-46                <category android:name="android.intent.category.LAUNCHER" />
-46-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:27:17-77
-46-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:27:27-74
-47            </intent-filter>
-48
-49            <!-- Deep linking: solian:// scheme -->
-50            <intent-filter>
-50-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:31:13-36:29
-51                <action android:name="android.intent.action.VIEW" />
-51-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:32:17-69
-51-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:32:25-66
-52
-53                <category android:name="android.intent.category.DEFAULT" />
-53-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:33:17-76
-53-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:33:27-73
-54                <category android:name="android.intent.category.BROWSABLE" />
-54-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:34:17-78
-54-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:34:27-75
-55
-56                <data android:scheme="solian" />
-56-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:17-49
-56-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:23-46
-57            </intent-filter>
-58            <intent-filter android:autoVerify="true" >
-58-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:38:13-44:29
-58-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:38:28-53
-59                <action android:name="android.intent.action.VIEW" />
-59-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:32:17-69
-59-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:32:25-66
-60
-61                <category android:name="android.intent.category.DEFAULT" />
-61-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:33:17-76
-61-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:33:27-73
-62                <category android:name="android.intent.category.BROWSABLE" />
-62-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:34:17-78
-62-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:34:27-75
-63
-64                <data
-64-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:17-49
-65                    android:host="solian.app"
-65-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:42:45-70
-66                    android:scheme="http" />
+37        <activity
+37-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:19:9-45:20
+38            android:name="dev.solsynth.solian.MainActivity"
+38-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:20:13-41
+39            android:exported="true"
+39-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:21:13-36
+40            android:taskAffinity=""
+40-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:22:13-36
+41            android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
+41-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:23:13-75
+42            <intent-filter>
+42-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:25:13-28:29
+43                <action android:name="android.intent.action.MAIN" />
+43-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:26:17-69
+43-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:26:25-66
+44
+45                <category android:name="android.intent.category.LAUNCHER" />
+45-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:27:17-77
+45-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:27:27-74
+46            </intent-filter>
+47
+48            <!-- Deep linking: solian:// scheme -->
+49            <intent-filter>
+49-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:31:13-36:29
+50                <action android:name="android.intent.action.VIEW" />
+50-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:32:17-69
+50-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:32:25-66
+51
+52                <category android:name="android.intent.category.DEFAULT" />
+52-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:33:17-76
+52-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:33:27-73
+53                <category android:name="android.intent.category.BROWSABLE" />
+53-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:34:17-78
+53-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:34:27-75
+54
+55                <data android:scheme="solian" />
+55-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:17-49
+55-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:23-46
+56            </intent-filter>
+57            <intent-filter android:autoVerify="true" >
+57-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:38:13-44:29
+57-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:38:28-53
+58                <action android:name="android.intent.action.VIEW" />
+58-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:32:17-69
+58-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:32:25-66
+59
+60                <category android:name="android.intent.category.DEFAULT" />
+60-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:33:17-76
+60-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:33:27-73
+61                <category android:name="android.intent.category.BROWSABLE" />
+61-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:34:17-78
+61-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:34:27-75
+62
+63                <data
+63-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:17-49
+64                    android:host="solian.app"
+64-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:42:45-70
+65                    android:scheme="http" />
+65-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:23-46
+66                <data android:scheme="https" />
+66-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:17-49
 66-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:23-46
-67                <data android:scheme="https" />
-67-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:17-49
-67-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:35:23-46
-68            </intent-filter>
-69        </activity>
-70
-71        <meta-data
-71-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:47:9-49:36
-72            android:name="com.google.android.wearable.standalone"
-72-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:48:13-66
-73            android:value="true" />
-73-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:49:13-33
-74
-75        <uses-library
-75-->[androidx.wear.compose:compose-foundation:1.6.2] /Users/nickole/.gradle/caches/9.6.1/transforms/71e3649bad8feaf891f03ea989d666af/transformed/compose-foundation-1.6.2/AndroidManifest.xml:23:9-25:40
-76            android:name="wear-sdk"
-76-->[androidx.wear.compose:compose-foundation:1.6.2] /Users/nickole/.gradle/caches/9.6.1/transforms/71e3649bad8feaf891f03ea989d666af/transformed/compose-foundation-1.6.2/AndroidManifest.xml:24:13-36
-77            android:required="false" />
-77-->[androidx.wear.compose:compose-foundation:1.6.2] /Users/nickole/.gradle/caches/9.6.1/transforms/71e3649bad8feaf891f03ea989d666af/transformed/compose-foundation-1.6.2/AndroidManifest.xml:25:13-37
-78        <uses-library
-78-->[androidx.wear:wear:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/38fb6fc283d74e48e118a31acabf52fb/transformed/wear-1.4.0/AndroidManifest.xml:23:9-25:40
-79            android:name="com.google.android.wearable"
-79-->[androidx.wear:wear:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/38fb6fc283d74e48e118a31acabf52fb/transformed/wear-1.4.0/AndroidManifest.xml:24:13-55
-80            android:required="false" />
-80-->[androidx.wear:wear:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/38fb6fc283d74e48e118a31acabf52fb/transformed/wear-1.4.0/AndroidManifest.xml:25:13-37
-81
-82        <provider
-82-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
-83            android:name="androidx.startup.InitializationProvider"
-83-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:25:13-67
-84            android:authorities="dev.solsynth.solian.androidx-startup"
-84-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:26:13-68
-85            android:exported="false" >
-85-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:27:13-37
-86            <meta-data
-86-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
-87                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-87-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
-88                android:value="androidx.startup" />
-88-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
-89            <meta-data
-89-->[androidx.lifecycle:lifecycle-process:2.9.4] /Users/nickole/.gradle/caches/9.6.1/transforms/71e36fa0a69c5080f59760436d72ee12/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:29:13-31:52
-90                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-90-->[androidx.lifecycle:lifecycle-process:2.9.4] /Users/nickole/.gradle/caches/9.6.1/transforms/71e36fa0a69c5080f59760436d72ee12/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:30:17-78
-91                android:value="androidx.startup" />
-91-->[androidx.lifecycle:lifecycle-process:2.9.4] /Users/nickole/.gradle/caches/9.6.1/transforms/71e36fa0a69c5080f59760436d72ee12/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:31:17-49
-92            <meta-data
-92-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
-93                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-93-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
-94                android:value="androidx.startup" />
-94-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
-95        </provider>
-96
-97        <uses-library
-97-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:23:9-25:40
-98            android:name="androidx.window.extensions"
-98-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:24:13-54
-99            android:required="false" />
-99-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:25:13-37
-100        <uses-library
-100-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:26:9-28:40
-101            android:name="androidx.window.sidecar"
-101-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:27:13-51
-102            android:required="false" />
-102-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:28:13-37
-103
-104        <receiver
-104-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
-105            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-105-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
-106            android:directBootAware="false"
-106-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
-107            android:enabled="true"
-107-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
-108            android:exported="true"
-108-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
-109            android:permission="android.permission.DUMP" >
-109-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
-110            <intent-filter>
-110-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
-111                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-111-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
-111-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
-112            </intent-filter>
-113            <intent-filter>
-113-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
-114                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-114-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
-114-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
-115            </intent-filter>
-116            <intent-filter>
-116-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
-117                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-117-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
-117-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
-118            </intent-filter>
-119            <intent-filter>
-119-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
-120                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-120-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
-120-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
-121            </intent-filter>
-122        </receiver>
-123    </application>
-124
-125</manifest>
+67            </intent-filter>
+68        </activity>
+69
+70        <meta-data
+70-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:47:9-49:36
+71            android:name="com.google.android.wearable.standalone"
+71-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:48:13-66
+72            android:value="true" />
+72-->/Users/nickole/wearosolian/app/src/main/AndroidManifest.xml:49:13-33
+73
+74        <uses-library
+74-->[androidx.wear.compose:compose-foundation:1.6.2] /Users/nickole/.gradle/caches/9.6.1/transforms/71e3649bad8feaf891f03ea989d666af/transformed/compose-foundation-1.6.2/AndroidManifest.xml:23:9-25:40
+75            android:name="wear-sdk"
+75-->[androidx.wear.compose:compose-foundation:1.6.2] /Users/nickole/.gradle/caches/9.6.1/transforms/71e3649bad8feaf891f03ea989d666af/transformed/compose-foundation-1.6.2/AndroidManifest.xml:24:13-36
+76            android:required="false" />
+76-->[androidx.wear.compose:compose-foundation:1.6.2] /Users/nickole/.gradle/caches/9.6.1/transforms/71e3649bad8feaf891f03ea989d666af/transformed/compose-foundation-1.6.2/AndroidManifest.xml:25:13-37
+77        <uses-library
+77-->[androidx.wear:wear:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/38fb6fc283d74e48e118a31acabf52fb/transformed/wear-1.4.0/AndroidManifest.xml:23:9-25:40
+78            android:name="com.google.android.wearable"
+78-->[androidx.wear:wear:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/38fb6fc283d74e48e118a31acabf52fb/transformed/wear-1.4.0/AndroidManifest.xml:24:13-55
+79            android:required="false" />
+79-->[androidx.wear:wear:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/38fb6fc283d74e48e118a31acabf52fb/transformed/wear-1.4.0/AndroidManifest.xml:25:13-37
+80
+81        <provider
+81-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+82            android:name="androidx.startup.InitializationProvider"
+82-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:25:13-67
+83            android:authorities="dev.solsynth.solian.androidx-startup"
+83-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:26:13-68
+84            android:exported="false" >
+84-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:27:13-37
+85            <meta-data
+85-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+86                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+86-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
+87                android:value="androidx.startup" />
+87-->[androidx.emoji2:emoji2:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/69bfd8439d93775b5e6242836d5b6f0c/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
+88            <meta-data
+88-->[androidx.lifecycle:lifecycle-process:2.9.4] /Users/nickole/.gradle/caches/9.6.1/transforms/71e36fa0a69c5080f59760436d72ee12/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:29:13-31:52
+89                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+89-->[androidx.lifecycle:lifecycle-process:2.9.4] /Users/nickole/.gradle/caches/9.6.1/transforms/71e36fa0a69c5080f59760436d72ee12/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:30:17-78
+90                android:value="androidx.startup" />
+90-->[androidx.lifecycle:lifecycle-process:2.9.4] /Users/nickole/.gradle/caches/9.6.1/transforms/71e36fa0a69c5080f59760436d72ee12/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:31:17-49
+91            <meta-data
+91-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+92                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+92-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+93                android:value="androidx.startup" />
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+94        </provider>
+95
+96        <uses-library
+96-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:23:9-25:40
+97            android:name="androidx.window.extensions"
+97-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:24:13-54
+98            android:required="false" />
+98-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:25:13-37
+99        <uses-library
+99-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:26:9-28:40
+100            android:name="androidx.window.sidecar"
+100-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:27:13-51
+101            android:required="false" />
+101-->[androidx.window:window:1.5.0] /Users/nickole/.gradle/caches/9.6.1/transforms/d4a6ee67cf4ff2d9cc72a3afb13b3a19/transformed/window-1.5.0/AndroidManifest.xml:28:13-37
+102
+103        <receiver
+103-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+104            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+104-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+105            android:directBootAware="false"
+105-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+106            android:enabled="true"
+106-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+107            android:exported="true"
+107-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+108            android:permission="android.permission.DUMP" >
+108-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+109            <intent-filter>
+109-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+110                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+110-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+110-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+111            </intent-filter>
+112            <intent-filter>
+112-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+113                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+113-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+113-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+114            </intent-filter>
+115            <intent-filter>
+115-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+116                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+116-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+116-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+117            </intent-filter>
+118            <intent-filter>
+118-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+119                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+119-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+119-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/nickole/.gradle/caches/9.6.1/transforms/c4ff5403acde2e9f4061f4d433d7c883/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+120            </intent-filter>
+121        </receiver>
+122    </application>
+123
+124</manifest>

@@ -6,7 +6,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 import android.util.Log
-import java.time.format.DateTimeParseException
+
 
 object RelativeTime {
     fun format(isoString: String?): String {
@@ -43,7 +43,7 @@ object RelativeTime {
             try {
                 // Try format "2026-08-02 04:18:06.364061" -> "2026-08-02T04:18:06.364061Z"
                 val iso = dateStr.replace(" ", "T").let { 
-                    if (!it.contains("Z") && !it.contains("+")) it + "Z" else it
+                    if (((!it.contains("Z"))) && ((!it.contains("+")))) it + "Z" else it
                 }
                 Instant.parse(iso)
             } catch (e2: Exception) {
